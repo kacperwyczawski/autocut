@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoCut.Core", "AutoCut.Core\AutoCut.Core.csproj", "{BF541E15-C7C2-4168-B37A-86174F0E8320}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoCut.Core.UnitTests", "AutoCut.Core.UnitTests\AutoCut.Core.UnitTests.csproj", "{69DF46F1-6E03-4187-A67E-9662438C9722}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{BF541E15-C7C2-4168-B37A-86174F0E8320}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BF541E15-C7C2-4168-B37A-86174F0E8320}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BF541E15-C7C2-4168-B37A-86174F0E8320}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69DF46F1-6E03-4187-A67E-9662438C9722}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69DF46F1-6E03-4187-A67E-9662438C9722}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69DF46F1-6E03-4187-A67E-9662438C9722}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69DF46F1-6E03-4187-A67E-9662438C9722}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

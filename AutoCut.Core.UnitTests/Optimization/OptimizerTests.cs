@@ -5,8 +5,9 @@ namespace AutoCut.Core.UnitTests.Optimization;
 
 public class OptimizerTests
 {
-    [Fact]
-    public void SinglePanel()
+    [Theory]
+    [InlineData(OptimizerSettings.OptimizationMethod.OwnAlgorithm)]
+    public void SinglePanel(OptimizerSettings.OptimizationMethod method)
     {
         // arrange
         var panels = new List<Panel> { new(100, 100) };

@@ -24,11 +24,8 @@ public class Optimizer
     public OptimizationResult Optimize(StockPanel stockPanelTemplate, IEnumerable<Panel> panels)
     {
         // TODO: check if list or enumerable is faster in freeRectangles
-        var usedStockPanels = new List<StockPanel> { stockPanelTemplate };
-        var freeRectangles = new SortedSet<PositionedPanel>
-        {
-            new(stockPanelTemplate.Length, stockPanelTemplate.Width, 0, 0)
-        };
+        var usedStockPanels = new List<StockPanel>();
+        var freeRectangles = new SortedSet<PositionedPanel>();
         var panelsToProcess = panels.Order().ToList();
         var optimizedPanels = new List<PositionedPanel>();
 
@@ -38,10 +35,17 @@ public class Optimizer
             var currentPanel = panelsToProcess.First();
             panelsToProcess.RemoveAt(0);
 
-            // extract best fit
-            // TODO: handle case where no fit is found (add new stock panel)
-            var fit = freeRectangles.First(r => r.ToPanel() >= currentPanel);
-            freeRectangles.Remove(fit);
+            // extract best fit, if there is none, create new stock panel
+            var fit = freeRectangles.FirstOrDefault(r => r.ToPanel() >= currentPanel);
+            if (fit is null)
+            {
+                usedStockPanels.Add(stockPanelTemplate);
+                fit = new PositionedPanel(stockPanelTemplate.Length, stockPanelTemplate.Width, 0, 0);
+            }
+            else
+            {
+                freeRectangles.Remove(fit);
+            }
 
             // place panel
             var placedPanel = currentPanel.ToPositioned(fit.X, fit.Y);
@@ -60,7 +64,7 @@ public class Optimizer
                     Width = fit.Width - currentPanel.Width,
                     Y = fit.Y + currentPanel.Width
                 };
-                
+
                 freeRectangles.Add(rectangle);
             }
             else if (fit.Width == currentPanel.Width)
@@ -70,8 +74,28 @@ public class Optimizer
                     Length = fit.Length - currentPanel.Length,
                     X = fit.X + currentPanel.Length
                 };
-                
+
                 freeRectangles.Add(rectangle);
+            }
+            else
+            {
+                // prefer horizontal split/cut
+                
+                var rectangleBelow = fit with
+                {
+                    Width = fit.Width - currentPanel.Width,
+                    Y = fit.Y + currentPanel.Width
+                };
+
+                var rectangleToRight = fit with
+                {
+                    Length = fit.Length - currentPanel.Length,
+                    Width = currentPanel.Width,
+                    X = fit.X + currentPanel.Length
+                };
+
+                freeRectangles.Add(rectangleBelow);
+                freeRectangles.Add(rectangleToRight);
             }
         }
 

@@ -113,4 +113,53 @@ public class OptimizerTests
                 new(50, 50, 250, 0)
             });
     }
+
+    [Fact]
+    public void MultipleRows()
+    {
+        var panels = new List<CompressedPanel> { new(100, 200, 5) };
+        var stockPanel = new StockPanel(210, 2000, 10);
+        var optimizer = new Optimizer();
+
+        var actual = optimizer.Optimize(stockPanel, panels);
+
+        actual.OptimizedPanels.Should().BeEquivalentTo(
+            new List<PositionedPanel>
+            {
+                new(100, 200, 0, 0),
+                new(100, 200, 100, 0),
+                new(100, 200, 0, 200),
+                new(100, 200, 100, 200),
+                new(100, 200, 0, 400)
+            });
+    }
+
+    [Fact]
+    public void MultipleRowsMultipleSizes()
+    {
+        var panels = new List<CompressedPanel>
+        {
+            new(100, 100, 5),
+            new(50, 50, 2)
+        };
+        var stockPanel = new StockPanel(300, 300, 10);
+        var optimizer = new Optimizer();
+
+        var actual = optimizer.Optimize(stockPanel, panels);
+
+        actual.OptimizedPanels
+            .Should().BeSubsetOf(new List<PositionedPanel>
+            {
+                new(100, 100, 0, 0),
+                new(100, 100, 100, 0),
+                new(100, 100, 200, 0),
+                new(100, 100, 0, 100),
+                new(100, 100, 100, 100),
+
+                new(50, 50, 200, 100),
+                new(50, 50, 200, 150),
+                new(50, 50, 250, 100)
+            })
+            .And.HaveCount(7);
+    }
 }

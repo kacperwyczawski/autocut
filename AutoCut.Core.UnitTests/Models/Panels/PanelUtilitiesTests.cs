@@ -24,4 +24,18 @@ public class PanelUtilitiesTests
         // assert
         Assert.Equal(expectedPanels, decompressedPanels);
     }
+
+    [Fact]
+    public void ConvertStockPanelToPanel()
+    {
+        // arrange
+        var stockPanel = new StockPanel(2800, 2070, 18);
+        var expectedPanel = new Panel(2800, 2070);
+        
+        // act
+        var panel = stockPanel.ToPanel();
+        
+        // assert
+        Assert.Equal(expectedPanel, panel);
+    }
 }

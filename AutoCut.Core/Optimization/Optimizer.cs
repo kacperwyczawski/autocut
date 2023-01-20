@@ -76,7 +76,6 @@ public class Optimizer
         }
 
         return new OptimizationResult(
-            usedStockPanels.Count,
             Settings,
             usedStockPanels,
             optimizedPanels);

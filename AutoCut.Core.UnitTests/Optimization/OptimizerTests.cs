@@ -1,5 +1,6 @@
 ﻿using AutoCut.Core.Models.Panels;
 using AutoCut.Core.Optimization;
+using FluentAssertions;
 
 namespace AutoCut.Core.UnitTests.Optimization;
 
@@ -13,16 +14,29 @@ public class OptimizerTests
         var stockPanel = new StockPanel(2800, 2070, 18);
         var optimizer = new Optimizer();
 
-        var expected = new OptimizationResult(
-            1,
-            new OptimizerSettings(),
-            new List<StockPanel> { stockPanel },
-            new List<PositionedPanel> { new(100, 100, 0, 0) });
-        
         // act
         var actual = optimizer.Optimize(stockPanel, panels);
-        
+
         // assert
-        Assert.Equal(expected, actual);
+        actual.OptimizedPanels.Should().BeEquivalentTo(
+            new List<PositionedPanel> { new(100, 100, 0, 0) });
+        actual.UsedStockPanels.Should().BeEquivalentTo(
+            new List<StockPanel> { stockPanel });
+    }
+    
+    [Fact]
+    public void NoPanels()
+    {
+        // arrange
+        var panels = new List<Panel>();
+        var stockPanel = new StockPanel(2800, 2070, 18);
+        var optimizer = new Optimizer();
+
+        // act
+        var actual = optimizer.Optimize(stockPanel, panels);
+
+        // assert
+        actual.OptimizedPanels.Should().BeEmpty();
+        actual.UsedStockPanels.Should().BeEmpty();
     }
 }

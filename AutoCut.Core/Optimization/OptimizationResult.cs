@@ -3,7 +3,6 @@
 namespace AutoCut.Core.Optimization;
 
 public record OptimizationResult(
-    int RequiredStockPanelsCount,
     OptimizerSettings Settings,
-    IReadOnlyList<StockPanel> StockPanels,
+    IReadOnlyList<StockPanel> UsedStockPanels,
     IEnumerable<PositionedPanel> OptimizedPanels);

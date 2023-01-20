@@ -6,4 +6,4 @@ public record OptimizationResult(
     int RequiredStockPanelsCount,
     OptimizerSettings Settings,
     IReadOnlyList<StockPanel> StockPanels,
-    IEnumerable<OptimizedPanel> OptimizedPanels);
+    IEnumerable<PositionedPanel> OptimizedPanels);

@@ -17,7 +17,7 @@ public class OptimizerTests
             1,
             new OptimizerSettings(),
             new List<StockPanel> { stockPanel },
-            new List<OptimizedPanel> { new(100, 100, 0, 0) });
+            new List<PositionedPanel> { new(100, 100, 0, 0) });
         
         // act
         var actual = optimizer.Optimize(stockPanel, panels);

@@ -17,29 +17,18 @@ public class Optimizer
     {
     }
 
-    public OptimizationResult Optimize(StockPanel stockPanelTemplate, IEnumerable<Panel> panels) =>
-        Settings.Method switch
-        {
-            OptimizerSettings.OptimizationMethod.OwnAlgorithm => OptimizeUsingOwnAlgorithm(stockPanelTemplate,
-                panels),
-            _ => throw new InvalidOperationException("Unknown optimization method")
-        };
-
     public OptimizationResult Optimize(StockPanel stockPanelTemplate, IEnumerable<CompressedPanel> compressedPanels)
     {
         var panels = compressedPanels.SelectMany(panel => panel.Decompress());
         return Optimize(stockPanelTemplate, panels);
     }
 
-    private OptimizationResult OptimizeUsingOwnAlgorithm(StockPanel stockPanelTemplate,
-        IEnumerable<Panel> panels)
+    public OptimizationResult Optimize(StockPanel stockPanelTemplate, IEnumerable<Panel> panels)
     {
         // TODO: check if list or enumerable is faster in freeRectangles
         var usedStockPanels = new List<StockPanel> { stockPanelTemplate };
-        // TODO: specify comparer in settings (applies to freeRectangles and panelsToProcess)
-        var freeRectangles = new SortedSet<Panel>(PanelComparerFactory.CreateComparer())
-            { stockPanelTemplate.ToPanel() };
-        var panelsToProcess = panels.OrderBy(p => p.Lenght).ThenBy(p => p.Width).ToList();
+        var freeRectangles = new SortedSet<Panel> { stockPanelTemplate.ToPanel() };
+        var panelsToProcess = panels.Order().ToList();
         var optimizedPanels = new List<OptimizedPanel>();
 
         while (panelsToProcess.Any())

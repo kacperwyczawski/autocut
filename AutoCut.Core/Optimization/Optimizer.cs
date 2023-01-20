@@ -6,11 +6,6 @@ public class Optimizer
 {
     public OptimizerSettings Settings { get; set; }
     
-    /// <summary>
-    /// Reversed comparer (compares b to a). See: https://stackoverflow.com/a/24306467/18682712
-    /// </summary>
-    private readonly Comparer<Panel> _reversedComparer = Comparer<Panel>.Create((a, b) => b.CompareTo(a));
-
     public Optimizer(OptimizerSettings settings)
     {
         Settings = settings;
@@ -30,8 +25,8 @@ public class Optimizer
     {
         // TODO: check if list or enumerable is faster in freeRectangles
         var usedStockPanels = new List<StockPanel>();
-        var freeRectangles = new SortedSet<PositionedPanel>(_reversedComparer);
-        var panelsToProcess = panels.Order().ToList();
+        var freeRectangles = new SortedSet<PositionedPanel>();
+        var panelsToProcess = panels.OrderDescending().ToList();
         var optimizedPanels = new List<PositionedPanel>();
 
         while (panelsToProcess.Any())

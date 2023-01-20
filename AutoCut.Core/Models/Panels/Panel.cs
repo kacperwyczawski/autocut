@@ -11,4 +11,9 @@ public record Panel(int Lenght, int Width) : IComparable<Panel>
             ? Width.CompareTo(other.Width) // length is equal, compare width
             : lenghtComparison; // length is not equal, return comparison
     }
+    
+    public static bool operator <(Panel left, Panel right) => left.CompareTo(right) < 0;
+    public static bool operator >(Panel left, Panel right) => left.CompareTo(right) > 0;
+    public static bool operator <=(Panel left, Panel right) => left.CompareTo(right) <= 0;
+    public static bool operator >=(Panel left, Panel right) => left.CompareTo(right) >= 0;
 }

@@ -6,5 +6,8 @@ public static class PanelUtilities
         Enumerable.Repeat(compressedPanel.ToPanel(), compressedPanel.Quantity);
 
     public static Panel ToPanel<TFrom>(this TFrom from) where TFrom : Panel =>
-        new Panel(from.Lenght, from.Width);
+        new Panel(from.Length, from.Width);
+
+    public static PositionedPanel ToPositioned(this Panel from, int x, int y) =>
+        new PositionedPanel(from.Length, from.Width, x, y);
 }

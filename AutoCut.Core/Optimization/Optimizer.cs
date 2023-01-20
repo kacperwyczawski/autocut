@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.ComTypes;
-using AutoCut.Core.Models.Panels;
+﻿using AutoCut.Core.Models.Panels;
 
 namespace AutoCut.Core.Optimization;
 
@@ -27,15 +25,54 @@ public class Optimizer
     {
         // TODO: check if list or enumerable is faster in freeRectangles
         var usedStockPanels = new List<StockPanel> { stockPanelTemplate };
-        var freeRectangles = new SortedSet<Panel> { stockPanelTemplate.ToPanel() };
+        var freeRectangles = new SortedSet<PositionedPanel>
+        {
+            new(stockPanelTemplate.Length, stockPanelTemplate.Width, 0, 0)
+        };
         var panelsToProcess = panels.Order().ToList();
-        var optimizedPanels = new List<OptimizedPanel>();
+        var optimizedPanels = new List<PositionedPanel>();
 
         while (panelsToProcess.Any())
         {
-            var optimizedPanel = FitPanel(panelsToProcess[0], out freeRectangles, out usedStockPanels);
-            optimizedPanels.Add(optimizedPanel);
+            // extract first panel
+            var currentPanel = panelsToProcess.First();
             panelsToProcess.RemoveAt(0);
+
+            // extract best fit
+            // TODO: handle case where no fit is found (add new stock panel)
+            var fit = freeRectangles.First(r => r.ToPanel() >= currentPanel);
+            freeRectangles.Remove(fit);
+
+            // place panel
+            var placedPanel = currentPanel.ToPositioned(fit.X, fit.Y);
+            optimizedPanels.Add(placedPanel);
+
+            // add new free rectangles
+            if (fit == currentPanel)
+            {
+                // panel fits perfectly 👌
+                // so no new free rectangles
+            }
+            else if (fit.Length == currentPanel.Length)
+            {
+                var rectangle = fit with
+                {
+                    Width = fit.Width - currentPanel.Width,
+                    Y = fit.Y + currentPanel.Width
+                };
+                
+                freeRectangles.Add(rectangle);
+            }
+            else if (fit.Width == currentPanel.Width)
+            {
+                var rectangle = fit with
+                {
+                    Length = fit.Length - currentPanel.Length,
+                    X = fit.X + currentPanel.Length
+                };
+                
+                freeRectangles.Add(rectangle);
+            }
         }
 
         return new OptimizationResult(
@@ -43,26 +80,5 @@ public class Optimizer
             Settings,
             usedStockPanels,
             optimizedPanels);
-    }
-
-    /// <summary>
-    /// Fits the panel into the free rectangles.
-    /// </summary>
-    /// <param name="panel">
-    /// The panel to fit.
-    /// </param>
-    /// <param name="freeRectangles">
-    /// The free rectangles. Will be modified and returned via out parameter.
-    /// </param>
-    /// <param name="usedStockPanels">
-    /// The used stock panels. Will be modified and returned via out parameter.
-    /// </param>
-    /// <returns>
-    /// The optimized panel and (via out parameter) the new free rectangles.
-    /// </returns>
-    private OptimizedPanel FitPanel(Panel panel, out SortedSet<Panel> freeRectangles,
-        out List<StockPanel> usedStockPanels)
-    {
-        throw new NotImplementedException();
     }
 }

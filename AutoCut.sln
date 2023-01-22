@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoCut.Core", "AutoCut.Cor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoCut.Core.UnitTests", "AutoCut.Core.UnitTests\AutoCut.Core.UnitTests.csproj", "{69DF46F1-6E03-4187-A67E-9662438C9722}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoCut.Frontend", "AutoCut.Frontend\AutoCut.Frontend.csproj", "{B6C2138D-E9D6-49A1-A272-5E3E6F79357C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{69DF46F1-6E03-4187-A67E-9662438C9722}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{69DF46F1-6E03-4187-A67E-9662438C9722}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{69DF46F1-6E03-4187-A67E-9662438C9722}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6C2138D-E9D6-49A1-A272-5E3E6F79357C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6C2138D-E9D6-49A1-A272-5E3E6F79357C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6C2138D-E9D6-49A1-A272-5E3E6F79357C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6C2138D-E9D6-49A1-A272-5E3E6F79357C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -32,7 +32,9 @@ public class Optimizer
         foreach (var panel in panelsToProcess)
         {
             // extract smallest fit, if there is none, create new stock panel
-            var fit = freeRectangles.FirstOrDefault(r => r.ToPanel() >= panel);
+            var fit = freeRectangles.FirstOrDefault(freeRectangle =>
+                freeRectangle.Length >= panel.Length &&
+                freeRectangle.Width >= panel.Width);
             if (fit is null)
             {
                 var newStockPanel = PanelUtilities.EmptyOptimizedStockPanel(stockPanelTemplate);

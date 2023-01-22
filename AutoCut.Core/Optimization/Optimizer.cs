@@ -1,11 +1,12 @@
 ﻿using AutoCut.Core.Models.Panels;
+using Microsoft.VisualBasic;
 
 namespace AutoCut.Core.Optimization;
 
 public class Optimizer
 {
     public OptimizerSettings Settings { get; set; }
-    
+
     public Optimizer(OptimizerSettings settings)
     {
         Settings = settings;
@@ -23,24 +24,20 @@ public class Optimizer
 
     public OptimizationResult Optimize(StockPanel stockPanelTemplate, IEnumerable<Panel> panels)
     {
-        // TODO: check if list or enumerable is faster in freeRectangles
-        var usedStockPanels = new List<StockPanel>();
-        var freeRectangles = new SortedSet<PositionedPanel>();
+        // TODO: check if list or enumerable is faster in freeRectangles than sorted set
+        var freeRectangles = new SortedSet<FreeRectangle>();
         var panelsToProcess = panels.OrderDescending().ToList();
-        var optimizedPanels = new List<PositionedPanel>();
+        var optimizedStockPanels = new List<OptimizedStockPanel>();
 
-        while (panelsToProcess.Any())
+        foreach (var panel in panelsToProcess)
         {
-            // extract first panel
-            var currentPanel = panelsToProcess.First();
-            panelsToProcess.RemoveAt(0);
-
             // extract smallest fit, if there is none, create new stock panel
-            var fit = freeRectangles.FirstOrDefault(r => r.ToPanel() >= currentPanel);
+            var fit = freeRectangles.FirstOrDefault(r => r.ToPanel() >= panel);
             if (fit is null)
             {
-                usedStockPanels.Add(stockPanelTemplate);
-                fit = new PositionedPanel(stockPanelTemplate.Length, stockPanelTemplate.Width, 0, 0);
+                var newStockPanel = PanelUtilities.EmptyOptimizedStockPanel(stockPanelTemplate);
+                optimizedStockPanels.Add(newStockPanel);
+                fit = new FreeRectangle(stockPanelTemplate.Length, stockPanelTemplate.Width, 0, 0, newStockPanel);
             }
             else
             {
@@ -48,20 +45,17 @@ public class Optimizer
             }
 
             // place panel
-            var placedPanel = currentPanel.ToPositioned(fit.X, fit.Y);
-            optimizedPanels.Add(placedPanel);
+            var panelToPlace = panel.ToPositioned(fit.X, fit.Y);
+            fit.StockPanel.Panels.Add(panelToPlace);
 
             // add new free rectangles
-            freeRectangles.UnionWith(NewFreeRectangles(fit, currentPanel));
+            freeRectangles.UnionWith(GenerateNewFreeRectangles(fit, panel));
         }
 
-        return new OptimizationResult(
-            Settings,
-            usedStockPanels,
-            optimizedPanels);
+        return new OptimizationResult(Settings, optimizedStockPanels);
     }
 
-    private IEnumerable<PositionedPanel> NewFreeRectangles(PositionedPanel fit, Panel currentPanel)
+    private IEnumerable<FreeRectangle> GenerateNewFreeRectangles(FreeRectangle fit, Panel currentPanel)
     {
         if (fit == currentPanel)
         {

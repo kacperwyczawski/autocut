@@ -17,8 +17,7 @@ public class OptimizerTests
         var actual = optimizer.Optimize(stockPanel, new List<Panel>());
 
         // assert
-        actual.OptimizedPanels.Should().BeEmpty();
-        actual.UsedStockPanels.Should().BeEmpty();
+        actual.StockPanels.Should().BeEmpty();
     }
 
     [Fact]
@@ -33,10 +32,10 @@ public class OptimizerTests
         var actual = optimizer.Optimize(stockPanel, panels);
 
         // assert
-        actual.OptimizedPanels.Should().BeEquivalentTo(
-            new List<PositionedPanel> { new(100, 100, 0, 0) });
-        actual.UsedStockPanels.Should().BeEquivalentTo(
-            new List<StockPanel> { stockPanel });
+        actual.StockPanels.Single().Panels
+            .Should().ContainSingle("", new PositionedPanel(100, 100, 0, 0));
+        actual.StockPanels
+            .Should().ContainSingle();
     }
 
     [Fact]
@@ -54,15 +53,15 @@ public class OptimizerTests
 
         var actual = optimizer.Optimize(stockPanel, panels);
 
-        actual.OptimizedPanels.Should().BeEquivalentTo(
-            new List<PositionedPanel>
-            {
-                new(100, 200, 0, 0),
-                new(100, 200, 100, 0),
-                new(100, 200, 200, 0),
-                new(100, 200, 300, 0)
-            });
-        actual.UsedStockPanels.Should().HaveCount(1);
+        actual.StockPanels.Single().Panels
+            .Should().BeEquivalentTo(
+                new List<PositionedPanel>
+                {
+                    new(100, 200, 0, 0),
+                    new(100, 200, 100, 0),
+                    new(100, 200, 200, 0),
+                    new(100, 200, 300, 0)
+                });
     }
 
     [Fact]
@@ -79,14 +78,15 @@ public class OptimizerTests
 
         var actual = optimizer.Optimize(stockPanel, panels);
 
-        actual.OptimizedPanels.Should().BeEquivalentTo(
-            new List<PositionedPanel>
-            {
-                new(100, 200, 0, 0),
-                new(100, 200, 103, 0),
-                new(100, 200, 206, 0)
-            });
         actual.Settings.BladeThickness.Should().Be(3);
+        actual.StockPanels.Single().Panels
+            .Should().BeEquivalentTo(
+                new List<PositionedPanel>
+                {
+                    new(100, 200, 0, 0),
+                    new(100, 200, 103, 0),
+                    new(100, 200, 206, 0)
+                });
     }
 
     [Fact]
@@ -104,14 +104,15 @@ public class OptimizerTests
 
         var actual = optimizer.Optimize(stockPanel, panels);
 
-        actual.OptimizedPanels.Should().BeEquivalentTo(
-            new List<PositionedPanel>
-            {
-                new(100, 200, 0, 0),
-                new(100, 200, 100, 0),
-                new(50, 50, 200, 0),
-                new(50, 50, 250, 0)
-            });
+        actual.StockPanels.Single().Panels
+            .Should().BeEquivalentTo(
+                new List<PositionedPanel>
+                {
+                    new(100, 200, 0, 0),
+                    new(100, 200, 100, 0),
+                    new(50, 50, 200, 0),
+                    new(50, 50, 250, 0)
+                });
     }
 
     [Fact]
@@ -123,15 +124,16 @@ public class OptimizerTests
 
         var actual = optimizer.Optimize(stockPanel, panels);
 
-        actual.OptimizedPanels.Should().BeEquivalentTo(
-            new List<PositionedPanel>
-            {
-                new(100, 200, 0, 0),
-                new(100, 200, 100, 0),
-                new(100, 200, 0, 200),
-                new(100, 200, 100, 200),
-                new(100, 200, 0, 400)
-            });
+        actual.StockPanels.Single().Panels
+            .Should().BeEquivalentTo(
+                new List<PositionedPanel>
+                {
+                    new(100, 200, 0, 0),
+                    new(100, 200, 100, 0),
+                    new(100, 200, 0, 200),
+                    new(100, 200, 100, 200),
+                    new(100, 200, 0, 400)
+                });
     }
 
     [Fact]
@@ -147,7 +149,7 @@ public class OptimizerTests
 
         var actual = optimizer.Optimize(stockPanel, panels);
 
-        actual.OptimizedPanels
+        actual.StockPanels.Single().Panels
             .Should().BeSubsetOf(new List<PositionedPanel>
             {
                 new(100, 100, 0, 0),
@@ -161,5 +163,23 @@ public class OptimizerTests
                 new(50, 50, 250, 100)
             })
             .And.HaveCount(7);
+    }
+
+    [Fact]
+    public void MultipleStockPanels()
+    {
+        var panels = new List<CompressedPanel> { new(100, 100, 3) };
+        var stockPanel = new StockPanel(110, 120, 10);
+        var optimizer = new Optimizer();
+
+        var actual = optimizer.Optimize(stockPanel, panels);
+
+        actual.StockPanels
+            .Should().HaveCount(3);
+        foreach (var optimizedStockPanel in actual.StockPanels)
+        {
+            optimizedStockPanel.Panels
+                .Should().ContainSingle("", new PositionedPanel(100, 100, 0, 0));
+        }
     }
 }

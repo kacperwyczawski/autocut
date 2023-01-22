@@ -65,43 +65,36 @@ public class Optimizer
         }
         else if (fit.Length == currentPanel.Length)
         {
-            var rectangle = fit with
+            yield return fit with
             {
                 Width = fit.Width - currentPanel.Width,
-                Y = fit.Y + currentPanel.Width
+                Y = fit.Y + currentPanel.Width + Settings.BladeThickness
             };
-
-            yield return rectangle;
         }
         else if (fit.Width == currentPanel.Width)
         {
-            var rectangle = fit with
+            yield return fit with
             {
                 Length = fit.Length - currentPanel.Length,
-                X = fit.X + currentPanel.Length
+                X = fit.X + currentPanel.Length + Settings.BladeThickness
             };
-
-            yield return rectangle;
         }
         else
         {
             // prefer horizontal split/cut
 
-            var rectangleBelow = fit with
+            yield return fit with
             {
                 Width = fit.Width - currentPanel.Width,
-                Y = fit.Y + currentPanel.Width
+                Y = fit.Y + currentPanel.Width + Settings.BladeThickness
             };
 
-            var rectangleToRight = fit with
+            yield return fit with
             {
                 Length = fit.Length - currentPanel.Length,
                 Width = currentPanel.Width,
-                X = fit.X + currentPanel.Length
+                X = fit.X + currentPanel.Length + Settings.BladeThickness
             };
-
-            yield return rectangleBelow;
-            yield return rectangleToRight;
         }
     }
 }

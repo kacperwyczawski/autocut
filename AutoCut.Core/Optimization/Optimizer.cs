@@ -1,5 +1,4 @@
-﻿using AutoCut.Core.Models.Panels;
-using Microsoft.VisualBasic;
+﻿using AutoCut.Core.Panels;
 
 namespace AutoCut.Core.Optimization;
 

@@ -1,4 +1,4 @@
-﻿using AutoCut.Core.Models.Panels;
+﻿using AutoCut.Core.Panels;
 
 namespace AutoCut.Core.Optimization;
 

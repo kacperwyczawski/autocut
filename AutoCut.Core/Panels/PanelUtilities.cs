@@ -1,4 +1,4 @@
-﻿namespace AutoCut.Core.Models.Panels;
+﻿namespace AutoCut.Core.Panels;
 
 public static class PanelUtilities
 {

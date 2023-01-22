@@ -1,5 +1,5 @@
-﻿using AutoCut.Core.Models.Panels;
-using AutoCut.Core.Optimization;
+﻿using AutoCut.Core.Optimization;
+using AutoCut.Core.Panels;
 using FluentAssertions;
 
 namespace AutoCut.Core.UnitTests.Optimization;

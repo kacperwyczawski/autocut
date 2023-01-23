@@ -15,7 +15,8 @@ jobs:
       - name: Publish project
         run: dotnet publish AutoCut.Frontend/AutoCut.Frontend.csproj -c Release -o release --nologo
       - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4.4.1
+        uses: JamesIves/github-pages-deploy-action@3.7.1
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          folder: release/wwwroot
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: release/wwwroot

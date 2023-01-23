@@ -13,7 +13,7 @@ jobs:
         with:
           dotnet-version: 7.x.x
       - name: Publish project
-        run: dotnet publish AutoCut.Frontend.csproj -c Release -o release --nologo
+        run: dotnet publish AutoCut.Frontend/AutoCut.Frontend.csproj -c Release -o release --nologo
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:

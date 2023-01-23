@@ -1,69 +1,106 @@
-﻿<MudPaper Class="pa-4">
-    <MudForm>
-        <MudStack>
-            <MudStack Row="true">
-                <MudNumericField T="int"
-                                 Label="Length"
-                                 Margin="Margin.Dense"
-                                 AdornmentText="mm"
-                                 Adornment="Adornment.End"
-                                 AdornmentColor="Color.Info"
-                                 Variant="Variant.Outlined"/>
-                <MudNumericField T="int"
-                                 Label="Width"
-                                 Margin="Margin.Dense"
-                                 AdornmentText="mm"
-                                 Adornment="Adornment.End"
-                                 AdornmentColor="Color.Info"
-                                 Variant="Variant.Outlined"/>
-                <MudNumericField T="int"
-                                 Label="Quantity"
-                                 Margin="Margin.Dense"
-                                 Variant="Variant.Outlined"/>
-            </MudStack>
-            <MudStack Row="true">
-                <MudCheckBox T="bool"
-                             CheckedIcon="@Icons.Material.Filled.BorderTop"
-                             UncheckedIcon="@Icons.Material.Filled.BorderTop"
-                             UnCheckedColor="Color.Default"
-                             Color="Color.Primary"
-                             DisableRipple="true"
-                             Dense="true"/>
-                <MudCheckBox T="bool"
-                             CheckedIcon="@Icons.Material.Filled.BorderRight"
-                             UncheckedIcon="@Icons.Material.Filled.BorderRight"
-                             UnCheckedColor="Color.Default"
-                             Color="Color.Primary"
-                             DisableRipple="true"
-                             Dense="true"/>
-                <MudCheckBox T="bool"
-                             CheckedIcon="@Icons.Material.Filled.BorderBottom"
-                             UncheckedIcon="@Icons.Material.Filled.BorderBottom"
-                             UnCheckedColor="Color.Default"
-                             Color="Color.Primary"
-                             DisableRipple="true"
-                             Dense="true"/>
-                <MudCheckBox T="bool"
-                             CheckedIcon="@Icons.Material.Filled.BorderLeft"
-                             UncheckedIcon="@Icons.Material.Filled.BorderLeft"
-                             UnCheckedColor="Color.Default"
-                             Color="Color.Primary"
-                             DisableRipple="true"
-                             Dense="true"/>
-                <MudSpacer/>
-                <MudButton Color="Color.Success"
-                           Variant="Variant.Filled"
-                           Size="Size.Small">
-                    Add
-                </MudButton>
-                <MudButton Color="Color.Warning"
-                           Variant="Variant.Outlined"
-                           Size="Size.Small">
-                    Reset
-                </MudButton>
-            </MudStack></MudStack>
-    </MudForm>
-</MudPaper>
+﻿<MudContainer MaxWidth="MaxWidth.Large">
+    <MudPaper Class="pa-4">
+        <MudForm>
+            <MudGrid>
+                <MudItem md="3" sm="6">
+                    @* Length field *@
+                    <MudNumericField
+                        T="int"
+                        Label="Length"
+                        Margin="Margin.Dense"
+                        AdornmentText="mm"
+                        Adornment="Adornment.End"
+                        AdornmentColor="Color.Info"
+                        Variant="Variant.Outlined"/>
+                </MudItem>
+                <MudItem md="3" sm="6">
+                    @* Width field *@
+                    <MudNumericField
+                        T="int"
+                        Label="Width"
+                        Margin="Margin.Dense"
+                        AdornmentText="mm"
+                        Adornment="Adornment.End"
+                        AdornmentColor="Color.Info"
+                        Variant="Variant.Outlined"/>
+                </MudItem>
+                <MudItem md="3" sm="6">
+                    @* Quantity field *@
+                    <MudNumericField
+                        T="int"
+                        Label="Quantity"
+                        Margin="Margin.Dense"
+                        Variant="Variant.Outlined"/>
+                </MudItem>
+                <MudItem md="3" sm="6">
+                    @* Name field *@
+                    <MudTextField
+                        T="string"
+                        Label="Name"
+                        Margin="Margin.Dense"
+                        Variant="Variant.Outlined"/>
+                </MudItem>
+                <MudItem md="3" sm="6">
+                    @* Top and bottom edge band *@
+                    <MudStack Row="true">
+                        <MudButton
+                            Color="@Color.Primary"
+                            Variant="Variant.Outlined">
+                            One border
+                        </MudButton>
+                        <MudButton
+                            Color="@Color.Primary"
+                            Variant="Variant.Outlined">
+                            Two borders
+                        </MudButton>
+                    </MudStack>
+                </MudItem>
+                <MudItem md="3" sm="6">
+                    @* Left and right edge band *@
+                    <MudStack Row="true">
+                        <MudButton
+                            Color="@Color.Primary"
+                            Variant="Variant.Outlined">
+                            One border
+                        </MudButton>
+                        <MudButton
+                            Color="@Color.Primary"
+                            Variant="Variant.Outlined">
+                            Two borders
+                        </MudButton>
+                    </MudStack>
+                </MudItem>
+                <MudItem md="3" sm="6">
+                    @* None and all edge band *@
+                    <MudStack Row="true">
+                        <MudButton
+                            Color="@Color.Primary"
+                            Variant="Variant.Outlined">
+                            No borders
+                        </MudButton>
+                        <MudButton
+                            Color="@Color.Primary"
+                            Variant="Variant.Outlined">
+                            All borders
+                        </MudButton>
+                    </MudStack>
+                </MudItem>
+                <MudItem md="3" sm="6">
+                    @* Buttons *@
+                    <MudStack Row="true">
+                        <MudButton Color="Color.Success"
+                                   Variant="Variant.Filled">
+                            Add
+                        </MudButton>
+                        <MudButton Color="Color.Warning"
+                                   Variant="Variant.Outlined">
+                            Reset
+                        </MudButton>
+                    </MudStack>
+                </MudItem>
+            </MudGrid>
+        </MudForm>
+    </MudPaper></MudContainer>
 
 @code
 {

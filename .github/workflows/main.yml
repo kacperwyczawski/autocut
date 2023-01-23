@@ -3,7 +3,7 @@ on:
   push:
     branches: [main]
 jobs:
-  deploy:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout to master
@@ -14,9 +14,24 @@ jobs:
           dotnet-version: 7.x.x
       - name: Publish project
         run: dotnet publish AutoCut.Frontend/AutoCut.Frontend.csproj -c Release -o release --nologo
-      - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@3.7.1
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v1.0.7
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages
-          FOLDER: release/wwwroot
+          path: release/wwwroot
+          
+  deploy:
+    needs: publish
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1 

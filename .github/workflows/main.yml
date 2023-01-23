@@ -1,0 +1,21 @@
+name: Deploy app to GitHub Pages
+on:
+  push:
+    branches: [main]
+jobs:
+  deploy:
+    runs-on: ubuntu-lastest
+    steps:
+      - name: Checkout to master
+        uses: actions/checkout@v3.3.0
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7.x.x
+      - name: Publish project
+        run: dotnet publish AutoCut.Frontend.csproj -c Release -o release --nologo
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4.4.1
+        with:
+          folder: release/wwwroot
+          

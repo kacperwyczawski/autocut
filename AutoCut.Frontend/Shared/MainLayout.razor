@@ -6,19 +6,14 @@
 
 <MudLayout>
     <MudAppBar Elevation="1">
-        <MudIconButton 
-            Icon="@Icons.Material.Filled.Menu" 
-            Color="Color.Inherit" 
-            Edge="Edge.Start" 
+        <MudIconButton
+            Icon="@Icons.Material.Filled.Menu"
+            Color="Color.Inherit"
+            Edge="Edge.Start"
             OnClick="@(_ => DrawerToggle())"/>
         <MudText Typo="Typo.h5" Class="ml-3">
             AutoCut
         </MudText>
-        <MudSpacer/>
-        <MudIconButton 
-            Icon="@Icons.Material.Filled.MoreVert" 
-            Color="Color.Inherit" 
-            Edge="Edge.End"/>
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
         @*Settings*@
@@ -30,6 +25,6 @@
 
 @code
 {
-    bool _drawerOpen = true;
+    bool _drawerOpen;
     void DrawerToggle() => _drawerOpen = !_drawerOpen;
 }

@@ -17,5 +17,5 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:
-          folder: release/AutoCut.Frontend/wwwroot
-          
+          token: ${{ secrets.GITHUB_TOKEN }}
+          folder: release/wwwroot

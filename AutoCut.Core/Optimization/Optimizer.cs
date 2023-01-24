@@ -4,16 +4,7 @@ namespace AutoCut.Core.Optimization;
 
 public class Optimizer
 {
-    public OptimizerSettings Settings { get; set; }
-
-    public Optimizer(OptimizerSettings settings)
-    {
-        Settings = settings;
-    }
-
-    public Optimizer() : this(new OptimizerSettings())
-    {
-    }
+    public OptimizerSettings Settings { get; set; } = new();
 
     public OptimizationResult Optimize(StockPanel stockPanelTemplate, IEnumerable<CompressedPanel> compressedPanels)
     {
@@ -24,21 +15,24 @@ public class Optimizer
     public OptimizationResult Optimize(StockPanel stockPanelTemplate, IEnumerable<Panel> panels)
     {
         // TODO: check if list or enumerable is faster in freeRectangles than sorted set
-        var freeRectangles = new SortedSet<FreeRectangle>();
-        var panelsToProcess = panels.OrderDescending().ToList();
+        var freeRectangles = new SortedSet<FreeSpace>();
+        var panelsToProcess = panels
+            .OrderByDescending(p => p.Rectangle.Length)
+            .ThenByDescending(p => p.Rectangle.Width)
+            .ToList();
         var optimizedStockPanels = new List<OptimizedStockPanel>();
 
         foreach (var panel in panelsToProcess)
         {
             // extract smallest fit, if there is none, create new stock panel
-            var fit = freeRectangles.FirstOrDefault(freeRectangle =>
-                freeRectangle.Length >= panel.Length &&
-                freeRectangle.Width >= panel.Width);
+            var fit = freeRectangles.FirstOrDefault(freeSpace =>
+                freeSpace.PositionedRectangle.Rectangle.Length >= panel.Rectangle.Length &&
+                freeSpace.PositionedRectangle.Rectangle.Width >= panel.Rectangle.Width);
             if (fit is null)
             {
-                var newStockPanel = PanelUtilities.EmptyOptimizedStockPanel(stockPanelTemplate);
+                var newStockPanel = OptimizedStockPanel.Empty(stockPanelTemplate);
                 optimizedStockPanels.Add(newStockPanel);
-                fit = new FreeRectangle(stockPanelTemplate.Length, stockPanelTemplate.Width, 0, 0, newStockPanel);
+                fit = new FreeSpace(stockPanelTemplate.Panel.Rectangle.ToPositioned(0, 0), newStockPanel);
             }
             else
             {
@@ -46,8 +40,9 @@ public class Optimizer
             }
 
             // place panel
-            var panelToPlace = panel.ToPositioned(fit.X, fit.Y);
-            fit.StockPanel.Panels.Add(panelToPlace);
+            fit.OptimizedStockPanel.Panels.Add(panel.ToPositioned(
+                fit.PositionedRectangle.Position.X,
+                fit.PositionedRectangle.Position.Y));
 
             // add new free rectangles
             freeRectangles.UnionWith(GenerateNewFreeRectangles(fit, panel));
@@ -56,44 +51,74 @@ public class Optimizer
         return new OptimizationResult(Settings, optimizedStockPanels);
     }
 
-    private IEnumerable<FreeRectangle> GenerateNewFreeRectangles(FreeRectangle fit, Panel currentPanel)
+    private IEnumerable<FreeSpace> GenerateNewFreeRectangles(FreeSpace fit, Panel currentPanel)
     {
-        if (fit == currentPanel)
+        if (fit.PositionedRectangle.Rectangle == currentPanel.Rectangle)
         {
             // panel fits perfectly 👌
             // so no new free rectangles
         }
-        else if (fit.Length == currentPanel.Length)
+        else if (fit.PositionedRectangle.Rectangle.Length == currentPanel.Rectangle.Length)
         {
             yield return fit with
             {
-                Width = fit.Width - currentPanel.Width,
-                Y = fit.Y + currentPanel.Width + Settings.BladeThickness
+                PositionedRectangle = new PositionedRectangle(
+                    Position: fit.PositionedRectangle.Position with
+                    {
+                        Y = fit.PositionedRectangle.Position.Y + currentPanel.Rectangle.Width + Settings.BladeThickness
+                    },
+                    Rectangle: fit.PositionedRectangle.Rectangle with
+                    {
+                        Width = fit.PositionedRectangle.Rectangle.Width - currentPanel.Rectangle.Width
+                    })
             };
         }
-        else if (fit.Width == currentPanel.Width)
+        else if (fit.PositionedRectangle.Rectangle.Width == currentPanel.Rectangle.Width)
         {
             yield return fit with
             {
-                Length = fit.Length - currentPanel.Length,
-                X = fit.X + currentPanel.Length + Settings.BladeThickness
+                PositionedRectangle = new PositionedRectangle(
+                    Position: fit.PositionedRectangle.Position with
+                    {
+                        X = fit.PositionedRectangle.Position.X + currentPanel.Rectangle.Length + Settings.BladeThickness
+                    },
+                    Rectangle: fit.PositionedRectangle.Rectangle with
+                    {
+                        Length = fit.PositionedRectangle.Rectangle.Length - currentPanel.Rectangle.Length
+                    })
             };
         }
         else
         {
             // prefer horizontal split/cut
 
+            // panel below
             yield return fit with
             {
-                Width = fit.Width - currentPanel.Width,
-                Y = fit.Y + currentPanel.Width + Settings.BladeThickness
+                PositionedRectangle = new PositionedRectangle(
+                    Position: fit.PositionedRectangle.Position with
+                    {
+                        Y = fit.PositionedRectangle.Position.Y + currentPanel.Rectangle.Width + Settings.BladeThickness
+                    },
+                    Rectangle: fit.PositionedRectangle.Rectangle with
+                    {
+                        Width = fit.PositionedRectangle.Rectangle.Width - currentPanel.Rectangle.Width - Settings.BladeThickness
+                    })
             };
 
+            // panel to the right
             yield return fit with
             {
-                Length = fit.Length - currentPanel.Length,
-                Width = currentPanel.Width,
-                X = fit.X + currentPanel.Length + Settings.BladeThickness
+                PositionedRectangle = new PositionedRectangle(
+                    Position: fit.PositionedRectangle.Position with
+                    {
+                        X = fit.PositionedRectangle.Position.X + currentPanel.Rectangle.Length + Settings.BladeThickness
+                    },
+                    Rectangle: fit.PositionedRectangle.Rectangle with
+                    {
+                        Length = fit.PositionedRectangle.Rectangle.Length - currentPanel.Rectangle.Length - Settings.BladeThickness,
+                        Width = currentPanel.Rectangle.Width + Settings.BladeThickness
+                    })
             };
         }
     }

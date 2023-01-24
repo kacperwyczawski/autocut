@@ -7,13 +7,13 @@
         <MudPaper>
             <MudStack Row="true" Class="pa-2" AlignItems="AlignItems.Center">
                 <MudText>
-                    <b>@panel.Length</b>
+                    <b>@panel.Panel.Rectangle.Length</b>
                 </MudText>
                 <MudText>
                     ✕
                 </MudText>
                 <MudText>
-                    <b>@panel.Width</b>
+                    <b>@panel.Panel.Rectangle.Width</b>
                 </MudText>
                 <MudText>
                     ✕
@@ -21,11 +21,22 @@
                 <MudText>
                     <b>@panel.Quantity</b>
                 </MudText>
-                @* this wil be retrieved from panel *@
-                <MudIcon Icon="@Icons.Material.Filled.BorderTop"/>
-                <MudIcon Icon="@Icons.Material.Filled.BorderBottom"/>
-                <MudIcon Icon="@Icons.Material.Filled.BorderLeft"/>
-                <MudIcon Icon="@Icons.Material.Filled.BorderRight"/>
+                @if (panel.Panel.EdgeBanding.Top)
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.BorderTop"/>
+                }
+                @if (panel.Panel.EdgeBanding.Bottom)
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.BorderBottom"/>
+                }
+                @if (panel.Panel.EdgeBanding.Left)
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.BorderLeft"/>
+                }
+                @if (panel.Panel.EdgeBanding.Right)
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.BorderRight"/>
+                }
                 <MudIconButton
                     Icon="@Icons.Material.Outlined.Delete"
                     Color="Color.Error"
@@ -38,22 +49,11 @@
 @code
 {
     // temporary data
-    private readonly List<CompressedPanel> _panels = new()
-    {
-        new CompressedPanel(100, 100, 20),
-        new CompressedPanel(60, 30, 2),
-        new CompressedPanel(50, 50, 10),
-        new CompressedPanel(50, 10, 20),
-        new CompressedPanel(50, 300, 16),
-        new CompressedPanel(100, 100, 20),
-        new CompressedPanel(60, 30, 2),
-        new CompressedPanel(50, 50, 10),
-        new CompressedPanel(50, 10, 20),
-        new CompressedPanel(50, 300, 16),
-        new CompressedPanel(100, 100, 20),
-        new CompressedPanel(60, 30, 2),
-        new CompressedPanel(50, 50, 10),
-        new CompressedPanel(50, 10, 20),
-        new CompressedPanel(50, 300, 16)
-    };
+    private readonly List<CompressedPanel> _panels = Enumerable.Repeat(
+        new CompressedPanel(
+            new Panel(
+                new Rectangle(100, 100),
+                new EdgeBanding(true, true, false, false)),
+            1),
+        60).ToList();
 }

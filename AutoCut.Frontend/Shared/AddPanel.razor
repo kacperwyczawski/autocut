@@ -2,66 +2,81 @@
     <MudForm>
         <MudStack>
             <MudStack Row="true">
-                <MudNumericField T="int"
-                                 Label="Length"
-                                 Margin="Margin.Dense"
-                                 AdornmentText="mm"
-                                 Adornment="Adornment.End"
-                                 AdornmentColor="Color.Info"
-                                 Variant="Variant.Outlined"/>
-                <MudNumericField T="int"
-                                 Label="Width"
-                                 Margin="Margin.Dense"
-                                 AdornmentText="mm"
-                                 Adornment="Adornment.End"
-                                 AdornmentColor="Color.Info"
-                                 Variant="Variant.Outlined"/>
-                <MudNumericField T="int"
-                                 Label="Quantity"
-                                 Margin="Margin.Dense"
-                                 Variant="Variant.Outlined"/>
+                <MudNumericField
+                    T="int"
+                    Label="Length"
+                    Margin="Margin.Dense"
+                    AdornmentText="mm"
+                    Adornment="Adornment.End"
+                    AdornmentColor="Color.Info"
+                    Variant="Variant.Outlined"/>
+                <MudNumericField
+                    T="int"
+                    Label="Width"
+                    Margin="Margin.Dense"
+                    AdornmentText="mm"
+                    Adornment="Adornment.End"
+                    AdornmentColor="Color.Info"
+                    Variant="Variant.Outlined"/>
+                <MudNumericField
+                    T="int"
+                    Label="Quantity"
+                    Margin="Margin.Dense"
+                    Variant="Variant.Outlined"/>
+                <MudTextField
+                    T="string"
+                    Label="Name"
+                    Margin="Margin.Dense"
+                    Variant="Variant.Outlined"/>
             </MudStack>
             <MudStack Row="true">
-                <MudCheckBox T="bool"
-                             CheckedIcon="@Icons.Material.Filled.BorderTop"
-                             UncheckedIcon="@Icons.Material.Filled.BorderTop"
-                             UnCheckedColor="Color.Default"
-                             Color="Color.Primary"
-                             DisableRipple="true"
-                             Dense="true"/>
-                <MudCheckBox T="bool"
-                             CheckedIcon="@Icons.Material.Filled.BorderRight"
-                             UncheckedIcon="@Icons.Material.Filled.BorderRight"
-                             UnCheckedColor="Color.Default"
-                             Color="Color.Primary"
-                             DisableRipple="true"
-                             Dense="true"/>
-                <MudCheckBox T="bool"
-                             CheckedIcon="@Icons.Material.Filled.BorderBottom"
-                             UncheckedIcon="@Icons.Material.Filled.BorderBottom"
-                             UnCheckedColor="Color.Default"
-                             Color="Color.Primary"
-                             DisableRipple="true"
-                             Dense="true"/>
-                <MudCheckBox T="bool"
-                             CheckedIcon="@Icons.Material.Filled.BorderLeft"
-                             UncheckedIcon="@Icons.Material.Filled.BorderLeft"
-                             UnCheckedColor="Color.Default"
-                             Color="Color.Primary"
-                             DisableRipple="true"
-                             Dense="true"/>
+                <MudCheckBox
+                    T="bool"
+                    CheckedIcon="@Icons.Material.Filled.BorderTop"
+                    UncheckedIcon="@Icons.Material.Filled.BorderTop"
+                    UnCheckedColor="Color.Default"
+                    Color="Color.Primary"
+                    DisableRipple="true"
+                    Dense="true"/>
+                <MudCheckBox
+                    T="bool"
+                    CheckedIcon="@Icons.Material.Filled.BorderRight"
+                    UncheckedIcon="@Icons.Material.Filled.BorderRight"
+                    UnCheckedColor="Color.Default"
+                    Color="Color.Primary"
+                    DisableRipple="true"
+                    Dense="true"/>
+                <MudCheckBox
+                    T="bool"
+                    CheckedIcon="@Icons.Material.Filled.BorderBottom"
+                    UncheckedIcon="@Icons.Material.Filled.BorderBottom"
+                    UnCheckedColor="Color.Default"
+                    Color="Color.Primary"
+                    DisableRipple="true"
+                    Dense="true"/>
+                <MudCheckBox
+                    T="bool"
+                    CheckedIcon="@Icons.Material.Filled.BorderLeft"
+                    UncheckedIcon="@Icons.Material.Filled.BorderLeft"
+                    UnCheckedColor="Color.Default"
+                    Color="Color.Primary"
+                    DisableRipple="true"
+                    Dense="true"/>
                 <MudSpacer/>
-                <MudButton Color="Color.Success"
-                           Variant="Variant.Filled"
-                           Size="Size.Small">
+                <MudButton
+                    Color="Color.Success"
+                    Variant="Variant.Filled"
+                    Size="Size.Small">
                     Add
                 </MudButton>
-                <MudButton Color="Color.Warning"
-                           Variant="Variant.Outlined"
-                           Size="Size.Small">
+                <MudButton
+                    Color="Color.Warning"
+                    Variant="Variant.Outlined"
+                    Size="Size.Small">
                     Reset
                 </MudButton>
-            </MudStack></MudStack>
+            </MudStack>
+        </MudStack>
     </MudForm>
 </MudPaper>
 

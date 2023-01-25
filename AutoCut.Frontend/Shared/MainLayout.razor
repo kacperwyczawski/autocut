@@ -7,13 +7,36 @@
 <MudLayout>
     <MudAppBar Elevation="1">
         <MudIconButton
-            Icon="@Icons.Material.Filled.Menu"
+            Icon="@Icons.Material.Filled.Settings"
             Color="Color.Inherit"
             Edge="Edge.Start"
             OnClick="@(_ => DrawerToggle())"/>
         <MudText Typo="Typo.h5" Class="ml-3">
             AutoCut
         </MudText>
+        <MudSpacer/>
+        <MudTooltip Text="Import from .csv">
+            <MudButton StartIcon="@Icons.Material.Filled.FileUpload" Color="Color.Inherit">Import</MudButton>
+        </MudTooltip>
+        <MudMenu AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft" ActivationEvent="MouseEvent.MouseOver">
+            <ActivatorContent>
+                <MudButton StartIcon="@Icons.Material.Filled.FileDownload" Color="Color.Inherit">
+                    Export
+                </MudButton>
+            </ActivatorContent>
+            <ChildContent>
+                <MudMenuItem>Optimized panels</MudMenuItem>
+                <MudMenuItem>Cuts</MudMenuItem>
+            </ChildContent>
+        </MudMenu>
+        <MudTooltip Text="Give a star!">
+            <MudButton
+                StartIcon="@Icons.Custom.Brands.GitHub"
+                Color="Color.Inherit"
+                Href="https://github.com/kacperwyczawski/AutoCut">
+                GitHub
+            </MudButton>
+        </MudTooltip>
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
         @*Settings*@

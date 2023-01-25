@@ -21,3 +21,5 @@ Panel cutting optimization software running on WASM in your browser.
 - HTML 
 - GitHub Actions 
 - GitHub Pages 
+- FluentAssertions
+- xUnit

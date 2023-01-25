@@ -33,7 +33,7 @@ public record EdgeBanding(bool Left, bool Right, bool Top, bool Bottom)
         new EdgeBanding(false, false, false, false);
 }
 
-public record Panel(Rectangle Rectangle, EdgeBanding EdgeBanding)
+public record Panel(Rectangle Rectangle, EdgeBanding EdgeBanding, string Name = "")
 {
     public PositionedPanel ToPositioned(decimal x, decimal y) =>
         new PositionedPanel(Rectangle.ToPositioned(x, y), EdgeBanding);

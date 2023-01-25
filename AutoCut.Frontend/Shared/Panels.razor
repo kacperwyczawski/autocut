@@ -20,8 +20,7 @@
         <MudTd>@panel.Panel.Rectangle.Length</MudTd>
         <MudTd>@panel.Panel.Rectangle.Width</MudTd>
         <MudTd>@panel.Quantity</MudTd>
-        @* TODO: add name to panel record *@
-        <MudTd>Name</MudTd>
+        <MudTd>@panel.Panel.Name</MudTd>
         <MudTd>@GetEdgeBanding(panel.Panel)</MudTd>
     </RowTemplate>
 </MudTable>
@@ -33,16 +32,17 @@
         new CompressedPanel(
             new Panel(
                 new Rectangle(100, 100),
-                new EdgeBanding(true, true, false, false)),
+                new EdgeBanding(true, true, false, false),
+                "Name"),
             1),
         60).ToList();
 
-    static String GetEdgeBanding(Panel panel)
+    static string GetEdgeBanding(Panel panel)
     {
-        var boolToInt = (bool b) => b ? 1 : 0;
-        
-        var alongLength = boolToInt(panel.EdgeBanding.Top) + boolToInt(panel.EdgeBanding.Bottom);
-        var alongWidth = boolToInt(panel.EdgeBanding.Left) + boolToInt(panel.EdgeBanding.Right);
+        int BoolToInt(bool b) => b ? 1 : 0;
+
+        var alongLength = BoolToInt(panel.EdgeBanding.Top) + BoolToInt(panel.EdgeBanding.Bottom);
+        var alongWidth = BoolToInt(panel.EdgeBanding.Left) + BoolToInt(panel.EdgeBanding.Right);
         
         return $"{alongLength}, {alongWidth}";
     }

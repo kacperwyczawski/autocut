@@ -1,7 +1,14 @@
 ﻿@page "/"
 @layout MainLayout
 
-<MudContainer MaxWidth="MaxWidth.Large">
-    <AddPanel/>
-    <Panels/>
-</MudContainer>
+<MudGrid Class="px-4">
+    <MudItem xs="3">
+        <Panels/>
+    </MudItem>
+    <MudItem xs="6">
+        <AddPanel/>
+    </MudItem>
+    <MudItem xs="3">
+        Cuts
+    </MudItem>
+</MudGrid>

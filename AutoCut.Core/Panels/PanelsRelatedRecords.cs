@@ -10,6 +10,21 @@ public record Position(decimal X, decimal Y);
 
 public record PositionedRectangle(Rectangle Rectangle, Position Position);
 
+/// <summary>
+/// Represents the edge banding.
+/// </summary>
+/// <param name="Left">
+/// Along the width of the panel.
+/// </param>
+/// <param name="Right">
+/// Along the width of the panel.
+/// </param>
+/// <param name="Top">
+/// Along the length of the panel.
+/// </param>
+/// <param name="Bottom">
+/// Along the length of the panel.
+/// </param>
 public record EdgeBanding(bool Left, bool Right, bool Top, bool Bottom)
 {
     public static EdgeBanding AllEdges =>

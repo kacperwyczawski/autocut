@@ -1,50 +1,30 @@
 ﻿@using AutoCut.Core.Panels
 
-@* padding on x axis have to be zero *@
-<MudContainer Fixed="true" Class="px-0 my-4 gap-4 d-flex flex-row flex-wrap">
-    @foreach (var panel in _panels)
-    {
-        <MudPaper>
-            <MudStack Row="true" Class="pa-2" AlignItems="AlignItems.Center">
-                <MudText>
-                    <b>@panel.Panel.Rectangle.Length</b>
-                </MudText>
-                <MudText>
-                    ✕
-                </MudText>
-                <MudText>
-                    <b>@panel.Panel.Rectangle.Width</b>
-                </MudText>
-                <MudText>
-                    ✕
-                </MudText>
-                <MudText>
-                    <b>@panel.Quantity</b>
-                </MudText>
-                @if (panel.Panel.EdgeBanding.Top)
-                {
-                    <MudIcon Icon="@Icons.Material.Filled.BorderTop"/>
-                }
-                @if (panel.Panel.EdgeBanding.Bottom)
-                {
-                    <MudIcon Icon="@Icons.Material.Filled.BorderBottom"/>
-                }
-                @if (panel.Panel.EdgeBanding.Left)
-                {
-                    <MudIcon Icon="@Icons.Material.Filled.BorderLeft"/>
-                }
-                @if (panel.Panel.EdgeBanding.Right)
-                {
-                    <MudIcon Icon="@Icons.Material.Filled.BorderRight"/>
-                }
-                <MudIconButton
-                    Icon="@Icons.Material.Outlined.Delete"
-                    Color="Color.Error"
-                    Size="Size.Small"/>
-            </MudStack>
-        </MudPaper>
-    }
-</MudContainer>
+<MudTable Items="_panels">
+    <HeaderContent>
+        <MudTh>Length</MudTh>
+        <MudTh>Width</MudTh>
+        <MudTh>
+            <MudTooltip Text="Quantity">
+                Qty
+            </MudTooltip>
+        </MudTh>
+        <MudTh>Name</MudTh>
+        <MudTh>
+            <MudTooltip Text="along length, along width">
+                Edge banding
+            </MudTooltip>
+        </MudTh>
+    </HeaderContent>
+    <RowTemplate Context="panel">
+        <MudTd>@panel.Panel.Rectangle.Length</MudTd>
+        <MudTd>@panel.Panel.Rectangle.Width</MudTd>
+        <MudTd>@panel.Quantity</MudTd>
+        @* TODO: add name to panel record *@
+        <MudTd>Name</MudTd>
+        <MudTd>@GetEdgeBanding(panel.Panel)</MudTd>
+    </RowTemplate>
+</MudTable>
 
 @code
 {
@@ -56,4 +36,14 @@
                 new EdgeBanding(true, true, false, false)),
             1),
         60).ToList();
+
+    static String GetEdgeBanding(Panel panel)
+    {
+        var boolToInt = (bool b) => b ? 1 : 0;
+        
+        var alongLength = boolToInt(panel.EdgeBanding.Top) + boolToInt(panel.EdgeBanding.Bottom);
+        var alongWidth = boolToInt(panel.EdgeBanding.Left) + boolToInt(panel.EdgeBanding.Right);
+        
+        return $"{alongLength}, {alongWidth}";
+    }
 }

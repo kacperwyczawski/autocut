@@ -1,0 +1,50 @@
+﻿@using AutoCut.Core.Panels
+@using Position = AutoCut.Core.Panels.Position
+
+@foreach (var stockPanel in _optimizedStockPanels)
+{
+    <OptimizedStockPanelVisualization
+        OptimizedStockPanel="stockPanel"/>
+}
+
+@code
+{
+    // temporary data
+    private readonly List<OptimizedStockPanel> _optimizedStockPanels = new()
+    {
+        new OptimizedStockPanel(
+            new StockPanel(
+                new Panel(new Rectangle(2800, 2070),
+                    EdgeBanding.NoEdges,
+                    "Panel 1"),
+                18),
+            new List<PositionedPanel>
+            {
+                new(new PositionedRectangle(
+                    new Rectangle(200, 100),
+                    new Position(0, 0)),
+                    EdgeBanding.NoEdges),
+                new(new PositionedRectangle(
+                    new Rectangle(200, 100),
+                    new Position(210, 0)),
+                    EdgeBanding.NoEdges)
+            }),
+        new OptimizedStockPanel(
+            new StockPanel(
+                new Panel(new Rectangle(2800, 2070),
+                    EdgeBanding.NoEdges,
+                    "Panel 1"),
+                18),
+            new List<PositionedPanel>
+            {
+                new(new PositionedRectangle(
+                    new Rectangle(200, 100),
+                    new Position(0, 0)),
+                    EdgeBanding.NoEdges),
+                new(new PositionedRectangle(
+                    new Rectangle(200, 100),
+                    new Position(210, 0)),
+                    EdgeBanding.NoEdges)
+            })
+    };
+}

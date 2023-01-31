@@ -5,7 +5,6 @@ Panel cutting optimization software running on WASM in your browser.
 
 ## Features:
 - Offline mode
-- Exporting as image
 - Exporting optimized panels or cutting program as .json
 - Importing panels from .csv
 - Edge banding
@@ -14,12 +13,11 @@ Panel cutting optimization software running on WASM in your browser.
 - Dark and light mode 
 
 ## Technologies used in this project:
-- Blazor 
-- WebAssembly 
-- MudBlazor 
+- Blazor WebAssembly
+- MudBlazor
 - C#
-- HTML 
-- GitHub Actions 
-- GitHub Pages 
+- HTML
+- GitHub Actions
+- GitHub Pages
 - FluentAssertions
 - xUnit

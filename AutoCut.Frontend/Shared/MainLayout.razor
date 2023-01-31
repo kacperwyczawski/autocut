@@ -34,12 +34,12 @@
                 StartIcon="@Icons.Custom.Brands.GitHub"
                 Color="Color.Inherit"
                 Href="https://github.com/kacperwyczawski/AutoCut">
-                GitHub
+                Source code
             </MudButton>
         </MudTooltip>
     </MudAppBar>
-    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
-        @*Settings*@
+    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2" Class="pa-4">
+        <Settings/>
     </MudDrawer>
     <MudMainContent>
         <MudStack AlignItems="AlignItems.Center" Class="mt-4">

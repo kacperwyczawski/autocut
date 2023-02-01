@@ -61,3 +61,7 @@
     /*noinspection CssUnresolvedCustomProperty*/
     content: var(--blazor-load-percentage-text, "Loading");
 }
+
+canvas {
+    position: absolute;
+}

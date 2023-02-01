@@ -3,12 +3,15 @@
 @using Blazor.Extensions.Canvas
 
 <MudPaper
-    Class="mt-4 pa-2 d-flex align-content-center justify-center">
-    <BECanvas
-        Width="@((int)(OptimizedStockPanel.StockPanel.Panel.Rectangle.Length / MagicRatio) + 10)"
-        Height="@((int)(OptimizedStockPanel.StockPanel.Panel.Rectangle.Width / MagicRatio) + 10)"
-        @ref="_canvasReference">
-    </BECanvas>
+    Class="mt-4 pa-2 d-flex align-content-center justify-center"
+    Style="overflow: scroll">
+    <div style="@CanvasContainerCss">
+        <BECanvas
+            Width="@((int)(OptimizedStockPanel.StockPanel.Panel.Rectangle.Length / MagicRatio) + 10)"
+            Height="@((int)(OptimizedStockPanel.StockPanel.Panel.Rectangle.Width / MagicRatio) + 10)"
+            @ref="_canvasReference">
+        </BECanvas>
+    </div>
 </MudPaper>
 
 @code
@@ -16,13 +19,19 @@
     [Parameter]
     [EditorRequired]
     public required OptimizedStockPanel OptimizedStockPanel { get; set; }
-    
+
     private int CanvasWidth => (int)(OptimizedStockPanel.StockPanel.Panel.Rectangle.Length / MagicRatio) + 1;
     private int CanvasHeight => (int)(OptimizedStockPanel.StockPanel.Panel.Rectangle.Width / MagicRatio) + 1;
-    
+
+    private string CanvasContainerCss => $"width: {CanvasWidth}px;" +
+                                         $"height: {CanvasHeight}px;" +
+                                         "position: relative;" +
+                                         "overflow-y: hidden;" +
+                                         "overflow-x: scroll;";
+
     private BECanvas? _canvasReference;
-    
-    private const decimal MagicRatio = 3.75m; // standard stock panel width (2800) divided by max width of canvas (~750)
+
+        private const decimal MagicRatio = 3.75m; // standard stock panel width (2800) divided by max width of canvas (~750)
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -31,16 +40,16 @@
 
         const string primaryColor = "#594ae2ff";
         const string tertiaryColor = "#1ec8a5ff";
-        
+
         var context = await _canvasReference.CreateCanvas2DAsync();
-        
-        // draw stock panel
+
+    // draw stock panel
         await context.SetStrokeStyleAsync(primaryColor);
         await context.StrokeRectAsync(0, 0,
             (double)(OptimizedStockPanel.StockPanel.Panel.Rectangle.Length / MagicRatio),
             (double)(OptimizedStockPanel.StockPanel.Panel.Rectangle.Width / MagicRatio));
-        
-        // draw panels
+
+    // draw panels
         await context.SetStrokeStyleAsync(tertiaryColor);
         foreach (var panel in OptimizedStockPanel.Panels)
         {

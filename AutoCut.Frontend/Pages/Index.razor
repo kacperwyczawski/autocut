@@ -1,4 +1,9 @@
-﻿@page "/"
+﻿@using AutoCut.Frontend.Components.Panels
+@using AutoCut.Frontend.Components.AddPanel
+@using AutoCut.Frontend.Components.ActionButtons
+@using AutoCut.Frontend.Components.Visualization
+@using AutoCut.Frontend.Components.Cuts
+@page "/"
 @layout MainLayout
 
 <MudGrid Class="px-4">
@@ -8,7 +13,7 @@
     <MudItem xs="6">
         <AddPanel/>
         <ActionButtons/>
-        <OptimizedStockPanels/>
+        <VisualizationList/>
     </MudItem>
     <MudItem xs="3">
         <Cuts/>

@@ -17,6 +17,7 @@ Panel cutting optimization software running on WASM in your browser.
 - MudBlazor
 - C#
 - HTML
+- CSS
 - GitHub Actions
 - GitHub Pages
 - FluentAssertions

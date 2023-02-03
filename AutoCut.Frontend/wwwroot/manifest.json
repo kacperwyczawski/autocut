@@ -1,21 +1,22 @@
 {
-  "name": "AutoCut.Frontend",
-  "short_name": "AutoCut.Frontend",
+  "name": "AutoCut",
+  "short_name": "AutoCut",
   "start_url": "./",
-  "display": "standalone",
+  "display": "fullscreen",
+  "categories": [
+    "productivity",
+    "tools",
+    "utilities"
+  ],
+  "description": "Panel cutting optimization software running on WASM in your browser",
   "background_color": "#ffffff",
   "theme_color": "#03173d",
   "prefer_related_applications": false,
   "icons": [
     {
-      "src": "icon-512.png",
+      "src": "favicon.png",
       "type": "image/png",
-      "sizes": "512x512"
-    },
-    {
-      "src": "icon-192.png",
-      "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "256x256"
     }
   ]
 }

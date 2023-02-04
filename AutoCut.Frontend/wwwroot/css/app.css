@@ -44,7 +44,7 @@
 }
 
 .loading-progress circle:last-child {
-    stroke: #1b6ec2;
+    stroke:  #594ae2ff; /* MudBlazor primary color */
     /*noinspection CssUnresolvedCustomProperty*/
     stroke-dasharray: calc(3.141 * var(--blazor-load-percentage, 0%) * 0.8), 500%;
     transition: stroke-dasharray 0.05s ease-in-out;
@@ -60,8 +60,10 @@
 .loading-progress-text:after {
     /*noinspection CssUnresolvedCustomProperty*/
     content: var(--blazor-load-percentage-text, "Loading");
+    font-family: sans-serif;
 }
 
+/* for visualization */
 canvas {
     position: absolute;
 }

@@ -1,6 +1,8 @@
 ﻿@using AutoCut.Core.Panels
+@inherits FluxorComponent
+@inject IState<PanelsState> PanelsState
 
-<MudTable Items="_panels">
+<MudTable Items="@PanelsState.Value.Panels">
     <HeaderContent>
         <MudTh>Length</MudTh>
         <MudTh>Width</MudTh>
@@ -27,16 +29,6 @@
 
 @code
 {
-    // temporary data
-    private readonly List<CompressedPanel> _panels = Enumerable.Repeat(
-        new CompressedPanel(
-            new Panel(
-                new Rectangle(100, 100),
-                new EdgeBanding(true, true, false, false),
-                "Name"),
-            1),
-        20).ToList();
-
     static string GetEdgeBanding(Panel panel)
     {
         int BoolToInt(bool b) => b ? 1 : 0;

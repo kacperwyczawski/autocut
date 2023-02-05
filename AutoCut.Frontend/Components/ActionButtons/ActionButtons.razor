@@ -1,4 +1,6 @@
-﻿<MudPaper Class="pa-4 mt-4">
+﻿@inject IDispatcher Dispatcher
+
+<MudPaper Class="pa-4 mt-4">
     <MudButton
         Variant="Variant.Filled"
         Color="Color.Primary">
@@ -6,7 +8,8 @@
     </MudButton>
     <MudButton
         Variant="Variant.Filled"
-        Color="Color.Error">
+        Color="Color.Error"
+        OnClick="@(() => Dispatcher.Dispatch(new PanelResetAction()))">
         Reset all
     </MudButton>
 </MudPaper>

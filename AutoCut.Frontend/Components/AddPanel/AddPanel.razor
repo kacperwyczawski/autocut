@@ -1,33 +1,36 @@
-﻿<MudPaper Class="pa-4">
+﻿@using AutoCut.Core.Panels
+@inject IDispatcher Dispatcher
+
+<MudPaper Class="pa-4">
     <MudForm>
         <MudContainer Fixed="true">
             <MudStack Row="true">
                 <MudNumericField
-                    T="int"
                     Label="Length"
                     Margin="Margin.Dense"
                     AdornmentText="mm"
                     Adornment="Adornment.End"
                     AdornmentColor="Color.Info"
-                    Variant="Variant.Outlined"/>
+                    Variant="Variant.Outlined"
+                    @bind-Value="_length"/>
                 <MudNumericField
-                    T="int"
                     Label="Width"
                     Margin="Margin.Dense"
                     AdornmentText="mm"
                     Adornment="Adornment.End"
                     AdornmentColor="Color.Info"
-                    Variant="Variant.Outlined"/>
+                    Variant="Variant.Outlined"
+                    @bind-Value="_width"/>
                 <MudNumericField
-                    T="int"
                     Label="Quantity"
                     Margin="Margin.Dense"
-                    Variant="Variant.Outlined"/>
+                    Variant="Variant.Outlined"
+                    @bind-Value="_quantity"/>
                 <MudTextField
-                    T="string"
                     Label="Name"
                     Margin="Margin.Dense"
-                    Variant="Variant.Outlined"/>
+                    Variant="Variant.Outlined"
+                    @bind-Value="_name"/>
             </MudStack>
             <MudStack Row="true">
                 <MudCheckBox
@@ -37,7 +40,8 @@
                     UnCheckedColor="Color.Default"
                     Color="Color.Success"
                     DisableRipple="true"
-                    Dense="true"/>
+                    Dense="true"
+                    @bind-Checked="_top"/>
                 <MudCheckBox
                     T="bool"
                     CheckedIcon="@Icons.Material.Filled.BorderBottom"
@@ -45,7 +49,8 @@
                     UnCheckedColor="Color.Default"
                     Color="Color.Success"
                     DisableRipple="true"
-                    Dense="true"/>
+                    Dense="true"
+                    @bind-Checked="_bottom"/>
                 <MudCheckBox
                     T="bool"
                     CheckedIcon="@Icons.Material.Filled.BorderRight"
@@ -53,7 +58,8 @@
                     UnCheckedColor="Color.Default"
                     Color="Color.Success"
                     DisableRipple="true"
-                    Dense="true"/>
+                    Dense="true"
+                    @bind-Checked="_right"/>
                 <MudCheckBox
                     T="bool"
                     CheckedIcon="@Icons.Material.Filled.BorderLeft"
@@ -61,18 +67,21 @@
                     UnCheckedColor="Color.Default"
                     Color="Color.Success"
                     DisableRipple="true"
-                    Dense="true"/>
+                    Dense="true"
+                    @bind-Checked="_left"/>
                 <MudSpacer/>
                 <MudButton
                     Color="Color.Success"
                     Variant="Variant.Filled"
-                    Size="Size.Small">
+                    Size="Size.Small"
+                    OnClick="@Add">
                     Add
                 </MudButton>
                 <MudButton
                     Color="Color.Warning"
                     Variant="Variant.Outlined"
-                    Size="Size.Small">
+                    Size="Size.Small"
+                    OnClick="@Reset">
                     Reset
                 </MudButton>
             </MudStack>
@@ -82,5 +91,37 @@
 
 @code
 {
+    int _length;
+    int _width;
+    int _quantity = 1;
+    string _name = "name";
+    bool _top;
+    bool _bottom;
+    bool _right;
+    bool _left;
 
+    private void Reset()
+    {
+        _length = 0;
+        _width = 0;
+        _quantity = 1;
+        _name = "name";
+        _top = false;
+        _bottom = false;
+        _right = false;
+        _left = false;
+    }
+
+    private void Add()
+    {
+        var panel = new CompressedPanel(
+            new Panel(
+                new Rectangle(_length, _width),
+                new EdgeBanding(_left, _right, _top, _bottom),
+                _name),
+            _quantity);
+
+        // TODO: Add validation
+        Dispatcher.Dispatch(new PanelAddAction(panel));
+    }
 }

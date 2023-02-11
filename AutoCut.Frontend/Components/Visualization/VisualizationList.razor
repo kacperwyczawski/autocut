@@ -1,58 +1,10 @@
 ﻿@using AutoCut.Core.Panels
 @using Position = AutoCut.Core.Panels.Position
+@inherits FluxorComponent
+@inject IState<OptimizationState> OptimizationState
 
-@foreach (var stockPanel in _optimizedStockPanels)
+@foreach (var stockPanel in OptimizationState.Value.OptimizedStockPanels)
 {
     <Visualization
         OptimizedStockPanel="stockPanel"/>
-}
-
-@code
-{
-    // temporary data
-    private readonly List<OptimizedStockPanel> _optimizedStockPanels = new()
-    {
-        new OptimizedStockPanel(
-            new StockPanel(
-                new Panel(new Rectangle(2800, 2070),
-                    EdgeBanding.NoEdges,
-                    "Panel 1"),
-                18),
-            new List<PositionedPanel>
-            {
-                new(new PositionedRectangle(
-                    new Rectangle(600, 600),
-                    new Position(0, 0)),
-                    EdgeBanding.NoEdges),
-                new(new PositionedRectangle(
-                    new Rectangle(200, 100),
-                    new Position(610, 0)),
-                    EdgeBanding.NoEdges),
-                new(new PositionedRectangle(
-                    new Rectangle(200, 100),
-                    new Position(820, 0)),
-                    EdgeBanding.NoEdges)
-            }),
-        new OptimizedStockPanel(
-            new StockPanel(
-                new Panel(new Rectangle(2800, 2070),
-                    EdgeBanding.NoEdges,
-                    "Panel 1"),
-                18),
-            new List<PositionedPanel>
-            {
-                new(new PositionedRectangle(
-                    new Rectangle(200, 400),
-                    new Position(0, 0)),
-                    EdgeBanding.NoEdges),
-                new(new PositionedRectangle(
-                    new Rectangle(200, 400),
-                    new Position(210, 0)),
-                    EdgeBanding.NoEdges),
-                new(new PositionedRectangle(
-                    new Rectangle(200, 400),
-                    new Position(420, 0)),
-                    EdgeBanding.NoEdges)
-            })
-    };
 }

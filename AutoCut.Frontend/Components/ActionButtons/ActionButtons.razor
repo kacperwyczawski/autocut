@@ -1,15 +1,31 @@
-﻿@inject IDispatcher Dispatcher
+﻿@using AutoCut.Core.Optimization
+@inject IDispatcher Dispatcher
+@inject IState<PanelsState> PanelsState
 
 <MudPaper Class="pa-4 mt-4">
     <MudButton
         Variant="Variant.Filled"
-        Color="Color.Primary">
+        Color="Color.Primary"
+        OnClick="@OnOptimize">
         Optimize
     </MudButton>
     <MudButton
         Variant="Variant.Filled"
         Color="Color.Error"
-        OnClick="@(() => Dispatcher.Dispatch(new PanelResetAction()))">
+        OnClick="@OnReset">
         Reset all
     </MudButton>
 </MudPaper>
+
+@code
+{
+    private void OnOptimize()
+    {
+        Dispatcher.Dispatch(new OptimizationOptimizeAction());
+    }
+    
+    private void OnReset()
+    {
+        Dispatcher.Dispatch(new PanelResetAction());
+    }
+}

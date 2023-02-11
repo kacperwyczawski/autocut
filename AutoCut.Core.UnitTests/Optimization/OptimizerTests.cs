@@ -17,7 +17,7 @@ public class OptimizerTests
         var actual = optimizer.Optimize(stockPanel, new List<Panel>());
 
         // assert
-        actual.StockPanels.Should().BeEmpty();
+        actual.OptimizedStockPanels.Should().BeEmpty();
     }
 
     [Fact]
@@ -35,14 +35,14 @@ public class OptimizerTests
         var actual = optimizer.Optimize(stockPanel, panels);
 
         // assert
-        actual.StockPanels.Single().Panels
+        actual.OptimizedStockPanels.Single().Panels
             .Should().ContainSingle("",
                 new PositionedPanel(
                     new PositionedRectangle(
                         new Rectangle(100, 100),
                         new Position(0, 0)),
                     EdgeBanding.NoEdges));
-        actual.StockPanels
+        actual.OptimizedStockPanels
             .Should().ContainSingle();
     }
 
@@ -61,7 +61,7 @@ public class OptimizerTests
 
         var actual = optimizer.Optimize(stockPanel, panels);
 
-        actual.StockPanels.Single().Panels
+        actual.OptimizedStockPanels.Single().Panels
             .Should().BeEquivalentTo(
                 new List<PositionedPanel>
                 {
@@ -87,7 +87,7 @@ public class OptimizerTests
         var actual = optimizer.Optimize(stockPanel, panels);
 
         actual.Settings.BladeThickness.Should().Be(3);
-        actual.StockPanels.Single().Panels
+        actual.OptimizedStockPanels.Single().Panels
             .Should().BeEquivalentTo(
                 new List<PositionedPanel>
                 {
@@ -112,7 +112,7 @@ public class OptimizerTests
 
         var actual = optimizer.Optimize(stockPanel, panels);
 
-        actual.StockPanels.Single().Panels
+        actual.OptimizedStockPanels.Single().Panels
             .Should().BeEquivalentTo(
                 new List<PositionedPanel>
                 {
@@ -135,7 +135,7 @@ public class OptimizerTests
 
         var actual = optimizer.Optimize(stockPanel, panels);
 
-        actual.StockPanels.Single().Panels
+        actual.OptimizedStockPanels.Single().Panels
             .Should().BeEquivalentTo(
                 new List<PositionedPanel>
                 {
@@ -160,7 +160,7 @@ public class OptimizerTests
 
         var actual = optimizer.Optimize(stockPanel, panels);
 
-        actual.StockPanels.Single().Panels
+        actual.OptimizedStockPanels.Single().Panels
             .Should().BeSubsetOf(new List<PositionedPanel>
             {
                 new(new PositionedRectangle(new Rectangle(100, 100), new Position(0, 0)), EdgeBanding.NoEdges),
@@ -188,9 +188,9 @@ public class OptimizerTests
 
         var actual = optimizer.Optimize(stockPanel, panels);
 
-        actual.StockPanels
+        actual.OptimizedStockPanels
             .Should().HaveCount(3);
-        foreach (var optimizedStockPanel in actual.StockPanels)
+        foreach (var optimizedStockPanel in actual.OptimizedStockPanels)
         {
             optimizedStockPanel.Panels
                 .Should().ContainSingle("",

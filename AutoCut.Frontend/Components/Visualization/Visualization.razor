@@ -40,6 +40,9 @@
         const string tertiaryColor = "#1ec8a5ff";
 
         var context = await _canvasReference.CreateCanvas2DAsync();
+        
+    // clear canvas
+        await context.ClearRectAsync(0, 0, CanvasWidth, CanvasHeight);
 
     // draw stock panel
         await context.SetStrokeStyleAsync(primaryColor);

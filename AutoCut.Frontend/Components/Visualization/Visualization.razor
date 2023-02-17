@@ -37,7 +37,9 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         const string primaryColor = "#594ae2ff";
+        const string primaryColorLight = "#e9e9fc";
         const string tertiaryColor = "#1ec8a5ff";
+        const string tertiaryColorLight = "#e9fcf8";
 
         var context = await _canvasReference.CreateCanvas2DAsync();
         
@@ -46,19 +48,31 @@
 
     // draw stock panel
         await context.SetStrokeStyleAsync(primaryColor);
+        await context.SetFillStyleAsync(primaryColorLight);
+
+        await context.FillRectAsync(0, 0,
+            (double)(OptimizedStockPanel.StockPanel.Panel.Rectangle.Length / MagicRatio),
+            (double)(OptimizedStockPanel.StockPanel.Panel.Rectangle.Width / MagicRatio));
         await context.StrokeRectAsync(0, 0,
             (double)(OptimizedStockPanel.StockPanel.Panel.Rectangle.Length / MagicRatio),
             (double)(OptimizedStockPanel.StockPanel.Panel.Rectangle.Width / MagicRatio));
 
     // draw panels
         await context.SetStrokeStyleAsync(tertiaryColor);
+        await context.SetFillStyleAsync(tertiaryColorLight);
         foreach (var panel in OptimizedStockPanel.Panels)
         {
+            await context.FillRectAsync(
+                (double)(panel.PositionedRectangle.Position.X / MagicRatio),
+                (double)(panel.PositionedRectangle.Position.Y / MagicRatio),
+                (double)(panel.PositionedRectangle.Rectangle.Length / MagicRatio),
+                (double)(panel.PositionedRectangle.Rectangle.Width / MagicRatio));
             await context.StrokeRectAsync(
                 (double)(panel.PositionedRectangle.Position.X / MagicRatio),
                 (double)(panel.PositionedRectangle.Position.Y / MagicRatio),
                 (double)(panel.PositionedRectangle.Rectangle.Length / MagicRatio),
                 (double)(panel.PositionedRectangle.Rectangle.Width / MagicRatio));
+                
         }
         
     // log

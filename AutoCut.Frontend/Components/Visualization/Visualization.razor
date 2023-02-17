@@ -1,6 +1,7 @@
 ﻿@using AutoCut.Core.Panels
 @using Blazor.Extensions
 @using Blazor.Extensions.Canvas
+@inject ILogger<Visualization> Logger
 
 <MudPaper
     Class="mt-4 pa-2 d-flex align-content-center justify-center"
@@ -35,9 +36,6 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (!firstRender)
-            return;
-
         const string primaryColor = "#594ae2ff";
         const string tertiaryColor = "#1ec8a5ff";
 

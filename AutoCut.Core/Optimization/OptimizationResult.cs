@@ -2,4 +2,4 @@
 
 namespace AutoCut.Core.Optimization;
 
-public record OptimizationResult(OptimizerSettings Settings, List<OptimizedStockPanel> OptimizedStockPanels);
+public record OptimizationResult(OptimizerOptions Options, List<OptimizedStockPanel> OptimizedStockPanels);

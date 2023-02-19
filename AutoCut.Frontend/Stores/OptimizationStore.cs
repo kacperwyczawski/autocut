@@ -58,7 +58,7 @@ public class OptimizationEffects
         
         var optimizer = new Optimizer();
         var panels = _panelsState.Value.Panels;
-        var result = optimizer.Optimize(StockPanel.Default, panels);
+        var result = optimizer.Optimize(StockPanel.Default, panels, new OptimizerOptions());
         dispatcher.Dispatch(new OptimizationSetOptimizedPanelsAction(result.OptimizedStockPanels));
     }
 }

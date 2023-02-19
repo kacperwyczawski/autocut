@@ -1,6 +1,6 @@
 ﻿namespace AutoCut.Core.Optimization;
 
-public class OptimizerSettings
+public class OptimizerOptions
 {
     /// <summary>
     /// Blade thickness in mm

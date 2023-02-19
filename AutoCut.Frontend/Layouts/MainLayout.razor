@@ -1,7 +1,7 @@
 ﻿@using AutoCut.Frontend.Components.Settings
 @inherits LayoutComponentBase
 
-<MudThemeProvider/>
+<MudThemeProvider @bind-IsDarkMode="_darkMode"/>
 <MudDialogProvider/>
 <MudSnackbarProvider/>
 
@@ -12,6 +12,11 @@
             Color="Color.Inherit"
             Edge="Edge.Start"
             OnClick="@(_ => DrawerToggle())"/>
+        <MudCheckBox
+            @bind-Checked="_darkMode"
+            UncheckedIcon="@Icons.Material.Filled.DarkMode"
+            CheckedIcon="@Icons.Material.Filled.LightMode"
+            Color="Color.Inherit"/>
         <MudText Typo="Typo.h5" Class="ml-3">
             AutoCut
         </MudText>
@@ -53,4 +58,6 @@
 {
     bool _drawerOpen = true;
     void DrawerToggle() => _drawerOpen = !_drawerOpen;
+
+    bool _darkMode;
 }

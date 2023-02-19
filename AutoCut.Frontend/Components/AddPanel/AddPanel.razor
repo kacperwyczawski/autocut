@@ -1,4 +1,5 @@
 ﻿@using AutoCut.Core.Panels
+@using AutoCut.Frontend.Stores.Panels.Actions
 @inject IDispatcher Dispatcher
 
 <MudPaper Class="pa-4">
@@ -122,6 +123,6 @@
             _quantity);
 
         // TODO: Add validation
-        Dispatcher.Dispatch(new PanelAddAction(panel));
+        Dispatcher.Dispatch(new AddAction(panel));
     }
 }

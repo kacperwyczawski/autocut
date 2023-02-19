@@ -1,4 +1,7 @@
 ﻿@using AutoCut.Core.Optimization
+@using AutoCut.Frontend.Stores.Optimization.Actions
+@using AutoCut.Frontend.Stores.Panels
+@using AutoCut.Frontend.Stores.Panels.Actions
 @inject IDispatcher Dispatcher
 @inject IState<PanelsState> PanelsState
 
@@ -21,11 +24,11 @@
 {
     private void OnOptimize()
     {
-        Dispatcher.Dispatch(new OptimizationOptimizeAction());
+        Dispatcher.Dispatch(new OptimizeAction());
     }
     
     private void OnReset()
     {
-        Dispatcher.Dispatch(new PanelResetAction());
+        Dispatcher.Dispatch(new ResetAction());
     }
 }

@@ -8,36 +8,36 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Blazor.Extensions.Canvas" Version="1.1.1"/>
-        <PackageReference Include="Fluxor.Blazor.Web" Version="5.7.0"/>
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.0"/>
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.0" PrivateAssets="all"/>
-        <PackageReference Include="MudBlazor" Version="6.1.7"/>
-        <PackageReference Include="PublishSPAforGitHubPages.Build" Version="2.0.2"/>
+        <PackageReference Include="Blazor.Extensions.Canvas" Version="1.1.1" />
+        <PackageReference Include="Fluxor.Blazor.Web" Version="5.7.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.0" PrivateAssets="all" />
+        <PackageReference Include="MudBlazor" Version="6.1.7" />
+        <PackageReference Include="PublishSPAforGitHubPages.Build" Version="2.0.2" />
     </ItemGroup>
     <ItemGroup Condition="$(Configuration)=='Debug'">
-        <PackageReference Include="Fluxor.Blazor.Web.ReduxDevTools" Version="5.7.0"/>
+        <PackageReference Include="Fluxor.Blazor.Web.ReduxDevTools" Version="5.7.0" />
     </ItemGroup>
 
     <ItemGroup>
-        <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js"/>
+        <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
     </ItemGroup>
 
     <ItemGroup>
-        <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\FONT-LICENSE"/>
-        <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\css\open-iconic-bootstrap.min.css"/>
-        <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\fonts\open-iconic.eot"/>
-        <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\fonts\open-iconic.otf"/>
-        <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\fonts\open-iconic.svg"/>
-        <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\fonts\open-iconic.ttf"/>
-        <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\fonts\open-iconic.woff"/>
-        <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\ICON-LICENSE"/>
-        <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\README.md"/>
-        <_ContentIncludedByDefault Remove="wwwroot\sample-data\weather.json"/>
+        <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\FONT-LICENSE" />
+        <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\css\open-iconic-bootstrap.min.css" />
+        <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\fonts\open-iconic.eot" />
+        <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\fonts\open-iconic.otf" />
+        <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\fonts\open-iconic.svg" />
+        <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\fonts\open-iconic.ttf" />
+        <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\fonts\open-iconic.woff" />
+        <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\ICON-LICENSE" />
+        <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\README.md" />
+        <_ContentIncludedByDefault Remove="wwwroot\sample-data\weather.json" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\AutoCut.Core\AutoCut.Core.csproj"/>
+        <ProjectReference Include="..\AutoCut.Core\AutoCut.Core.csproj" />
     </ItemGroup>
 
 </Project>

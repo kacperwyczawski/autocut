@@ -5,15 +5,15 @@ public class OptimizerOptions
     /// <summary>
     /// Blade thickness in mm
     /// </summary>
-    public int BladeThickness { get; set; }
+    public decimal BladeThickness { get; set; }
     
     /// <summary>
     /// Edge banding thickness in mm
     /// </summary>
-    public int EdgeBandingThickness { get; set; }
+    public decimal EdgeBandingThickness { get; set; }
     
     /// <summary>
     /// Stock panel edge cutting thickness in mm
     /// </summary>
-    public int StockPanelEdgeCuttingThickness { get; set; }
+    public decimal StockPanelEdgeCuttingThickness { get; set; }
 }

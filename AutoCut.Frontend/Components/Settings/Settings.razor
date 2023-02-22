@@ -1,4 +1,10 @@
-﻿<MudStack Justify="Justify.SpaceBetween" Style="height: 100%;">
+﻿@using AutoCut.Core.Optimization
+@using AutoCut.Frontend.Stores.Settings
+@using AutoCut.Frontend.Stores.Settings.Actions
+@inject IDispatcher Dispatcher
+@inject IState<SettingsState> SettingsState
+@inherits FluxorComponent
+<MudStack Justify="Justify.SpaceBetween" Style="height: 100%;">
     <p>
         Blade thickness / Kerf
         <MudNumericField
@@ -7,7 +13,8 @@
             AdornmentText="mm"
             Adornment="Adornment.End"
             AdornmentColor="Color.Info"
-            Class="mb-8"/>
+            Class="mb-8"
+            @bind-Value="OptimizerOptions.BladeThickness"/>
 
         Stock panel size
         <MudNumericField
@@ -40,7 +47,8 @@
             AdornmentText="mm"
             Adornment="Adornment.End"
             AdornmentColor="Color.Info"
-            Class="mb-8"/>
+            Class="mb-8"
+            @bind-Value="OptimizerOptions.StockPanelEdgeCuttingThickness"/>
 
         Edge banding thickness
         <MudNumericField
@@ -49,10 +57,38 @@
             AdornmentText="mm"
             Adornment="Adornment.End"
             AdornmentColor="Color.Info"
-            Class="mb-8"/>
+            Class="mb-8"
+            @bind-Value="OptimizerOptions.EdgeBandingThickness"/>
+        
+        <MudButton
+            Variant="Variant.Outlined"
+            Color="Color.Success"
+            StartIcon="@Icons.Material.Filled.Save"
+            Class="mb-8"
+            OnClick="UpdateBladeThickness">
+            Save
+        </MudButton>
     </p>
 
     <p>
         Copyright &copy; 2023 Kacper Wyczawski
     </p>
 </MudStack>
+
+@code
+{
+    private OptimizerOptions OptimizerOptions { get; set; } = new OptimizerOptions();
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            OptimizerOptions = SettingsState.Value.OptimizerOptions;
+        }
+    }
+
+    private void UpdateBladeThickness()
+    {
+        Dispatcher.Dispatch(new UpdateOptimizerOptionsAction(OptimizerOptions));
+    }
+}

@@ -1,0 +1,90 @@
+﻿@inject IDispatcher Dispatcher
+@inject IState<SettingsState> SettingsState
+@using AutoCut.Frontend.Stores.Settings
+@using AutoCut.Frontend.Stores.Settings.Actions
+@using Microsoft.AspNetCore.Components
+@using AutoCut.Core.Optimization
+@inherits FluxorComponent
+
+<div class="settings-upper-panel">
+    Blade thickness / Kerf
+    <MudNumericField
+        Margin="Margin.Dense"
+        T="decimal"
+        AdornmentText="mm"
+        Adornment="Adornment.End"
+        AdornmentColor="Color.Info"
+        Class="mb-8"
+        @bind-Value="OptimizerOptions.BladeThickness"/>
+
+    Stock panel size
+    <MudNumericField
+        Margin="Margin.Dense"
+        T="decimal"
+        Label="Length"
+        AdornmentText="mm"
+        Adornment="Adornment.End"
+        AdornmentColor="Color.Info"/>
+    <MudNumericField
+        Margin="Margin.Dense"
+        T="decimal"
+        Label="Width"
+        AdornmentText="mm"
+        Adornment="Adornment.End"
+        AdornmentColor="Color.Info"/>
+    <MudNumericField
+        Margin="Margin.Dense"
+        T="decimal"
+        Label="Thickness"
+        AdornmentText="mm"
+        Adornment="Adornment.End"
+        AdornmentColor="Color.Info"
+        Class="mb-8"/>
+
+    Stock panel edge cutting thickness
+    <MudNumericField
+        Margin="Margin.Dense"
+        T="decimal"
+        AdornmentText="mm"
+        Adornment="Adornment.End"
+        AdornmentColor="Color.Info"
+        Class="mb-8"
+        @bind-Value="OptimizerOptions.StockPanelEdgeCuttingThickness"/>
+
+    Edge banding thickness
+    <MudNumericField
+        Margin="Margin.Dense"
+        T="decimal"
+        AdornmentText="mm"
+        Adornment="Adornment.End"
+        AdornmentColor="Color.Info"
+        Class="mb-8"
+        @bind-Value="OptimizerOptions.EdgeBandingThickness"/>
+
+    <MudButton
+        Variant="Variant.Outlined"
+        Color="Color.Success"
+        StartIcon="@Icons.Material.Filled.Save"
+        Class="mb-8"
+        OnClick="UpdateBladeThickness">
+        Save
+    </MudButton>
+</div>
+
+@code
+{
+    private OptimizerOptions OptimizerOptions { get; set; } = new();
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            OptimizerOptions = SettingsState.Value.OptimizerOptions;
+        }
+    }
+
+    private void UpdateBladeThickness()
+    {
+        Dispatcher.Dispatch(new UpdateOptimizerOptionsAction(OptimizerOptions));
+    }
+}

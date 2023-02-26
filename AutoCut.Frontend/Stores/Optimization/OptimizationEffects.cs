@@ -16,13 +16,14 @@ public class OptimizationEffects
     }
 
     [EffectMethod(typeof(OptimizeAction))]
-    public async Task OptimizeAction(IDispatcher dispatcher)
+    public Task OptimizeAction(IDispatcher dispatcher)
     {
         // TODO: make optimizer async
-        
+
         var optimizer = new Optimizer();
         var panels = _panelsState.Value.Panels;
         var result = optimizer.Optimize(StockPanel.Default, panels, new OptimizerOptions());
         dispatcher.Dispatch(new SetOptimizedPanelsAction(result.OptimizedStockPanels));
+        return Task.CompletedTask;
     }
 }

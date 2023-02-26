@@ -9,7 +9,7 @@ public class SettingsFeature : Feature<SettingsState>
 
     protected override SettingsState GetInitialState()
     {
-        var options = new OptimizerOptions()
+        var options = new OptimizerOptions
         {
             BladeThickness = 3
         };

@@ -4,7 +4,6 @@
 @inherits LayoutComponentBase
 @implements IDisposable
 @inject IState<SettingsState> SettingsState
-@inject ILogger<MainLayout> Logger
 
 <MudThemeProvider IsDarkMode="@SettingsState.Value.IsDarkMode"/>
 <MudDialogProvider/>

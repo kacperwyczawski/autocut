@@ -10,7 +10,8 @@ Panel cutting optimization software running on WASM in your browser.
 - Edge banding
 - Stock panel edge cutting
 - English and Polish language
-- Dark and light mode 
+- Dark and light mode
+- Persisting state across sessions
 
 ## Technologies used in this project:
 - Blazor WebAssembly

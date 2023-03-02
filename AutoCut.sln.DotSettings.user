@@ -14,4 +14,8 @@
     &lt;TestId&gt;xUnit::69DF46F1-6E03-4187-A67E-9662438C9722::net7.0::AutoCut.Core.UnitTests.Optimization.OptimizerTests.SinglePanel&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;xUnit::69DF46F1-6E03-4187-A67E-9662438C9722::net7.0::AutoCut.Core.UnitTests.Optimization.OptimizerTests&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
-&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
+&lt;/SessionState&gt;</s:String>
+	<s:Boolean x:Key="/Default/ResxEditorPersonal/CheckedGroups/=AutoCut_002EFrontend_002FLocalization_002FGlobalResources/@EntryIndexedValue">True</s:Boolean>
+	
+	<s:Boolean x:Key="/Default/ResxEditorPersonal/Initialized/@EntryValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/ResxEditorPersonal/ShowOnlyErrors/@EntryValue">False</s:Boolean></wpf:ResourceDictionary>

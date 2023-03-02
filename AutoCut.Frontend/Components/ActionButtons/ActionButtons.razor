@@ -1,16 +1,17 @@
-﻿@using AutoCut.Core.Optimization
-@using AutoCut.Frontend.Stores.Optimization.Actions
-@using AutoCut.Frontend.Stores.Panels
+﻿@using AutoCut.Frontend.Stores.Panels
 @using AutoCut.Frontend.Stores.Panels.Actions
+@using AutoCut.Frontend.Localization
+@using AutoCut.Frontend.Stores.Optimization.Actions
 @inject IDispatcher Dispatcher
 @inject IState<PanelsState> PanelsState
+@inject IStringLocalizer<GlobalResources> Localizer
 
 <MudPaper Class="pa-4 mt-4">
     <MudButton
         Variant="Variant.Filled"
         Color="Color.Primary"
         OnClick="@OnOptimize">
-        Optimize
+        @Localizer["Optimize"]
     </MudButton>
     <MudButton
         Variant="Variant.Filled"
@@ -26,7 +27,7 @@
     {
         Dispatcher.Dispatch(new OptimizeAction());
     }
-    
+
     private void OnReset()
     {
         Dispatcher.Dispatch(new ResetAction());

@@ -1,7 +1,7 @@
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using AutoCut.Frontend;
 using Fluxor;
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -18,5 +18,6 @@ builder.Services.AddFluxor(options =>
     options.UseReduxDevTools();
 #endif
 });
+builder.Services.AddLocalization();
 
 await builder.Build().RunAsync();

@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
+        <BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
     </PropertyGroup>
 
     <ItemGroup>
@@ -30,15 +31,30 @@
         <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\fonts\open-iconic.eot" />
         <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\fonts\open-iconic.otf" />
         <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\fonts\open-iconic.svg" />
-        <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\fonts\open-iconic.ttf" />
-        <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\fonts\open-iconic.woff" />
-        <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\ICON-LICENSE" />
-        <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\README.md" />
-        <_ContentIncludedByDefault Remove="wwwroot\sample-data\weather.json" />
+        <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\fonts\open-iconic.ttf"/>
+        <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\font\fonts\open-iconic.woff"/>
+        <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\ICON-LICENSE"/>
+        <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\README.md"/>
+        <_ContentIncludedByDefault Remove="wwwroot\sample-data\weather.json"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\AutoCut.Core\AutoCut.Core.csproj" />
+        <ProjectReference Include="..\AutoCut.Core\AutoCut.Core.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Update="Localization\GlobalResources.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>GlobalResources.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Update="Localization\GlobalResources.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>tempname.resx</DependentUpon>
+        </Compile>
     </ItemGroup>
 
 </Project>

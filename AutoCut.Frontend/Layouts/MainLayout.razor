@@ -1,13 +1,15 @@
-﻿@using AutoCut.Frontend.Components.Settings
-@using AutoCut.Frontend.Components.AppBar
+﻿@inherits LayoutComponentBase
 @using AutoCut.Frontend.Stores.Settings
-@inherits LayoutComponentBase
+@using AutoCut.Frontend.Components.CultureUpdater
+@using AutoCut.Frontend.Components.Settings
+@using AutoCut.Frontend.Components.AppBar
 @implements IDisposable
 @inject IState<SettingsState> SettingsState
 
 <MudThemeProvider IsDarkMode="@SettingsState.Value.IsDarkMode"/>
 <MudDialogProvider/>
 <MudSnackbarProvider/>
+<CultureUpdater/>
 
 <MudLayout>
     <AppBar/>

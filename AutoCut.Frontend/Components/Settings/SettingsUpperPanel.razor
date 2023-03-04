@@ -1,5 +1,6 @@
 ﻿@inject IDispatcher Dispatcher
 @inject IState<SettingsState> SettingsState
+@*@inject NavigationManager NavigationManager*@
 @using AutoCut.Frontend.Stores.Settings
 @using AutoCut.Frontend.Stores.Settings.Actions
 @using AutoCut.Core.Optimization
@@ -94,9 +95,16 @@
         }
     }
 
+    // TODO: Change name
     private void UpdateBladeThickness()
     {
         Dispatcher.Dispatch(new UpdateOptimizerOptionsAction(OptimizerOptions));
         Dispatcher.Dispatch(new UpdateCultureAction(Culture));
+    // TODO: Add this (3 lines after CultureInfo..., including itself) after implementing persisting state to local storage
+    // after culture change page has to be reloaded but when state ain't persisted culture change is lost
+    // TODO: Add check if culture is different than current to avoid unnecessary reload
+    //CultureInfo.DefaultThreadCurrentCulture = Culture;
+    //CultureInfo.DefaultThreadCurrentUICulture = Culture;
+    //NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
     }
 }

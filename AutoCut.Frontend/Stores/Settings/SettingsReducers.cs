@@ -10,16 +10,22 @@ public static class SettingsReducers
     {
         return state with { OptimizerOptions = action.OptimizerOptions };
     }
-    
+
     [ReducerMethod(typeof(ToggleDrawerAction))]
     public static SettingsState ToggleDrawerAction(SettingsState state)
     {
         return state with { IsDrawerOpen = !state.IsDrawerOpen };
     }
-    
+
     [ReducerMethod(typeof(ToggleDarkModeAction))]
     public static SettingsState ToggleDarkModeAction(SettingsState state)
     {
         return state with { IsDarkMode = !state.IsDarkMode };
+    }
+
+    [ReducerMethod]
+    public static SettingsState UpdateCultureAction(SettingsState state, UpdateCultureAction action)
+    {
+        return state with { Culture = action.Culture };
     }
 }

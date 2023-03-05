@@ -26,4 +26,7 @@
     <data name="Optimize" xml:space="preserve">
         <value>Optimize</value>
     </data>
+    <data name="ResetPanels" xml:space="preserve">
+        <value>Reset panels</value>
+    </data>
 </root>

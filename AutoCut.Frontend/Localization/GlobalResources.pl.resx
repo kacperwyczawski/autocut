@@ -18,4 +18,7 @@
     <data name="Optimize" xml:space="preserve">
         <value>Optymalizuj</value>
     </data>
+    <data name="ResetPanels" xml:space="preserve">
+        <value>Resetuj formatki</value>
+    </data>
 </root>

@@ -67,5 +67,14 @@ namespace AutoCut.Frontend.Localization {
                 return ResourceManager.GetString("Optimize", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset panels.
+        /// </summary>
+        internal static string ResetPanels {
+            get {
+                return ResourceManager.GetString("ResetPanels", resourceCulture);
+            }
+        }
     }
 }

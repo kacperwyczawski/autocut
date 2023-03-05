@@ -4,7 +4,6 @@
 @using AutoCut.Frontend.Stores.Settings
 @using AutoCut.Frontend.Stores.Settings.Actions
 @using AutoCut.Core.Optimization
-@using System.Globalization
 @inherits FluxorComponent
 
 <div class="settings-upper-panel">
@@ -76,8 +75,6 @@
 {
     private OptimizerOptions OptimizerOptions { get; set; } = new();
 
-    private CultureInfo Culture { get; set; } = new("en-US");
-
     protected override void OnAfterRender(bool firstRender)
     {
         if (firstRender)
@@ -90,6 +87,5 @@
     private void UpdateBladeThickness()
     {
         Dispatcher.Dispatch(new UpdateOptimizerOptionsAction(OptimizerOptions));
-        Dispatcher.Dispatch(new UpdateCultureAction(Culture));
     }
 }

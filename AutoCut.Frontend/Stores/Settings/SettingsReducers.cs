@@ -22,10 +22,4 @@ public static class SettingsReducers
     {
         return state with { IsDarkMode = !state.IsDarkMode };
     }
-
-    [ReducerMethod]
-    public static SettingsState UpdateCultureAction(SettingsState state, UpdateCultureAction action)
-    {
-        return state with { Culture = action.Culture };
-    }
 }

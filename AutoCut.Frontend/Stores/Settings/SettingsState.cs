@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using AutoCut.Core.Optimization;
+﻿using AutoCut.Core.Optimization;
 
 namespace AutoCut.Frontend.Stores.Settings;
 
@@ -9,6 +8,4 @@ public record SettingsState
 
     public bool IsDrawerOpen { get; init; }
     public bool IsDarkMode { get; init; }
-
-    public CultureInfo Culture { get; init; }
 }

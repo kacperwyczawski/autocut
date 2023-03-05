@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using AutoCut.Core.Optimization;
+﻿using AutoCut.Core.Optimization;
 using Fluxor;
 
 namespace AutoCut.Frontend.Stores.Settings;
@@ -15,6 +14,6 @@ public class SettingsFeature : Feature<SettingsState>
             BladeThickness = 3
         };
 
-        return new SettingsState { OptimizerOptions = options, Culture = new CultureInfo("en-US") };
+        return new SettingsState { OptimizerOptions = options };
     }
 }

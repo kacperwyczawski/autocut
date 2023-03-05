@@ -5,7 +5,6 @@
 @using AutoCut.Frontend.Stores.Settings.Actions
 @using AutoCut.Core.Optimization
 @using System.Globalization
-@using AutoCut.Frontend.Localization
 @inherits FluxorComponent
 
 <div class="settings-upper-panel">
@@ -63,14 +62,6 @@
         Class="mb-8"
         @bind-Value="OptimizerOptions.EdgeBandingThickness"/>
 
-    Language
-    <MudSelect @bind-Value="Culture" Variant="Variant.Text">
-        @foreach (var culture in AppLocalizationInfo.SupportedCultures)
-        {
-            <MudSelectItem Value="@culture">@culture.DisplayName</MudSelectItem>
-        }
-    </MudSelect>
-
     <MudButton
         Variant="Variant.Outlined"
         Color="Color.Success"
@@ -100,11 +91,5 @@
     {
         Dispatcher.Dispatch(new UpdateOptimizerOptionsAction(OptimizerOptions));
         Dispatcher.Dispatch(new UpdateCultureAction(Culture));
-    // TODO: Add this (3 lines after CultureInfo..., including itself) after implementing persisting state to local storage
-    // after culture change page has to be reloaded but when state ain't persisted culture change is lost
-    // TODO: Add check if culture is different than current to avoid unnecessary reload
-    //CultureInfo.DefaultThreadCurrentCulture = Culture;
-    //CultureInfo.DefaultThreadCurrentUICulture = Culture;
-    //NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
     }
 }

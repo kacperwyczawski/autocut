@@ -7,6 +7,7 @@
         <MudContainer Fixed="true">
             <MudStack Row="true">
                 <MudNumericField
+                    UserAttributes="@_firstFieldAttributes"
                     Label="Length"
                     Margin="Margin.Dense"
                     AdornmentText="mm"
@@ -122,7 +123,12 @@
                 _name),
             _quantity);
 
-        // TODO: Add validation
+    // TODO: Add validation
         Dispatcher.Dispatch(new AddAction(panel));
     }
+
+    private Dictionary<string, object> _firstFieldAttributes = new()
+    {
+        { "id", "first-field" }
+    };
 }

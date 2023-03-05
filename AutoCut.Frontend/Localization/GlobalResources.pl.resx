@@ -21,4 +21,43 @@
     <data name="ResetPanels" xml:space="preserve">
         <value>Resetuj formatki</value>
     </data>
+    <data name="Length" xml:space="preserve">
+        <value>Długość</value>
+    </data>
+    <data name="StockPanel" xml:space="preserve">
+        <value>Arkusz</value>
+    </data>
+    <data name="Width" xml:space="preserve">
+        <value>Szerokość</value>
+    </data>
+    <data name="Thickness" xml:space="preserve">
+        <value>Grubość</value>
+    </data>
+    <data name="EdgeCuttingThickness" xml:space="preserve">
+        <value>Szerokość brzegowania</value>
+    </data>
+    <data name="EdgeBandingThickness" xml:space="preserve">
+        <value>Grubość oklejania</value>
+    </data>
+    <data name="All" xml:space="preserve">
+        <value>Wszystkie</value>
+    </data>
+    <data name="Individual" xml:space="preserve">
+        <value>Indywidualnie</value>
+    </data>
+    <data name="Top" xml:space="preserve">
+        <value>Góra</value>
+    </data>
+    <data name="Left" xml:space="preserve">
+        <value>Lewa</value>
+    </data>
+    <data name="Right" xml:space="preserve">
+        <value>Prawa</value>
+    </data>
+    <data name="Bottom" xml:space="preserve">
+        <value>Dół</value>
+    </data>
+    <data name="Blade" xml:space="preserve">
+        <value>Ostrze</value>
+    </data>
 </root>

@@ -29,4 +29,43 @@
     <data name="ResetPanels" xml:space="preserve">
         <value>Reset panels</value>
     </data>
+    <data name="StockPanel" xml:space="preserve">
+        <value>Stock panel</value>
+    </data>
+    <data name="Length" xml:space="preserve">
+        <value>Length</value>
+    </data>
+    <data name="Width" xml:space="preserve">
+        <value>Width</value>
+    </data>
+    <data name="Thickness" xml:space="preserve">
+        <value>Thickness</value>
+    </data>
+    <data name="EdgeCuttingThickness" xml:space="preserve">
+        <value>Edge cutting thickness</value>
+    </data>
+    <data name="EdgeBandingThickness" xml:space="preserve">
+        <value>Edge banding thickness</value>
+    </data>
+    <data name="All" xml:space="preserve">
+        <value>All</value>
+    </data>
+    <data name="Individual" xml:space="preserve">
+        <value>Individual</value>
+    </data>
+    <data name="Top" xml:space="preserve">
+        <value>Top</value>
+    </data>
+    <data name="Left" xml:space="preserve">
+        <value>Left</value>
+    </data>
+    <data name="Right" xml:space="preserve">
+        <value>Right</value>
+    </data>
+    <data name="Bottom" xml:space="preserve">
+        <value>Bottom</value>
+    </data>
+    <data name="Blade" xml:space="preserve">
+        <value>Blade</value>
+    </data>
 </root>

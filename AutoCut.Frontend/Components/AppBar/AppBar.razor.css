@@ -32,19 +32,26 @@ h1 > .fancy {
     gap: 20px;
 }
 
-.buttons svg {
-    height: 30px;
-    color: var(--text);
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.buttons svg.settings-button {
+.button svg {
+    height: 30px;
+    color: var(--text);
+    background-color: red;
+}
+
+.button.settings svg {
     transition: transform 0.2s;
 }
 
-.buttons svg:hover {
-    transform: scale(1.05);
+.button svg:hover {
+    transform: scale(1.1);
 }
 
-.buttons svg.settings-button:hover {
+.button.settings svg:hover {
     transform: rotate(90deg);
 }

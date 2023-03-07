@@ -1,0 +1,9 @@
+﻿.color-provider {
+    --background: #000;
+    --card-background: #161616;
+
+    --primary: #a3e635;
+    --primary-gradient: linear-gradient(90deg, var(--primary), #32cd32);
+
+    --text: white
+}

@@ -9,17 +9,20 @@
 <MudDialogProvider/>
 <MudSnackbarProvider/>
 
-<MudLayout>
-    <AppBar/>
-    <MudDrawer Open="@SettingsState.Value.IsDrawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2" Class="pa-4">
-        <Settings/>
-    </MudDrawer>
-    <MudMainContent>
-        <MudStack AlignItems="AlignItems.Center" Class="mt-4">
-            @Body
-        </MudStack>
-    </MudMainContent>
-</MudLayout>
+<div class="color-provider">
+    <MudLayout>
+        <AppBar/>
+        <MudDrawer Open="@SettingsState.Value.IsDrawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2" Class="pa-4">
+            <Settings/>
+        </MudDrawer>
+        <MudMainContent>
+            <MudStack AlignItems="AlignItems.Center" Class="mt-4">
+                @Body
+            </MudStack>
+        </MudMainContent>
+    </MudLayout>
+</div>
+
 
 @code
 {

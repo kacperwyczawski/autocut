@@ -41,7 +41,6 @@ h1 > .fancy {
 .button svg {
     height: 30px;
     color: var(--text);
-    background-color: red;
 }
 
 .button.settings svg {

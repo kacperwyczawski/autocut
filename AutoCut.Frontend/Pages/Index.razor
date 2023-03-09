@@ -1,20 +1,13 @@
-﻿@using AutoCut.Frontend.Components.Panels
+﻿@page "/"
+@using AutoCut.Frontend.Components.Tables
+@using AutoCut.Frontend.Components.Visualization
 @using AutoCut.Frontend.Components.AddPanel
 @using AutoCut.Frontend.Components.ActionButtons
-@using AutoCut.Frontend.Components.Visualization
-@using AutoCut.Frontend.Components.Cuts
-@page "/"
 
-<MudGrid Class="px-4">
-    <MudItem xs="3">
-        <Panels/>
-    </MudItem>
-    <MudItem xs="6">
-        <AddPanel/>
-        <ActionButtons/>
-        <VisualizationList/>
-    </MudItem>
-    <MudItem xs="3">
-        <Cuts/>
-    </MudItem>
-</MudGrid>
+<main>
+    <Tables></Tables>
+    <AddPanel></AddPanel>
+    <ActionButtons></ActionButtons>
+    <CurrentVisualization></CurrentVisualization>
+    <VisualizationList></VisualizationList>
+</main>

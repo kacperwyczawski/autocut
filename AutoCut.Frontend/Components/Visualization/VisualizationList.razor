@@ -1,11 +1,3 @@
-﻿@using AutoCut.Core.Panels
-@using AutoCut.Frontend.Stores.Optimization
-@using Position = AutoCut.Core.Panels.Position
-@inherits FluxorComponent
-@inject IState<OptimizationState> OptimizationState
-
-@foreach (var stockPanel in OptimizationState.Value.OptimizedStockPanels)
-{
-    <Visualization
-        OptimizedStockPanel="stockPanel"/>
-}
+﻿<div>
+    VisualizationList
+</div>

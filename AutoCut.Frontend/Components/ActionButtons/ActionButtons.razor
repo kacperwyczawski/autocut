@@ -7,22 +7,15 @@
 @inject IStringLocalizer<GlobalResources> Localizer
 
 <section>
-    ActionButtons
-</section>
-@*<MudPaper Class="pa-4 mt-4">
-    <MudButton
-        Variant="Variant.Filled"
-        Color="Color.Primary"
-        OnClick="@OnOptimize">
+    <button class="optimize"
+            @onclick="@OnOptimize">
         @Localizer["Optimize"]
-    </MudButton>
-    <MudButton
-        Variant="Variant.Filled"
-        Color="Color.Error"
-        OnClick="@OnReset">
+    </button>
+    <button class="reset"
+            @onclick="@OnReset">
         @Localizer["ResetPanels"]
-    </MudButton>
-</MudPaper>*@
+    </button>
+</section>
 
 @code
 {

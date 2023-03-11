@@ -1,5 +1,32 @@
 ﻿section {
     grid-area: center-middle;
-    background-color: var(--card-background);
-    border-radius: 10px;
+    display: flex;
+    gap: 10px;
+}
+
+button {
+    color: var(--text);
+    height: 100%;
+}
+
+button.optimize {
+    background-image: linear-gradient(to right, var(--primary) 0%, var(--primary-alt) 50%, var(--primary) 100%);
+    background-size: 200% auto;
+    transition: background-position 0.2s;
+}
+
+button.optimize:hover {
+    background-position: right center;
+}
+
+button.optimize:active {
+    transform: scale(0.95);
+}
+
+button.reset {
+    background-color: var(--error);
+}
+
+button.reset:active {
+    transform: scale(0.95);
 }

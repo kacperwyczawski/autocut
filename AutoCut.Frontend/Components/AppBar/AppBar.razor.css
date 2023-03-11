@@ -20,7 +20,7 @@ h1 > .normal {
 h1 > .fancy {
     font-family: 'Permanent Marker', sans-serif;
     font-weight: 400;
-    background-image: var(--primary-gradient);
+    background-image: linear-gradient(90deg, var(--primary), var(--primary-alt));
     background-size: 100%;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -36,6 +36,9 @@ h1 > .fancy {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    background: none;
+    border: none;
+    padding: 0;
 }
 
 .button svg {

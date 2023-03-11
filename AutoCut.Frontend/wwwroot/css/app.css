@@ -6,6 +6,17 @@ body {
     padding: 0;
 }
 
+button {
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: bold;
+    border-radius: 5px;
+    border: none;
+    padding: 10px 20px;
+}
+
+/* default blazor things */
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;
@@ -52,7 +63,7 @@ body {
 }
 
 .loading-progress circle:last-child {
-    stroke:  #594ae2ff; /* MudBlazor primary color */
+    stroke: #a3e635; /* our primary color */
     /*noinspection CssUnresolvedCustomProperty*/
     stroke-dasharray: calc(3.141 * var(--blazor-load-percentage, 0%) * 0.8), 500%;
     transition: stroke-dasharray 0.05s ease-in-out;
@@ -71,7 +82,7 @@ body {
     font-family: sans-serif;
 }
 
-/* for visualization */
+/* for visualization TODO: remove after switching to svg */
 canvas {
     position: absolute;
 }

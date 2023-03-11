@@ -1,9 +1,9 @@
-﻿@using AutoCut.Core.Panels
-@using AutoCut.Frontend.Stores.Panels
+﻿@using AutoCut.Frontend.Stores.Panels
+@using AutoCut.Core.Panels
 @inherits FluxorComponent
 @inject IState<PanelsState> PanelsState
 
-<MudTable Items="@PanelsState.Value.Panels">
+@*<MudTable Items="@PanelsState.Value.Panels">
     <HeaderContent>
         <MudTh>Length</MudTh>
         <MudTh>Width</MudTh>
@@ -26,7 +26,7 @@
         <MudTd>@panel.Panel.Name</MudTd>
         <MudTd>@GetEdgeBanding(panel.Panel)</MudTd>
     </RowTemplate>
-</MudTable>
+</MudTable>*@
 
 @code
 {
@@ -36,7 +36,7 @@
 
         var alongLength = BoolToInt(panel.EdgeBanding.Top) + BoolToInt(panel.EdgeBanding.Bottom);
         var alongWidth = BoolToInt(panel.EdgeBanding.Left) + BoolToInt(panel.EdgeBanding.Right);
-        
+
         return $"{alongLength}, {alongWidth}";
     }
 }

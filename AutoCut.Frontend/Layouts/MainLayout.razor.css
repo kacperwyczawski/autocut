@@ -3,7 +3,9 @@
     --card-background: #161616;
 
     --primary: #a3e635;
-    --primary-gradient: linear-gradient(90deg, var(--primary), #32cd32);
+    --primary-alt: #32cd32;
+    --error: hsl(5, 78%, 55%);
+    --error-alt: hsl(5, 78%, 45%);
 
     --text: white
 }

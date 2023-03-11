@@ -8,6 +8,6 @@
         "left center-middle right"
         "left center-bottom right";
     gap: 15px;
-    padding: 15px;
-    height: calc(100svh - 60px);
+    padding: 0 15px 15px;
+    height: calc(100svh - 75px);
 }

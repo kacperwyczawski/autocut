@@ -3,30 +3,29 @@
 @inherits FluxorComponent
 @inject IState<PanelsState> PanelsState
 
-@*<MudTable Items="@PanelsState.Value.Panels">
-    <HeaderContent>
-        <MudTh>Length</MudTh>
-        <MudTh>Width</MudTh>
-        <MudTh>
-            <MudTooltip Text="Quantity">
-                Qty
-            </MudTooltip>
-        </MudTh>
-        <MudTh>Name</MudTh>
-        <MudTh>
-            <MudTooltip Text="along length, along width">
-                Edge banding
-            </MudTooltip>
-        </MudTh>
-    </HeaderContent>
-    <RowTemplate Context="panel">
-        <MudTd>@panel.Panel.Rectangle.Length</MudTd>
-        <MudTd>@panel.Panel.Rectangle.Width</MudTd>
-        <MudTd>@panel.Quantity</MudTd>
-        <MudTd>@panel.Panel.Name</MudTd>
-        <MudTd>@GetEdgeBanding(panel.Panel)</MudTd>
-    </RowTemplate>
-</MudTable>*@
+<table>
+    <thead>
+    <tr>
+        <th>Length</th>
+        <th>Width</th>
+        <th>Quantity</th>
+        <th>Name</th>
+        <th>Edge banding</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var panel in PanelsState.Value.Panels)
+    {
+        <tr>
+            <td>@panel.Panel.Rectangle.Length</td>
+            <td>@panel.Panel.Rectangle.Width</td>
+            <td>@panel.Quantity</td>
+            <td>@panel.Panel.Name</td>
+            <td>@GetEdgeBanding(panel.Panel)</td>
+        </tr>
+    }
+    </tbody>
+</table>
 
 @code
 {

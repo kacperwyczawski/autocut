@@ -3,97 +3,41 @@
 @inject IDispatcher Dispatcher
 
 <section>
-    AddPanel
+    <label>
+        Length
+        <input type="text" inputmode="numeric" @bind="_length"/>
+    </label>
+    <label>
+        Width
+        <input type="text" inputmode="numeric" @bind="_width"/>
+    </label>
+    <label>
+        Quantity
+        <input type="text" inputmode="numeric" @bind="_quantity"/>
+    </label>
+    <label>
+        Name
+        <input type="text" @bind="_name"/>
+    </label>
+    <label>
+        Top
+        <input type="checkbox" @bind="_top"/>
+    </label>
+    <label>
+        Bottom
+        <input type="checkbox" @bind="_bottom"/>
+    </label>
+    <label>
+        Right
+        <input type="checkbox" @bind="_right"/>
+    </label>
+    <label>
+        Left
+        <input type="checkbox" @bind="_left"/>
+    </label>
+    <button type="submit" @onclick="Add">Add</button>
+    <button type="reset" @onclick="Reset">Reset</button>
 </section>
-
-@*<MudPaper Class="pa-4">
-    <MudForm>
-        <MudContainer Fixed="true">
-            <MudStack Row="true">
-                <MudNumericField
-                    UserAttributes="@_firstFieldAttributes"
-                    Label="Length"
-                    Margin="Margin.Dense"
-                    AdornmentText="mm"
-                    Adornment="Adornment.End"
-                    AdornmentColor="Color.Info"
-                    Variant="Variant.Outlined"
-                    @bind-Value="_length"/>
-                <MudNumericField
-                    Label="Width"
-                    Margin="Margin.Dense"
-                    AdornmentText="mm"
-                    Adornment="Adornment.End"
-                    AdornmentColor="Color.Info"
-                    Variant="Variant.Outlined"
-                    @bind-Value="_width"/>
-                <MudNumericField
-                    Label="Quantity"
-                    Margin="Margin.Dense"
-                    Variant="Variant.Outlined"
-                    @bind-Value="_quantity"/>
-                <MudTextField
-                    Label="Name"
-                    Margin="Margin.Dense"
-                    Variant="Variant.Outlined"
-                    @bind-Value="_name"/>
-            </MudStack>
-            <MudStack Row="true">
-                <MudCheckBox
-                    T="bool"
-                    CheckedIcon="@Icons.Material.Filled.BorderTop"
-                    UncheckedIcon="@Icons.Material.Filled.BorderTop"
-                    UnCheckedColor="Color.Default"
-                    Color="Color.Success"
-                    DisableRipple="true"
-                    Dense="true"
-                    @bind-Checked="_top"/>
-                <MudCheckBox
-                    T="bool"
-                    CheckedIcon="@Icons.Material.Filled.BorderBottom"
-                    UncheckedIcon="@Icons.Material.Filled.BorderBottom"
-                    UnCheckedColor="Color.Default"
-                    Color="Color.Success"
-                    DisableRipple="true"
-                    Dense="true"
-                    @bind-Checked="_bottom"/>
-                <MudCheckBox
-                    T="bool"
-                    CheckedIcon="@Icons.Material.Filled.BorderRight"
-                    UncheckedIcon="@Icons.Material.Filled.BorderRight"
-                    UnCheckedColor="Color.Default"
-                    Color="Color.Success"
-                    DisableRipple="true"
-                    Dense="true"
-                    @bind-Checked="_right"/>
-                <MudCheckBox
-                    T="bool"
-                    CheckedIcon="@Icons.Material.Filled.BorderLeft"
-                    UncheckedIcon="@Icons.Material.Filled.BorderLeft"
-                    UnCheckedColor="Color.Default"
-                    Color="Color.Success"
-                    DisableRipple="true"
-                    Dense="true"
-                    @bind-Checked="_left"/>
-                <MudSpacer/>
-                <MudButton
-                    Color="Color.Success"
-                    Variant="Variant.Filled"
-                    Size="Size.Small"
-                    OnClick="@Add">
-                    Add
-                </MudButton>
-                <MudButton
-                    Color="Color.Warning"
-                    Variant="Variant.Outlined"
-                    Size="Size.Small"
-                    OnClick="@Reset">
-                    Reset
-                </MudButton>
-            </MudStack>
-        </MudContainer>
-    </MudForm>
-</MudPaper>*@
 
 @code
 {
@@ -130,9 +74,4 @@
     // TODO: Add validation
         Dispatcher.Dispatch(new AddAction(panel));
     }
-
-    private Dictionary<string, object> _firstFieldAttributes = new()
-    {
-        { "id", "first-field" }
-    };
 }

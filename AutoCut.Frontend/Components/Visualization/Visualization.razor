@@ -1,9 +1,9 @@
-﻿@using AutoCut.Core.Panels
-@using Blazor.Extensions
+﻿@using Blazor.Extensions
 @using Blazor.Extensions.Canvas
+@using AutoCut.Core.Panels
 @inject ILogger<Visualization> Logger
 
-<MudPaper
+<div
     Class="mt-4 pa-2 d-flex align-content-center justify-center"
     Style="overflow: scroll">
     <div style="@CanvasContainerCss">
@@ -13,7 +13,7 @@
             @ref="_canvasReference">
         </BECanvas>
     </div>
-</MudPaper>
+</div>
 
 @code
 {
@@ -42,7 +42,7 @@
         const string tertiaryColorLight = "#e9fcf8";
 
         var context = await _canvasReference.CreateCanvas2DAsync();
-        
+
     // clear canvas
         await context.ClearRectAsync(0, 0, CanvasWidth, CanvasHeight);
 
@@ -72,9 +72,8 @@
                 (double)(panel.PositionedRectangle.Position.Y / MagicRatio),
                 (double)(panel.PositionedRectangle.Rectangle.Length / MagicRatio),
                 (double)(panel.PositionedRectangle.Rectangle.Width / MagicRatio));
-                
         }
-        
+
     // log
         Logger.LogInformation("Canvas rendered");
     }

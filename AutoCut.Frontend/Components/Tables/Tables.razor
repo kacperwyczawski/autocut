@@ -1,3 +1,32 @@
-﻿<section>
-    tables
+﻿@using AutoCut.Frontend.Components.Panels
+@using AutoCut.Frontend.Components.Cuts
+<section>
+    <button @onclick="ShowPanels">Panels</button>
+    <button @onclick="ShowCuts">Cuts</button>
+    @if (_showPanels)
+    {
+        <Panels/>
+    }
+    else if (_showCuts)
+    {
+        <Cuts/>
+    }
 </section>
+
+@code
+{
+    private bool _showPanels = true;
+    private bool _showCuts = false;
+
+    private void ShowPanels()
+    {
+        _showPanels = true;
+        _showCuts = false;
+    }
+
+    private void ShowCuts()
+    {
+        _showPanels = false;
+        _showCuts = true;
+    }
+}

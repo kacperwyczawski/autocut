@@ -1,0 +1,5 @@
+﻿section {
+    grid-area: center-middle;
+    background-color: var(--card-background);
+    border-radius: 10px;
+}

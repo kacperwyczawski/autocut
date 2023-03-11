@@ -1,0 +1,13 @@
+﻿main {
+    background-color: var(--background);
+    display: grid;
+    grid-template-columns: 3fr 7fr 3fr;
+    grid-template-rows: 100px 100px auto;
+    grid-template-areas:
+        "left center-top right"
+        "left center-middle right"
+        "left center-bottom right";
+    gap: 15px;
+    padding: 15px;
+    height: calc(100svh - 60px);
+}

@@ -7,5 +7,6 @@
     --error: hsl(5, 78%, 55%);
     --error-alt: hsl(5, 78%, 45%);
 
-    --text: white
+    --text: white;
+    --text-gray: #767676;
 }

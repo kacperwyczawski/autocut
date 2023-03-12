@@ -60,4 +60,16 @@
     <data name="Blade" xml:space="preserve">
         <value>Ostrze</value>
     </data>
+    <data name="Add" xml:space="preserve">
+        <value>Dodaj</value>
+    </data>
+    <data name="Name" xml:space="preserve">
+        <value>Nazwa</value>
+    </data>
+    <data name="Quantity" xml:space="preserve">
+        <value>Ilość</value>
+    </data>
+    <data name="Reset" xml:space="preserve">
+        <value>Resetuj</value>
+    </data>
 </root>

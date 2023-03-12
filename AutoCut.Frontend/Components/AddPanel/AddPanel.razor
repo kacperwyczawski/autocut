@@ -1,42 +1,54 @@
-﻿@using AutoCut.Core.Panels
+﻿@using AutoCut.Frontend.Localization
+@using AutoCut.Core.Panels
 @using AutoCut.Frontend.Stores.Panels.Actions
 @inject IDispatcher Dispatcher
+@inject IStringLocalizer<GlobalResources> Localizer
 
 <section>
-    <label>
-        Length
-        <input type="text" inputmode="numeric" @bind="_length"/>
-    </label>
-    <label>
-        Width
-        <input type="text" inputmode="numeric" @bind="_width"/>
-    </label>
-    <label>
-        Quantity
-        <input type="text" inputmode="numeric" @bind="_quantity"/>
-    </label>
-    <label>
-        Name
-        <input type="text" @bind="_name"/>
-    </label>
-    <label>
-        Top
-        <input type="checkbox" @bind="_top"/>
-    </label>
-    <label>
-        Bottom
-        <input type="checkbox" @bind="_bottom"/>
-    </label>
-    <label>
-        Right
-        <input type="checkbox" @bind="_right"/>
-    </label>
-    <label>
-        Left
-        <input type="checkbox" @bind="_left"/>
-    </label>
-    <button type="submit" @onclick="Add">Add</button>
-    <button type="reset" @onclick="Reset">Reset</button>
+    <div class="input-fields">
+        <label>
+            <p>
+                @Localizer["Length"] <span class="units">(mm)</span>
+            </p>
+            <input type="text" inputmode="numeric" @bind="_length" id="first-field"/>
+        </label>
+        <label>
+            <p>
+                @Localizer["Width"] <span class="units">(mm)</span>
+            </p>
+            <input type="text" inputmode="numeric" @bind="_width"/>
+        </label>
+        <label>
+            @Localizer["Quantity"]
+            <input type="text" inputmode="numeric" @bind="_quantity"/>
+        </label>
+        <label>
+            @Localizer["Name"]
+            <input type="text" @bind="_name"/>
+        </label>
+    </div>
+    <div class="edge-buttons">
+        <button>1</button>
+        <button>2</button>
+        <button>4</button>
+        <button>1</button>
+        <button>2</button>
+        <button>0</button>
+    </div>
+    <div class="buttons">
+        <button type="submit" @onclick="Add">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+            </svg>
+            @Localizer["Add"]
+        </button>
+        <button type="reset" @onclick="Reset">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/>
+            </svg>
+            @Localizer["Reset"]
+        </button>
+    </div>
 </section>
 
 @code
@@ -44,7 +56,7 @@
     int _length;
     int _width;
     int _quantity = 1;
-    string _name = "name";
+    string _name = "";
     bool _top;
     bool _bottom;
     bool _right;

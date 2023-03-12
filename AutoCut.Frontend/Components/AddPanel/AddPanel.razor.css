@@ -2,4 +2,101 @@
     grid-area: center-top;
     background-color: var(--card-background);
     border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    gap: 5px;
+}
+
+label {
+    display: flex;
+    flex-direction: column;
+    color: var(--text-gray);
+    font-size: 1rem;
+    gap: 5px;
+}
+
+label .units {
+    font-size: 0.8rem;
+}
+
+label p {
+    margin: 0;
+}
+
+input {
+    background-color: inherit;
+    border: 2px solid var(--text-gray);
+    border-radius: 10px;
+    color: var(--text);
+    padding: 10px;
+    font-size: 1.1rem;
+    width: 6rem;
+    text-align: center;
+}
+
+input:focus {
+    outline: none;
+    border: 2px solid var(--primary);
+}
+
+.edge-buttons {
+    display: grid;
+    grid-template: 1fr 1fr / 1fr 1fr 1fr;
+    gap: 5px;
+}
+
+.edge-buttons button {
+    background-color: inherit;
+    color: var(--text);
+
+    /* temporary */
+    padding: 10px;
+    text-align: center;
+    border: 1px solid var(--text);
+    aspect-ratio: 1 / 1;
+}
+
+.buttons {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.buttons button {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--text);
+}
+
+button[type="submit"] {
+    background-image: linear-gradient(to right, var(--primary) 0%, var(--primary-alt) 50%, var(--primary) 100%);
+    background-size: 200% auto;
+    transition: background-position 0.2s;
+}
+
+button[type="submit"]:hover {
+    background-position: right center;
+}
+
+button[type="submit"]:active {
+    transform: scale(0.95);
+}
+
+button[type="reset"] {
+    background-color: var(--error);
+}
+
+button[type="reset"]:active {
+    transform: scale(0.95);
+}
+
+svg {
+    height: 1.4rem;
+}
+
+.input-fields {
+    display: flex;
+    gap: 5px;
 }

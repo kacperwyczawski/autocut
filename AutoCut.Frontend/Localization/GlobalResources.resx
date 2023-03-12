@@ -68,4 +68,16 @@
     <data name="Blade" xml:space="preserve">
         <value>Blade</value>
     </data>
+    <data name="Quantity" xml:space="preserve">
+        <value>Quantity</value>
+    </data>
+    <data name="Name" xml:space="preserve">
+        <value>Name</value>
+    </data>
+    <data name="Add" xml:space="preserve">
+        <value>Add</value>
+    </data>
+    <data name="Reset" xml:space="preserve">
+        <value>Reset</value>
+    </data>
 </root>

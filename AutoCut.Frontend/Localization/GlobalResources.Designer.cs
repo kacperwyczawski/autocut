@@ -60,6 +60,15 @@ namespace AutoCut.Frontend.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add.
+        /// </summary>
+        internal static string Add {
+            get {
+                return ResourceManager.GetString("Add", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All.
         /// </summary>
         internal static string All {
@@ -132,11 +141,38 @@ namespace AutoCut.Frontend.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        internal static string Name {
+            get {
+                return ResourceManager.GetString("Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Optimize.
         /// </summary>
         internal static string Optimize {
             get {
                 return ResourceManager.GetString("Optimize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Quantity.
+        /// </summary>
+        internal static string Quantity {
+            get {
+                return ResourceManager.GetString("Quantity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset.
+        /// </summary>
+        internal static string Reset {
+            get {
+                return ResourceManager.GetString("Reset", resourceCulture);
             }
         }
         

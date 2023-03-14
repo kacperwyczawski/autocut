@@ -1,6 +1,7 @@
 ﻿.color-provider {
-    --background: #000;
-    --card-background: #161616;
+    --background: #0d0d0d;
+    --card-background: #1c1c1e;
+    --bright-border: #252527;
 
     --primary: #a3e635;
     --primary-alt: #32cd32;

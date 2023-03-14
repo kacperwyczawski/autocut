@@ -1,6 +1,7 @@
 ﻿@using AutoCut.Frontend.Localization
 @using AutoCut.Core.Panels
 @using AutoCut.Frontend.Stores.Panels.Actions
+@using AutoCut.Frontend.Components.Shared
 @inject IDispatcher Dispatcher
 @inject IStringLocalizer<GlobalResources> Localizer
 
@@ -28,12 +29,24 @@
         </label>
     </div>
     <div class="edge-buttons">
-        <button>1</button>
-        <button>2</button>
-        <button>4</button>
-        <button>1</button>
-        <button>2</button>
-        <button>0</button>
+        <button>
+            <EdgesIcon Edges="@(new EdgeBanding(false, false, true, false))"/>
+        </button>
+        <button>
+            <EdgesIcon Edges="@(new EdgeBanding(false, false, true, true))"/>
+        </button>
+        <button>
+            <EdgesIcon Edges="@EdgeBanding.AllEdges"/>
+        </button>
+        <button>
+            <EdgesIcon Edges="@(new EdgeBanding(true, false, false, false))"/>
+        </button>
+        <button>
+            <EdgesIcon Edges="@(new EdgeBanding(true, true, false, false))"/>
+        </button>
+        <button>
+            <EdgesIcon Edges="@EdgeBanding.NoEdges"/>
+        </button>
     </div>
     <div class="buttons">
         <button type="submit" @onclick="Add">

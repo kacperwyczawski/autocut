@@ -1,0 +1,15 @@
+﻿svg.no-accent {
+    fill: var(--text);
+}
+
+svg.border-accent g.base {
+    fill: var(--text);
+}
+
+svg.border-accent g.border {
+    fill: var(--primary);
+}
+
+svg.all-accent {
+    fill: var(--primary);
+}

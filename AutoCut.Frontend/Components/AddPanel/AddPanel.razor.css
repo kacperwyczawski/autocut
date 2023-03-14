@@ -44,18 +44,19 @@ input:focus {
 .edge-buttons {
     display: grid;
     grid-template: 1fr 1fr / 1fr 1fr 1fr;
-    gap: 5px;
+    gap: 15px;
 }
 
 .edge-buttons button {
     background-color: inherit;
     color: var(--text);
-
-    /* temporary */
-    padding: 10px;
-    text-align: center;
-    border: 1px solid var(--text);
+    padding: 0;
     aspect-ratio: 1 / 1;
+}
+
+::deep .edge-buttons svg {
+    height: 1.7rem;
+    width: 1.7rem;
 }
 
 .buttons {

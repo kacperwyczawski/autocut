@@ -1,5 +1,5 @@
 ﻿@using AutoCut.Core.Panels
-<svg class="@SvgClass" width="35" height="35" viewBox="0 0 35 35" xmlns="http://www.w3.org/2000/svg">
+<svg class="@GetSvgClass()" width="35" height="35" viewBox="0 0 35 35" xmlns="http://www.w3.org/2000/svg">
     <g class="base">
         <rect y="30" width="5" height="5" rx="2"/>
         <rect x="10" width="5" height="5" rx="2"/>
@@ -47,11 +47,15 @@
 
 @code
 {
+
     [Parameter]
     public EdgeBanding Edges { get; set; } = EdgeBanding.NoEdges;
 
     [Parameter]
     public EdgesIconAccent Accent { get; set; } = EdgesIconAccent.None;
+
+    [Parameter]
+    public bool MutedColor { get; set; }
 
     public enum EdgesIconAccent
     {
@@ -60,11 +64,19 @@
         All
     }
 
-    private string SvgClass => Accent switch
+    private string GetSvgClass()
     {
-        EdgesIconAccent.None => "no-accent",
-        EdgesIconAccent.Border => "border-accent",
-        EdgesIconAccent.All => "all-accent",
-        _ => throw new ArgumentOutOfRangeException()
-        };
+        var svgClass = Accent switch
+        {
+            EdgesIconAccent.None => "no-accent",
+            EdgesIconAccent.Border => "border-accent",
+            EdgesIconAccent.All => "all-accent",
+            _ => throw new ArgumentOutOfRangeException()
+            };
+
+        if (MutedColor)
+            svgClass += " muted";
+
+        return svgClass;
+    }
 }

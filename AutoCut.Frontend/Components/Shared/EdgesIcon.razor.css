@@ -2,8 +2,16 @@
     fill: var(--text);
 }
 
+svg.no-accent.muted {
+    fill: var(--text-gray)
+}
+
 svg.border-accent g.base {
     fill: var(--text);
+}
+
+svg.border-accent g.base.muted {
+    fill: var(--text-gray);
 }
 
 svg.border-accent g.border {

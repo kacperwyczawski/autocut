@@ -10,29 +10,6 @@ public record Position(decimal X, decimal Y);
 
 public record PositionedRectangle(Rectangle Rectangle, Position Position);
 
-/// <summary>
-/// Represents the edge banding.
-/// </summary>
-/// <param name="Left">
-/// Along the width of the panel.
-/// </param>
-/// <param name="Right">
-/// Along the width of the panel.
-/// </param>
-/// <param name="Top">
-/// Along the length of the panel.
-/// </param>
-/// <param name="Bottom">
-/// Along the length of the panel.
-/// </param>
-public record EdgeBanding(bool Left, bool Right, bool Top, bool Bottom)
-{
-    public static EdgeBanding AllEdges =>
-        new EdgeBanding(true, true, true, true);
-    public static EdgeBanding NoEdges =>
-        new EdgeBanding(false, false, false, false);
-}
-
 public record Panel(Rectangle Rectangle, EdgeBanding EdgeBanding, string Name = "")
 {
     public PositionedPanel ToPositioned(decimal x, decimal y) =>
@@ -70,7 +47,8 @@ public record FreeSpace(PositionedRectangle PositionedRectangle, OptimizedStockP
     {
         if (ReferenceEquals(this, other)) return 0;
         if (ReferenceEquals(null, other)) return 1;
-        var lengthComparison = PositionedRectangle.Rectangle.Length.CompareTo(other.PositionedRectangle.Rectangle.Length);
+        var lengthComparison =
+            PositionedRectangle.Rectangle.Length.CompareTo(other.PositionedRectangle.Rectangle.Length);
         return lengthComparison == 0
             ? PositionedRectangle.Rectangle.Width.CompareTo(other.PositionedRectangle.Rectangle.Width)
             : lengthComparison;
@@ -80,6 +58,8 @@ public record FreeSpace(PositionedRectangle PositionedRectangle, OptimizedStockP
     {
         if (ReferenceEquals(null, obj)) return 1;
         if (ReferenceEquals(this, obj)) return 0;
-        return obj is FreeSpace other ? CompareTo(other) : throw new ArgumentException($"Object must be of type {nameof(FreeSpace)}");
+        return obj is FreeSpace other
+            ? CompareTo(other)
+            : throw new ArgumentException($"Object must be of type {nameof(FreeSpace)}");
     }
 }

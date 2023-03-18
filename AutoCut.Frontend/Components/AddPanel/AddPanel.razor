@@ -1,7 +1,7 @@
 ﻿@using AutoCut.Frontend.Localization
 @using AutoCut.Core.Panels
-@using AutoCut.Frontend.Stores.Panels.Actions
 @using AutoCut.Frontend.Components.Shared
+@using AutoCut.Frontend.Stores.Panels.Actions
 @inject IDispatcher Dispatcher
 @inject IStringLocalizer<GlobalResources> Localizer
 
@@ -29,23 +29,29 @@
         </label>
     </div>
     <div class="edge-buttons">
-        <button>
-            <EdgesIcon Edges="@(new EdgeBanding(false, false, true, false))" MutedColor="true"/>
+        <button @onclick="() => _edgeBanding.EdgesAlongLenght = _edgeBanding.EdgesAlongLenght == 1 ? 0 : 1">
+            <EdgesIcon
+                Edges="@(new EdgeBanding(1, 0))"
+                MutedColor="true"
+                Accent="@(_edgeBanding.EdgesAlongLenght == 1 ? EdgesIcon.EdgesIconAccent.All : EdgesIcon.EdgesIconAccent.None)"/>
         </button>
-        <button>
-            <EdgesIcon Edges="@(new EdgeBanding(false, false, true, true))" MutedColor="true"/>
+        <button @onclick="() => _edgeBanding.EdgesAlongLenght = _edgeBanding.EdgesAlongLenght == 2 ? 0 : 2">
+            <EdgesIcon
+                Edges="@(new EdgeBanding(2, 0))"
+                MutedColor="true"
+                Accent="@(_edgeBanding.EdgesAlongLenght == 2 ? EdgesIcon.EdgesIconAccent.All : EdgesIcon.EdgesIconAccent.None)"/>
         </button>
-        <button>
-            <EdgesIcon Edges="@EdgeBanding.AllEdges" MutedColor="true"/>
+        <button @onclick="() => _edgeBanding.EdgesAlongWidth = _edgeBanding.EdgesAlongWidth == 1 ? 0 : 1">
+            <EdgesIcon
+                Edges="@(new EdgeBanding(0, 1))"
+                MutedColor="true"
+                Accent="@(_edgeBanding.EdgesAlongWidth == 1 ? EdgesIcon.EdgesIconAccent.All : EdgesIcon.EdgesIconAccent.None)"/>
         </button>
-        <button>
-            <EdgesIcon Edges="@(new EdgeBanding(true, false, false, false))" MutedColor="true"/>
-        </button>
-        <button>
-            <EdgesIcon Edges="@(new EdgeBanding(true, true, false, false))" MutedColor="true"/>
-        </button>
-        <button>
-            <EdgesIcon Edges="@EdgeBanding.NoEdges" MutedColor="true"/>
+        <button @onclick="() => _edgeBanding.EdgesAlongWidth = _edgeBanding.EdgesAlongWidth == 2 ? 0 : 2">
+            <EdgesIcon
+                Edges="@(new EdgeBanding(0, 2))"
+                MutedColor="true"
+                Accent="@(_edgeBanding.EdgesAlongWidth == 2 ? EdgesIcon.EdgesIconAccent.All : EdgesIcon.EdgesIconAccent.None)"/>
         </button>
     </div>
     <div class="buttons">
@@ -70,10 +76,7 @@
     int _width;
     int _quantity = 1;
     string _name = "";
-    bool _top;
-    bool _bottom;
-    bool _right;
-    bool _left;
+    EdgeBanding _edgeBanding = EdgeBanding.NoEdges;
 
     private void Reset()
     {
@@ -81,19 +84,13 @@
         _width = 0;
         _quantity = 1;
         _name = "name";
-        _top = false;
-        _bottom = false;
-        _right = false;
-        _left = false;
+        _edgeBanding = EdgeBanding.NoEdges;
     }
 
     private void Add()
     {
         var panel = new CompressedPanel(
-            new Panel(
-                new Rectangle(_length, _width),
-                new EdgeBanding(_left, _right, _top, _bottom),
-                _name),
+            new Panel(new Rectangle(_length, _width), _edgeBanding, _name),
             _quantity);
 
     // TODO: Add validation

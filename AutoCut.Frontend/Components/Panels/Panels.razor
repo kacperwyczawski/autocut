@@ -1,5 +1,4 @@
 ﻿@using AutoCut.Frontend.Stores.Panels
-@using AutoCut.Core.Panels
 @inherits FluxorComponent
 @inject IState<PanelsState> PanelsState
 
@@ -21,21 +20,9 @@
             <td>@panel.Panel.Rectangle.Width</td>
             <td>@panel.Quantity</td>
             <td>@panel.Panel.Name</td>
-            <td>@GetEdgeBanding(panel.Panel)</td>
+            <!-- TODO: Add edge banding -->
+            <td>icon</td>
         </tr>
     }
     </tbody>
 </table>
-
-@code
-{
-    static string GetEdgeBanding(Panel panel)
-    {
-        int BoolToInt(bool b) => b ? 1 : 0;
-
-        var alongLength = BoolToInt(panel.EdgeBanding.Top) + BoolToInt(panel.EdgeBanding.Bottom);
-        var alongWidth = BoolToInt(panel.EdgeBanding.Left) + BoolToInt(panel.EdgeBanding.Right);
-
-        return $"{alongLength}, {alongWidth}";
-    }
-}

@@ -15,28 +15,28 @@
         <rect y="10" width="5" height="5" rx="2"/>
     </g>
 
-    @if (Edges.Top)
+    @if (Edges.EdgesAlongLenght is 1 or 2)
     {
         <g class="border">
             <rect x="35" width="5" height="35" rx="2" transform="rotate(90 35 0)"/>
         </g>
     }
 
-    @if (Edges.Bottom)
+    @if (Edges.EdgesAlongLenght == 2)
     {
         <g class="border">
             <rect x="35" y="30" width="5" height="35" rx="2" transform="rotate(90 35 30)"/>
         </g>
     }
 
-    @if (Edges.Left)
+    @if (Edges.EdgesAlongWidth is 1 or 2)
     {
         <g class="border">
             <rect x="5" y="35" width="5" height="35" rx="2" transform="rotate(-180 5 35)"/>
         </g>
     }
 
-    @if (Edges.Right)
+    @if (Edges.EdgesAlongWidth == 2)
     {
         <g class="border">
             <rect x="30" width="5" height="35" rx="2"/>

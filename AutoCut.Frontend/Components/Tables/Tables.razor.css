@@ -4,6 +4,9 @@
     border-radius: 10px;
     border: 1px solid var(--bright-border);
     padding: 15px;
+
+    /* TODO: scroll only table */
+    overflow-x: scroll;
 }
 
 hr {

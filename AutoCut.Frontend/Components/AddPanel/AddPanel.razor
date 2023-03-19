@@ -83,7 +83,7 @@
         _length = 0;
         _width = 0;
         _quantity = 1;
-        _name = "name";
+        _name = "";
         _edgeBanding = EdgeBanding.NoEdges;
     }
 
@@ -95,5 +95,7 @@
 
     // TODO: Add validation
         Dispatcher.Dispatch(new AddAction(panel));
+
+        Reset();
     }
 }

@@ -1,5 +1,5 @@
 ﻿section {
-    grid-area: left;
+    grid-area: tables;
     background-color: var(--card-background);
     border-radius: 10px;
     border: 1px solid var(--bright-border);

@@ -2,12 +2,23 @@
     background-color: var(--background);
     display: grid;
     grid-template-columns: 3fr 7fr 3fr;
-    grid-template-rows: 100px 40px auto;
+    grid-template-rows: 100px 40px calc(100svh - 265px);
     grid-template-areas:
-        "left center-top right"
-        "left center-middle right"
-        "left center-bottom right";
+        "tables add-panel visualization-list"
+        "tables action-buttons visualization-list"
+        "tables current-visualization visualization-list";
     gap: 15px;
     padding: 0 15px 15px;
-    height: calc(100svh - 80px - 15px);
+}
+
+@media screen and (max-width: 600px) {
+    main {
+        grid-template-columns: 100%;
+        grid-template-rows: 100px 500px 40px auto;
+        grid-template-areas:
+            "add-panel"
+            "tables"
+            "action-buttons"
+            "visualization-list";
+    }
 }

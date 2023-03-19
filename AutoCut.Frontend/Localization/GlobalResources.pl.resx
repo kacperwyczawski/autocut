@@ -72,4 +72,16 @@
     <data name="Reset" xml:space="preserve">
         <value>Resetuj</value>
     </data>
+    <data name="NoPanelsInfo" xml:space="preserve">
+        <value>Lista paneli jest pusta. Dodaj nowy panel, aby zobaczyć go tutaj.</value>
+    </data>
+    <data name="EdgeBanding" xml:space="preserve">
+        <value>Oklejanie</value>
+    </data>
+    <data name="Cuts" xml:space="preserve">
+        <value>Cięcia</value>
+    </data>
+    <data name="Panels" xml:space="preserve">
+        <value>Formatki</value>
+    </data>
 </root>

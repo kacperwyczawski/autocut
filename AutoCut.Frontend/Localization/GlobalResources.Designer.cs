@@ -96,6 +96,24 @@ namespace AutoCut.Frontend.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cuts.
+        /// </summary>
+        internal static string Cuts {
+            get {
+                return ResourceManager.GetString("Cuts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edge banding.
+        /// </summary>
+        internal static string EdgeBanding {
+            get {
+                return ResourceManager.GetString("EdgeBanding", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edge banding thickness.
         /// </summary>
         internal static string EdgeBandingThickness {
@@ -150,11 +168,29 @@ namespace AutoCut.Frontend.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Panel list is empty. Add a new panel to see it here..
+        /// </summary>
+        internal static string NoPanelsInfo {
+            get {
+                return ResourceManager.GetString("NoPanelsInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Optimize.
         /// </summary>
         internal static string Optimize {
             get {
                 return ResourceManager.GetString("Optimize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Panels.
+        /// </summary>
+        internal static string Panels {
+            get {
+                return ResourceManager.GetString("Panels", resourceCulture);
             }
         }
         

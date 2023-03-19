@@ -80,4 +80,16 @@
     <data name="Reset" xml:space="preserve">
         <value>Reset</value>
     </data>
+    <data name="NoPanelsInfo" xml:space="preserve">
+        <value>Panel list is empty. Add a new panel to see it here.</value>
+    </data>
+    <data name="EdgeBanding" xml:space="preserve">
+        <value>Edge banding</value>
+    </data>
+    <data name="Panels" xml:space="preserve">
+        <value>Panels</value>
+    </data>
+    <data name="Cuts" xml:space="preserve">
+        <value>Cuts</value>
+    </data>
 </root>

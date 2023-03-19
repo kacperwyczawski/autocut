@@ -43,3 +43,10 @@ tbody {
     width: 1.2rem;
     height: 1.2rem;
 }
+
+.no-panels-info {
+    color: var(--text-gray);
+    font-size: 1rem;
+    text-align: center;
+    padding: 0 15px;
+}

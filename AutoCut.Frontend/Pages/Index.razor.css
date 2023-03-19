@@ -9,5 +9,5 @@
         "left center-bottom right";
     gap: 15px;
     padding: 0 15px 15px;
-    height: calc(100svh - 75px);
+    height: calc(100svh - 80px - 15px);
 }

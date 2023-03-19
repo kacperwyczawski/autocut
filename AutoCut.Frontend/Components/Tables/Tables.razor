@@ -1,8 +1,15 @@
 ﻿@using AutoCut.Frontend.Components.Panels
 @using AutoCut.Frontend.Components.Cuts
 <section>
-    <button @onclick="ShowPanels">Panels</button>
-    <button @onclick="ShowCuts">Cuts</button>
+    <div class="buttons">
+        <button @onclick="ShowPanels" class="@(_showPanels ? "active" : "")">
+            Panels
+        </button>
+        <button @onclick="ShowCuts" class="@(_showCuts ? "active" : "")">
+            Cuts
+        </button>
+    </div>
+    <hr/>
     @if (_showPanels)
     {
         <Panels/>

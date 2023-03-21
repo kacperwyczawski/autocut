@@ -2,7 +2,7 @@
     grid-area: tables;
     background-color: var(--card-background);
     border-radius: 10px;
-    border: 1px solid var(--bright-border);
+    border: 1px solid var(--card-border);
     padding: 15px;
 
     /* TODO: scroll only table */

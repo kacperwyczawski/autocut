@@ -1,1 +1,20 @@
-﻿<h1>SvgVisualization</h1>
+﻿@using AutoCut.Core.Models
+<svg viewBox="@SvgViewBox" xmlns="http://www.w3.org/2000/svg">
+    @foreach (var panel in Sheet.Panels)
+    {
+        <rect
+            x="@panel.X"
+            y="@panel.Y"
+            width="@panel.Panel.Length"
+            height="@panel.Panel.Width"/>
+    }
+</svg>
+
+@code
+{
+    [Parameter]
+    [EditorRequired]
+    public OptimizedSheet Sheet { get; set; } = null!;
+
+    private string SvgViewBox => $"0 0 {Sheet.Sheet.Length} {Sheet.Sheet.Width}";
+}

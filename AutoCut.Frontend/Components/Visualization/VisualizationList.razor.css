@@ -3,4 +3,13 @@
     background-color: var(--card-background);
     border-radius: 10px;
     border: 1px solid var(--card-border);
+    padding: 15px;
+    overflow-y: scroll;
+}
+
+li {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
 }

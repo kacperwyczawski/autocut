@@ -1,0 +1,13 @@
+﻿svg {
+    width: 100%;
+    height: fit-content;
+    background-color: var(--bright-background);
+    border: 1px solid var(--bright-border);
+}
+
+rect {
+    fill: var(--primary);
+    fill-opacity: .1;
+    stroke: var(--primary);
+    stroke-width: 4px;
+}

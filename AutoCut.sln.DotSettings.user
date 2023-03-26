@@ -18,4 +18,5 @@
 	<s:Boolean x:Key="/Default/ResxEditorPersonal/CheckedGroups/=AutoCut_002EFrontend_002FLocalization_002FGlobalResources/@EntryIndexedValue">True</s:Boolean>
 	
 	<s:Boolean x:Key="/Default/ResxEditorPersonal/Initialized/@EntryValue">True</s:Boolean>
-	<s:Boolean x:Key="/Default/ResxEditorPersonal/ShowOnlyErrors/@EntryValue">False</s:Boolean></wpf:ResourceDictionary>
+	<s:Boolean x:Key="/Default/ResxEditorPersonal/ShowOnlyErrors/@EntryValue">False</s:Boolean>
+	</wpf:ResourceDictionary>

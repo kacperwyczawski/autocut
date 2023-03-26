@@ -1,4 +1,4 @@
-﻿using AutoCut.Core.Panels;
+﻿using AutoCut.Core.Models;
 
 namespace AutoCut.Frontend.Stores.Panels.Actions;
 

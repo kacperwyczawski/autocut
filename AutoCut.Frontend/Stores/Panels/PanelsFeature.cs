@@ -1,4 +1,4 @@
-﻿using AutoCut.Core.Panels;
+﻿using AutoCut.Core.Models;
 using Fluxor;
 
 namespace AutoCut.Frontend.Stores.Panels;

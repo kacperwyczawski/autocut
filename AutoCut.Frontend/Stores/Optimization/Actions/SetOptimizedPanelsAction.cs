@@ -1,13 +1,13 @@
-﻿using AutoCut.Core.Panels;
+﻿using AutoCut.Core.Models;
 
 namespace AutoCut.Frontend.Stores.Optimization.Actions;
 
 public class SetOptimizedPanelsAction
 {
-    public SetOptimizedPanelsAction(List<OptimizedStockPanel> optimizedStockPanels)
+    public SetOptimizedPanelsAction(List<OptimizedSheet> optimizedSheets)
     {
-        OptimizedStockPanels = optimizedStockPanels;
+        OptimizedSheets = optimizedSheets;
     }
 
-    public List<OptimizedStockPanel> OptimizedStockPanels { get; }
+    public List<OptimizedSheet> OptimizedSheets { get; }
 }

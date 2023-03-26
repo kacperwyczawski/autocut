@@ -1,4 +1,4 @@
-﻿using AutoCut.Core.Panels;
+﻿using AutoCut.Core.Models;
 using AutoCut.Frontend.Stores.Panels.Actions;
 using Fluxor;
 
@@ -11,7 +11,7 @@ public static class PanelsReducers
     {
         return state with { Panels = new List<CompressedPanel>() };
     }
-    
+
     [ReducerMethod]
     public static PanelsState PanelAddAction(PanelsState state, AddAction action)
     {

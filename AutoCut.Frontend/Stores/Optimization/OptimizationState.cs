@@ -1,8 +1,8 @@
-﻿using AutoCut.Core.Panels;
+﻿using AutoCut.Core.Models;
 
 namespace AutoCut.Frontend.Stores.Optimization;
 
 public record OptimizationState
 {
-    public List<OptimizedStockPanel> OptimizedStockPanels { get; init; } = new();
+    public List<OptimizedSheet> OptimizedSheets { get; init; } = new();
 }

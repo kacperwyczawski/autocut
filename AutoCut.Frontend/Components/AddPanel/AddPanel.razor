@@ -1,4 +1,4 @@
-﻿@using AutoCut.Core.Panels
+﻿@using AutoCut.Core.Models
 @using AutoCut.Frontend.Components.Shared
 @using AutoCut.Frontend.Stores.Panels.Actions
 @inject IDispatcher Dispatcher
@@ -9,47 +9,47 @@
             <p>
                 @Localizer["Length"] <span class="units">(mm)</span>
             </p>
-            <input type="text" inputmode="numeric" @bind="_length" id="first-field"/>
+            <input type="text" inputmode="numeric" @bind="_panel.Panel.Length" id="first-field"/>
         </label>
         <label>
             <p>
                 @Localizer["Width"] <span class="units">(mm)</span>
             </p>
-            <input type="text" inputmode="numeric" @bind="_width"/>
+            <input type="text" inputmode="numeric" @bind="_panel.Panel.Width"/>
         </label>
         <label>
             @Localizer["Quantity"]
-            <input type="text" inputmode="numeric" @bind="_quantity"/>
+            <input type="text" inputmode="numeric" @bind="_panel.Quantity"/>
         </label>
         <label>
             @Localizer["Name"]
-            <input type="text" @bind="_name"/>
+            <input type="text" @bind="_panel.Panel.Name"/>
         </label>
     </div>
     <div class="edge-buttons">
-        <button @onclick="() => _edgeBanding.EdgesAlongLenght = _edgeBanding.EdgesAlongLenght == 1 ? 0 : 1">
+        <button @onclick="() => _panel.Panel.EdgeReduction.EdgesAlongLenght = _panel.Panel.EdgeReduction.EdgesAlongLenght == 1 ? 0 : 1">
             <EdgesIcon
-                Edges="@(new EdgeBanding(1, 0))"
+                Edges="@(new EdgeReduction(1, 0))"
                 MutedColor="true"
-                Accent="@(_edgeBanding.EdgesAlongLenght == 1 ? EdgesIcon.EdgesIconAccent.All : EdgesIcon.EdgesIconAccent.None)"/>
+                Accent="@(_panel.Panel.EdgeReduction.EdgesAlongLenght == 1 ? EdgesIcon.EdgesIconAccent.All : EdgesIcon.EdgesIconAccent.None)"/>
         </button>
-        <button @onclick="() => _edgeBanding.EdgesAlongLenght = _edgeBanding.EdgesAlongLenght == 2 ? 0 : 2">
+        <button @onclick="() => _panel.Panel.EdgeReduction.EdgesAlongLenght = _panel.Panel.EdgeReduction.EdgesAlongLenght == 2 ? 0 : 2">
             <EdgesIcon
-                Edges="@(new EdgeBanding(2, 0))"
+                Edges="@(new EdgeReduction(2, 0))"
                 MutedColor="true"
-                Accent="@(_edgeBanding.EdgesAlongLenght == 2 ? EdgesIcon.EdgesIconAccent.All : EdgesIcon.EdgesIconAccent.None)"/>
+                Accent="@(_panel.Panel.EdgeReduction.EdgesAlongLenght == 2 ? EdgesIcon.EdgesIconAccent.All : EdgesIcon.EdgesIconAccent.None)"/>
         </button>
-        <button @onclick="() => _edgeBanding.EdgesAlongWidth = _edgeBanding.EdgesAlongWidth == 1 ? 0 : 1">
+        <button @onclick="() => _panel.Panel.EdgeReduction.EdgesAlongWidth = _panel.Panel.EdgeReduction.EdgesAlongWidth == 1 ? 0 : 1">
             <EdgesIcon
-                Edges="@(new EdgeBanding(0, 1))"
+                Edges="@(new EdgeReduction(0, 1))"
                 MutedColor="true"
-                Accent="@(_edgeBanding.EdgesAlongWidth == 1 ? EdgesIcon.EdgesIconAccent.All : EdgesIcon.EdgesIconAccent.None)"/>
+                Accent="@(_panel.Panel.EdgeReduction.EdgesAlongWidth == 1 ? EdgesIcon.EdgesIconAccent.All : EdgesIcon.EdgesIconAccent.None)"/>
         </button>
-        <button @onclick="() => _edgeBanding.EdgesAlongWidth = _edgeBanding.EdgesAlongWidth == 2 ? 0 : 2">
+        <button @onclick="() => _panel.Panel.EdgeReduction.EdgesAlongWidth = _panel.Panel.EdgeReduction.EdgesAlongWidth == 2 ? 0 : 2">
             <EdgesIcon
-                Edges="@(new EdgeBanding(0, 2))"
+                Edges="@(new EdgeReduction(0, 2))"
                 MutedColor="true"
-                Accent="@(_edgeBanding.EdgesAlongWidth == 2 ? EdgesIcon.EdgesIconAccent.All : EdgesIcon.EdgesIconAccent.None)"/>
+                Accent="@(_panel.Panel.EdgeReduction.EdgesAlongWidth == 2 ? EdgesIcon.EdgesIconAccent.All : EdgesIcon.EdgesIconAccent.None)"/>
         </button>
     </div>
     <div class="buttons">
@@ -70,30 +70,18 @@
 
 @code
 {
-    int _length;
-    int _width;
-    int _quantity = 1;
-    string _name = "";
-    EdgeBanding _edgeBanding = EdgeBanding.NoEdges;
-
-    private void Reset()
-    {
-        _length = 0;
-        _width = 0;
-        _quantity = 1;
-        _name = "";
-        _edgeBanding = EdgeBanding.NoEdges;
-    }
+    CompressedPanel _panel = CompressedPanel.Default;
 
     private void Add()
     {
-        var panel = new CompressedPanel(
-            new Panel(new Rectangle(_length, _width), _edgeBanding, _name),
-            _quantity);
-
     // TODO: Add validation
-        Dispatcher.Dispatch(new AddAction(panel));
+        Dispatcher.Dispatch(new AddAction(_panel));
 
         Reset();
+    }
+
+    private void Reset()
+    {
+        _panel = CompressedPanel.Default;
     }
 }

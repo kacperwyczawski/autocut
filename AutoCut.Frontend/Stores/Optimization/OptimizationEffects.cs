@@ -1,5 +1,5 @@
-﻿using AutoCut.Core.Optimization;
-using AutoCut.Core.Panels;
+﻿using AutoCut.Core.Models;
+using AutoCut.Core.Optimization;
 using AutoCut.Frontend.Stores.Optimization.Actions;
 using AutoCut.Frontend.Stores.Panels;
 using Fluxor;
@@ -22,8 +22,8 @@ public class OptimizationEffects
 
         var optimizer = new Optimizer();
         var panels = _panelsState.Value.Panels;
-        var result = optimizer.Optimize(StockPanel.Default, panels, new OptimizerOptions());
-        dispatcher.Dispatch(new SetOptimizedPanelsAction(result.OptimizedStockPanels));
+        var result = optimizer.Optimize(Sheet.Default, panels, new OptimizerOptions());
+        dispatcher.Dispatch(new SetOptimizedPanelsAction(result.OptimizedSheets));
         return Task.CompletedTask;
     }
 }

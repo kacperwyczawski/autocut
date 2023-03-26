@@ -1,14 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace AutoCut.Core.Panels;
+namespace AutoCut.Core.Models;
 
-public class EdgeBanding
+public class EdgeReduction
 {
     [Range(0, 2)] public int EdgesAlongLenght { get; set; }
 
     [Range(0, 2)] public int EdgesAlongWidth { get; set; }
 
-    public EdgeBanding(int edgesAlongLenght, int edgesAlongWidth)
+    public EdgeReduction(int edgesAlongLenght, int edgesAlongWidth)
     {
         if (edgesAlongLenght is < 0 or > 2)
             throw new ArgumentOutOfRangeException(nameof(edgesAlongLenght));
@@ -19,6 +19,6 @@ public class EdgeBanding
         EdgesAlongWidth = edgesAlongWidth;
     }
 
-    public static EdgeBanding AllEdges => new EdgeBanding(2, 2);
-    public static EdgeBanding NoEdges => new EdgeBanding(0, 0);
+    public static EdgeReduction AllEdges => new EdgeReduction(2, 2);
+    public static EdgeReduction NoEdges => new EdgeReduction(0, 0);
 }

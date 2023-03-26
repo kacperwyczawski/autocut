@@ -29,8 +29,8 @@
     <data name="ResetPanels" xml:space="preserve">
         <value>Reset panels</value>
     </data>
-    <data name="StockPanel" xml:space="preserve">
-        <value>Stock panel</value>
+    <data name="Sheet" xml:space="preserve">
+        <value>Sheet</value>
     </data>
     <data name="Length" xml:space="preserve">
         <value>Length</value>
@@ -41,10 +41,10 @@
     <data name="Thickness" xml:space="preserve">
         <value>Thickness</value>
     </data>
-    <data name="EdgeCuttingThickness" xml:space="preserve">
-        <value>Edge cutting thickness</value>
+    <data name="SheetEdgeReductionThickness" xml:space="preserve">
+        <value>Sheet edge reduction thickness</value>
     </data>
-    <data name="EdgeBandingThickness" xml:space="preserve">
+    <data name="PanelEdgeReductionThickness" xml:space="preserve">
         <value>Edge banding thickness</value>
     </data>
     <data name="All" xml:space="preserve">
@@ -83,7 +83,7 @@
     <data name="NoPanelsInfo" xml:space="preserve">
         <value>Panel list is empty. Add a new panel to see it here.</value>
     </data>
-    <data name="EdgeBanding" xml:space="preserve">
+    <data name="PanelEdgeReduction" xml:space="preserve">
         <value>Edge banding</value>
     </data>
     <data name="Panels" xml:space="preserve">

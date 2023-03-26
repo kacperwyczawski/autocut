@@ -105,33 +105,6 @@ namespace AutoCut.Frontend.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Edge banding.
-        /// </summary>
-        internal static string EdgeBanding {
-            get {
-                return ResourceManager.GetString("EdgeBanding", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Edge banding thickness.
-        /// </summary>
-        internal static string EdgeBandingThickness {
-            get {
-                return ResourceManager.GetString("EdgeBandingThickness", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Edge cutting thickness.
-        /// </summary>
-        internal static string EdgeCuttingThickness {
-            get {
-                return ResourceManager.GetString("EdgeCuttingThickness", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Individual.
         /// </summary>
         internal static string Individual {
@@ -186,6 +159,24 @@ namespace AutoCut.Frontend.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Edge banding.
+        /// </summary>
+        internal static string PanelEdgeReduction {
+            get {
+                return ResourceManager.GetString("PanelEdgeReduction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edge banding thickness.
+        /// </summary>
+        internal static string PanelEdgeReductionThickness {
+            get {
+                return ResourceManager.GetString("PanelEdgeReductionThickness", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Panels.
         /// </summary>
         internal static string Panels {
@@ -231,11 +222,20 @@ namespace AutoCut.Frontend.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Stock panel.
+        ///   Looks up a localized string similar to Sheet.
         /// </summary>
-        internal static string StockPanel {
+        internal static string Sheet {
             get {
-                return ResourceManager.GetString("StockPanel", resourceCulture);
+                return ResourceManager.GetString("Sheet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sheet edge reduction thickness.
+        /// </summary>
+        internal static string SheetEdgeReductionThickness {
+            get {
+                return ResourceManager.GetString("SheetEdgeReductionThickness", resourceCulture);
             }
         }
         

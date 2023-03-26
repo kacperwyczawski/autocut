@@ -24,7 +24,7 @@
     <data name="Length" xml:space="preserve">
         <value>Długość</value>
     </data>
-    <data name="StockPanel" xml:space="preserve">
+    <data name="Sheet" xml:space="preserve">
         <value>Arkusz</value>
     </data>
     <data name="Width" xml:space="preserve">
@@ -33,10 +33,10 @@
     <data name="Thickness" xml:space="preserve">
         <value>Grubość</value>
     </data>
-    <data name="EdgeCuttingThickness" xml:space="preserve">
-        <value>Szerokość brzegowania</value>
+    <data name="SheetEdgeReductionThickness" xml:space="preserve">
+        <value>Grubość redukcji krawędzi arkusza</value>
     </data>
-    <data name="EdgeBandingThickness" xml:space="preserve">
+    <data name="PanelEdgeReductionThickness" xml:space="preserve">
         <value>Grubość oklejania</value>
     </data>
     <data name="All" xml:space="preserve">
@@ -75,7 +75,7 @@
     <data name="NoPanelsInfo" xml:space="preserve">
         <value>Lista paneli jest pusta. Dodaj nowy panel, aby zobaczyć go tutaj.</value>
     </data>
-    <data name="EdgeBanding" xml:space="preserve">
+    <data name="PanelEdgeReduction" xml:space="preserve">
         <value>Oklejanie</value>
     </data>
     <data name="Cuts" xml:space="preserve">

@@ -19,12 +19,12 @@
         @foreach (var panel in PanelsState.Value.Panels)
         {
             <tr>
-                <td>@panel.Panel.Rectangle.Length</td>
-                <td>@panel.Panel.Rectangle.Width</td>
+                <td>@panel.Panel.Length</td>
+                <td>@panel.Panel.Width</td>
                 <td>@panel.Quantity</td>
                 <td>@panel.Panel.Name</td>
                 <td>
-                    <EdgesIcon Edges="@panel.Panel.EdgeBanding" Accent="EdgesIcon.EdgesIconAccent.Border"></EdgesIcon>
+                    <EdgesIcon Edges="@panel.Panel.EdgeReduction" Accent="EdgesIcon.EdgesIconAccent.Border"></EdgesIcon>
                 </td>
                 <td>
                     <button class="delete-button">

@@ -8,6 +8,6 @@ public static class OptimizationReducers
     [ReducerMethod]
     public static OptimizationState SetOptimizedPanelsAction(OptimizationState state, SetOptimizedPanelsAction action)
     {
-        return state with { OptimizedStockPanels = action.OptimizedStockPanels };
+        return state with { OptimizedSheets = action.OptimizedSheets };
     }
 }

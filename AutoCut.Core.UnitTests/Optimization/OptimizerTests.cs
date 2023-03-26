@@ -1,5 +1,5 @@
-﻿using AutoCut.Core.Optimization;
-using AutoCut.Core.Panels;
+﻿using AutoCut.Core.Models;
+using AutoCut.Core.Optimization;
 using FluentAssertions;
 
 namespace AutoCut.Core.UnitTests.Optimization;
@@ -10,40 +10,31 @@ public class OptimizerTests
     public void NoPanels()
     {
         // arrange
-        var stockPanel = StockPanel.Default;
+        var sheet = Sheet.Default;
         var optimizer = new Optimizer();
 
         // act
-        var actual = optimizer.Optimize(stockPanel, new List<Panel>(), new OptimizerOptions());
+        var actual = optimizer.Optimize(sheet, new List<Panel>(), new OptimizerOptions());
 
         // assert
-        actual.OptimizedStockPanels.Should().BeEmpty();
+        actual.OptimizedSheets.Should().BeEmpty();
     }
 
     [Fact]
     public void SinglePanel()
     {
-        // arrange
         var panels = new List<Panel>
         {
-            new(new Rectangle(100, 100), EdgeBanding.NoEdges)
+            new(100, 100, EdgeReduction.NoEdges)
         };
-        var stockPanel = StockPanel.Default;
+        var sheet = Sheet.Default;
         var optimizer = new Optimizer();
 
-        // act
-        var actual = optimizer.Optimize(stockPanel, panels, new OptimizerOptions());
+        var actual = optimizer.Optimize(sheet, panels, new OptimizerOptions());
 
-        // assert
-        actual.OptimizedStockPanels.Single().Panels
-            .Should().ContainSingle("",
-                new PositionedPanel(
-                    new PositionedRectangle(
-                        new Rectangle(100, 100),
-                        new Position(0, 0)),
-                    EdgeBanding.NoEdges));
-        actual.OptimizedStockPanels
-            .Should().ContainSingle();
+        actual.OptimizedSheets.Single().Panels.Should()
+            .ContainSingle("", new OptimizedPanel(panels.First(), 0, 0));
+        actual.OptimizedSheets.Should().ContainSingle();
     }
 
     [Fact]
@@ -51,24 +42,24 @@ public class OptimizerTests
     {
         var panels = new List<Panel>
         {
-            new(new Rectangle(100, 200), EdgeBanding.NoEdges),
-            new(new Rectangle(100, 200), EdgeBanding.NoEdges),
-            new(new Rectangle(100, 200), EdgeBanding.NoEdges),
-            new(new Rectangle(100, 200), EdgeBanding.NoEdges),
+            new(100, 200, EdgeReduction.NoEdges),
+            new(100, 200, EdgeReduction.NoEdges),
+            new(100, 200, EdgeReduction.NoEdges),
+            new(100, 200, EdgeReduction.NoEdges),
         };
-        var stockPanel = StockPanel.Default;
+        var sheet = Sheet.Default;
         var optimizer = new Optimizer();
 
-        var actual = optimizer.Optimize(stockPanel, panels, new OptimizerOptions());
+        var actual = optimizer.Optimize(sheet, panels, new OptimizerOptions());
 
-        actual.OptimizedStockPanels.Single().Panels
-            .Should().BeEquivalentTo(
-                new List<PositionedPanel>
+        actual.OptimizedSheets.Single().Panels.Should()
+            .BeEquivalentTo(
+                new List<OptimizedPanel>
                 {
-                    new(new PositionedRectangle(new Rectangle(100, 200), new Position(0, 0)), EdgeBanding.NoEdges),
-                    new(new PositionedRectangle(new Rectangle(100, 200), new Position(100, 0)), EdgeBanding.NoEdges),
-                    new(new PositionedRectangle(new Rectangle(100, 200), new Position(200, 0)), EdgeBanding.NoEdges),
-                    new(new PositionedRectangle(new Rectangle(100, 200), new Position(300, 0)), EdgeBanding.NoEdges)
+                    new(panels[0], 0, 0),
+                    new(panels[1], 100, 0),
+                    new(panels[2], 200, 0),
+                    new(panels[3], 300, 0)
                 });
     }
 
@@ -77,24 +68,24 @@ public class OptimizerTests
     {
         var panels = new List<Panel>
         {
-            new(new Rectangle(100, 200), EdgeBanding.NoEdges),
-            new(new Rectangle(100, 200), EdgeBanding.NoEdges),
-            new(new Rectangle(100, 200), EdgeBanding.NoEdges)
+            new(100, 200, EdgeReduction.NoEdges),
+            new(100, 200, EdgeReduction.NoEdges),
+            new(100, 200, EdgeReduction.NoEdges)
         };
-        var stockPanel = StockPanel.Default;
+        var sheet = Sheet.Default;
         var optimizer = new Optimizer();
         var options = new OptimizerOptions { BladeThickness = 3 };
 
-        var actual = optimizer.Optimize(stockPanel, panels, options);
+        var actual = optimizer.Optimize(sheet, panels, options);
 
         actual.Options.BladeThickness.Should().Be(3);
-        actual.OptimizedStockPanels.Single().Panels
-            .Should().BeEquivalentTo(
-                new List<PositionedPanel>
+        actual.OptimizedSheets.Single().Panels.Should()
+            .BeEquivalentTo(
+                new List<OptimizedPanel>
                 {
-                    new(new PositionedRectangle(new Rectangle(100, 200), new Position(0, 0)), EdgeBanding.NoEdges),
-                    new(new PositionedRectangle(new Rectangle(100, 200), new Position(103, 0)), EdgeBanding.NoEdges),
-                    new(new PositionedRectangle(new Rectangle(100, 200), new Position(206, 0)), EdgeBanding.NoEdges)
+                    new(panels[0], 0, 0),
+                    new(panels[1], 103, 0),
+                    new(panels[2], 206, 0)
                 });
     }
 
@@ -103,24 +94,24 @@ public class OptimizerTests
     {
         var panels = new List<Panel>
         {
-            new(new Rectangle(100, 200), EdgeBanding.NoEdges),
-            new(new Rectangle(100, 200), EdgeBanding.NoEdges),
-            new(new Rectangle(50, 50), EdgeBanding.NoEdges),
-            new(new Rectangle(50, 50), EdgeBanding.NoEdges)
+            new(100, 200, EdgeReduction.NoEdges),
+            new(100, 200, EdgeReduction.NoEdges),
+            new(50, 50, EdgeReduction.NoEdges),
+            new(50, 50, EdgeReduction.NoEdges)
         };
-        var stockPanel = StockPanel.Default;
+        var sheet = Sheet.Default;
         var optimizer = new Optimizer();
 
-        var actual = optimizer.Optimize(stockPanel, panels, new OptimizerOptions());
+        var actual = optimizer.Optimize(sheet, panels, new OptimizerOptions());
 
-        actual.OptimizedStockPanels.Single().Panels
-            .Should().BeEquivalentTo(
-                new List<PositionedPanel>
+        actual.OptimizedSheets.Single().Panels.Should()
+            .BeEquivalentTo(
+                new List<OptimizedPanel>
                 {
-                    new(new PositionedRectangle(new Rectangle(100, 200), new Position(0, 0)), EdgeBanding.NoEdges),
-                    new(new PositionedRectangle(new Rectangle(100, 200), new Position(100, 0)), EdgeBanding.NoEdges),
-                    new(new PositionedRectangle(new Rectangle(50, 50), new Position(200, 0)), EdgeBanding.NoEdges),
-                    new(new PositionedRectangle(new Rectangle(50, 50), new Position(250, 0)), EdgeBanding.NoEdges)
+                    new(panels[0], 0, 0),
+                    new(panels[1], 100, 0),
+                    new(panels[2], 200, 0),
+                    new(panels[3], 250, 0)
                 });
     }
 
@@ -129,22 +120,23 @@ public class OptimizerTests
     {
         var panels = new List<CompressedPanel>
         {
-            new(new Panel(new Rectangle(100, 200), EdgeBanding.NoEdges), 5)
+            new(new Panel(100, 200, EdgeReduction.NoEdges), 5)
         };
-        var stockPanel = new StockPanel(new Panel(new Rectangle(210, 2000), EdgeBanding.NoEdges), 10);
+        var sheet = new Sheet(210, 2000, EdgeReduction.NoEdges, 10);
         var optimizer = new Optimizer();
 
-        var actual = optimizer.Optimize(stockPanel, panels, new OptimizerOptions());
+        var actual = optimizer.Optimize(sheet, panels, new OptimizerOptions());
 
-        actual.OptimizedStockPanels.Single().Panels
-            .Should().BeEquivalentTo(
-                new List<PositionedPanel>
+        var expectedPanel = panels.First().Decompress().First();
+        actual.OptimizedSheets.Single().Panels.Should()
+            .BeEquivalentTo(
+                new List<OptimizedPanel>
                 {
-                    new(new PositionedRectangle(new Rectangle(100, 200), new Position(0, 0)), EdgeBanding.NoEdges),
-                    new(new PositionedRectangle(new Rectangle(100, 200), new Position(100, 0)), EdgeBanding.NoEdges),
-                    new(new PositionedRectangle(new Rectangle(100, 200), new Position(0, 200)), EdgeBanding.NoEdges),
-                    new(new PositionedRectangle(new Rectangle(100, 200), new Position(100, 200)), EdgeBanding.NoEdges),
-                    new(new PositionedRectangle(new Rectangle(100, 200), new Position(0, 400)), EdgeBanding.NoEdges)
+                    new(expectedPanel, 0, 0),
+                    new(expectedPanel, 100, 0),
+                    new(expectedPanel, 0, 200),
+                    new(expectedPanel, 100, 200),
+                    new(expectedPanel, 0, 400)
                 });
     }
 
@@ -153,53 +145,50 @@ public class OptimizerTests
     {
         var panels = new List<CompressedPanel>
         {
-            new(new Panel(new Rectangle(100, 100), EdgeBanding.NoEdges), 5),
-            new(new Panel(new Rectangle(50, 50), EdgeBanding.NoEdges), 2)
+            new(new Panel(100, 100, EdgeReduction.NoEdges), 5),
+            new(new Panel(50, 50, EdgeReduction.NoEdges), 3)
         };
-        var stockPanel = new StockPanel(new Panel(new Rectangle(300, 300), EdgeBanding.NoEdges), 10);
+        var sheet = new Sheet(300, 300, EdgeReduction.NoEdges, 10);
         var optimizer = new Optimizer();
 
-        var actual = optimizer.Optimize(stockPanel, panels, new OptimizerOptions());
+        var actual = optimizer.Optimize(sheet, panels, new OptimizerOptions());
 
-        actual.OptimizedStockPanels.Single().Panels
-            .Should().BeSubsetOf(new List<PositionedPanel>
+        var expectedPanel1 = panels.First().Decompress().First();
+        var expectedPanel2 = panels.Last().Decompress().First();
+        actual.OptimizedSheets.Single().Panels.Should()
+            .BeEquivalentTo(new List<OptimizedPanel>
             {
-                new(new PositionedRectangle(new Rectangle(100, 100), new Position(0, 0)), EdgeBanding.NoEdges),
-                new(new PositionedRectangle(new Rectangle(100, 100), new Position(100, 0)), EdgeBanding.NoEdges),
-                new(new PositionedRectangle(new Rectangle(100, 100), new Position(200, 0)), EdgeBanding.NoEdges),
-                new(new PositionedRectangle(new Rectangle(100, 100), new Position(0, 100)), EdgeBanding.NoEdges),
-                new(new PositionedRectangle(new Rectangle(100, 100), new Position(100, 100)), EdgeBanding.NoEdges),
+                new(expectedPanel1, 0, 0),
+                new(expectedPanel1, 100, 0),
+                new(expectedPanel1, 200, 0),
+                new(expectedPanel1, 0, 100),
+                new(expectedPanel1, 100, 100),
 
-                new(new PositionedRectangle(new Rectangle(50, 50), new Position(200, 100)), EdgeBanding.NoEdges),
-                new(new PositionedRectangle(new Rectangle(50, 50), new Position(200, 150)), EdgeBanding.NoEdges),
-                new(new PositionedRectangle(new Rectangle(50, 50), new Position(250, 100)), EdgeBanding.NoEdges)
-            })
-            .And.HaveCount(7);
+                new(expectedPanel2, 200, 100),
+                new(expectedPanel2, 250, 100),
+                new(expectedPanel2, 200, 150)
+            });
     }
 
     [Fact]
-    public void MultipleStockPanels()
+    public void MultipleSheets()
     {
         var panels = new List<CompressedPanel>
         {
-            new(new Panel(new Rectangle(100, 100), EdgeBanding.NoEdges), 3)
+            new(new Panel(100, 100, EdgeReduction.NoEdges), 3)
         };
-        var stockPanel = new StockPanel(new Panel(new Rectangle(110, 120), EdgeBanding.NoEdges), 10);
+        var sheet = new Sheet(110, 120, EdgeReduction.NoEdges, 10);
         var optimizer = new Optimizer();
 
-        var actual = optimizer.Optimize(stockPanel, panels, new OptimizerOptions());
+        var actual = optimizer.Optimize(sheet, panels, new OptimizerOptions());
 
-        actual.OptimizedStockPanels
-            .Should().HaveCount(3);
-        foreach (var optimizedStockPanel in actual.OptimizedStockPanels)
+        var expectedPanel = panels.First().Decompress().First();
+        actual.OptimizedSheets.Should().HaveCount(3);
+        foreach (var optimizedSheet in actual.OptimizedSheets)
         {
-            optimizedStockPanel.Panels
+            optimizedSheet.Panels
                 .Should().ContainSingle("",
-                    new PositionedPanel(
-                        new PositionedRectangle(
-                            new Rectangle(100, 100),
-                            new Position(0, 0)),
-                        EdgeBanding.NoEdges));
+                    new OptimizedPanel(expectedPanel, 0, 0));
         }
     }
 }

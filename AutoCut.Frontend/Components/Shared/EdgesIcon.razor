@@ -1,4 +1,4 @@
-﻿@using AutoCut.Core.Panels
+﻿@using AutoCut.Core.Models
 <svg class="@GetSvgClass()" width="35" height="35" viewBox="0 0 35 35" xmlns="http://www.w3.org/2000/svg">
     <g class="base">
         <rect y="30" width="5" height="5" rx="2"/>
@@ -49,7 +49,7 @@
 {
 
     [Parameter]
-    public EdgeBanding Edges { get; set; } = EdgeBanding.NoEdges;
+    public EdgeReduction Edges { get; set; } = EdgeReduction.NoEdges;
 
     [Parameter]
     public EdgesIconAccent Accent { get; set; } = EdgesIconAccent.None;

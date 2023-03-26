@@ -7,7 +7,7 @@
     overflow-y: scroll;
 }
 
-:deep rect:hover {
+::deep rect:hover {
     cursor: pointer;
     fill-opacity: .2;
 }

@@ -1,6 +1,4 @@
 ﻿svg {
-    width: 100%;
-    height: fit-content;
     background-color: var(--bright-background);
     border: 1px solid var(--bright-border);
 }

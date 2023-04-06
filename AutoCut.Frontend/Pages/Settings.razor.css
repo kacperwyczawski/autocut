@@ -1,0 +1,13 @@
+﻿main {
+    background-color: var(--background);
+    padding: 0 15px 15px;
+    color: var(--text);
+    height: calc(100vh - 80px);
+}
+
+.card {
+    background-color: var(--card-background);
+    border-radius: 5px;
+    border: 1px solid var(--card-border);
+    padding: 15px;
+}

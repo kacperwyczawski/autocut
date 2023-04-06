@@ -16,6 +16,18 @@ button {
     cursor: pointer;
 }
 
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+}
+
+#app {
+    height: 100%;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
 /* default blazor things */
 
 #blazor-error-ui {

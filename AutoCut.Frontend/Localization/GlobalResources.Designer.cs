@@ -105,6 +105,15 @@ namespace AutoCut.Frontend.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Edge reduction thickness.
+        /// </summary>
+        internal static string EdgeReductionThickness {
+            get {
+                return ResourceManager.GetString("EdgeReductionThickness", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Individual.
         /// </summary>
         internal static string Individual {
@@ -159,20 +168,11 @@ namespace AutoCut.Frontend.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Edge banding.
+        ///   Looks up a localized string similar to Other.
         /// </summary>
-        internal static string PanelEdgeReduction {
+        internal static string Other {
             get {
-                return ResourceManager.GetString("PanelEdgeReduction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Edge banding thickness.
-        /// </summary>
-        internal static string PanelEdgeReductionThickness {
-            get {
-                return ResourceManager.GetString("PanelEdgeReductionThickness", resourceCulture);
+                return ResourceManager.GetString("Other", resourceCulture);
             }
         }
         
@@ -222,20 +222,29 @@ namespace AutoCut.Frontend.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        internal static string Save {
+            get {
+                return ResourceManager.GetString("Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Settings.
+        /// </summary>
+        internal static string Settings {
+            get {
+                return ResourceManager.GetString("Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sheet.
         /// </summary>
         internal static string Sheet {
             get {
                 return ResourceManager.GetString("Sheet", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Sheet edge reduction thickness.
-        /// </summary>
-        internal static string SheetEdgeReductionThickness {
-            get {
-                return ResourceManager.GetString("SheetEdgeReductionThickness", resourceCulture);
             }
         }
         

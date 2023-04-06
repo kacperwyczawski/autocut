@@ -41,11 +41,8 @@
     <data name="Thickness" xml:space="preserve">
         <value>Thickness</value>
     </data>
-    <data name="SheetEdgeReductionThickness" xml:space="preserve">
-        <value>Sheet edge reduction thickness</value>
-    </data>
-    <data name="PanelEdgeReductionThickness" xml:space="preserve">
-        <value>Edge banding thickness</value>
+    <data name="EdgeReductionThickness" xml:space="preserve">
+        <value>Edge reduction thickness</value>
     </data>
     <data name="All" xml:space="preserve">
         <value>All</value>
@@ -83,13 +80,19 @@
     <data name="NoPanelsInfo" xml:space="preserve">
         <value>Panel list is empty. Add a new panel to see it here.</value>
     </data>
-    <data name="PanelEdgeReduction" xml:space="preserve">
-        <value>Edge banding</value>
-    </data>
     <data name="Panels" xml:space="preserve">
         <value>Panels</value>
     </data>
     <data name="Cuts" xml:space="preserve">
         <value>Cuts</value>
+    </data>
+    <data name="Settings" xml:space="preserve">
+        <value>Settings</value>
+    </data>
+    <data name="Other" xml:space="preserve">
+        <value>Other</value>
+    </data>
+    <data name="Save" xml:space="preserve">
+        <value>Save</value>
     </data>
 </root>

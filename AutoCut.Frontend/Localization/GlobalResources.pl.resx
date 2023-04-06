@@ -33,11 +33,8 @@
     <data name="Thickness" xml:space="preserve">
         <value>Grubość</value>
     </data>
-    <data name="SheetEdgeReductionThickness" xml:space="preserve">
-        <value>Grubość redukcji krawędzi arkusza</value>
-    </data>
-    <data name="PanelEdgeReductionThickness" xml:space="preserve">
-        <value>Grubość oklejania</value>
+    <data name="EdgeReductionThickness" xml:space="preserve">
+        <value>Grubość redukcji krawędzi</value>
     </data>
     <data name="All" xml:space="preserve">
         <value>Wszystkie</value>
@@ -75,13 +72,19 @@
     <data name="NoPanelsInfo" xml:space="preserve">
         <value>Lista paneli jest pusta. Dodaj nowy panel, aby zobaczyć go tutaj.</value>
     </data>
-    <data name="PanelEdgeReduction" xml:space="preserve">
-        <value>Oklejanie</value>
-    </data>
     <data name="Cuts" xml:space="preserve">
         <value>Cięcia</value>
     </data>
     <data name="Panels" xml:space="preserve">
         <value>Formatki</value>
+    </data>
+    <data name="Settings" xml:space="preserve">
+        <value>Ustawienia</value>
+    </data>
+    <data name="Other" xml:space="preserve">
+        <value>Inne</value>
+    </data>
+    <data name="Save" xml:space="preserve">
+        <value>Zapisz</value>
     </data>
 </root>

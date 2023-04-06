@@ -6,7 +6,7 @@ body {
     padding: 0;
 }
 
-button {
+button, input[type="button"], input[type="submit"], input[type="reset"] {
     text-align: center;
     text-transform: uppercase;
     font-weight: bold;

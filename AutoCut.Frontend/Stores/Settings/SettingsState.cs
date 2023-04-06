@@ -1,11 +1,11 @@
-﻿using AutoCut.Core.Optimization;
+﻿using AutoCut.Core.Models;
+using AutoCut.Core.Optimization;
 
 namespace AutoCut.Frontend.Stores.Settings;
 
 public record SettingsState
 {
-    public OptimizerOptions OptimizerOptions { get; init; } = new();
+    public required OptimizerOptions OptimizerOptions { get; init; }
 
-    public bool IsDrawerOpen { get; init; }
-    public bool IsDarkMode { get; init; }
+    public required Sheet SheetTemplate { get; init; }
 }

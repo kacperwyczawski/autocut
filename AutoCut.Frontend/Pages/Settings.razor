@@ -1,11 +1,70 @@
 ﻿@page "/settings"
+@using AutoCut.Frontend.Stores.Settings
+@using AutoCut.Frontend.Stores.Settings.Actions
+@using AutoCut.Core.Optimization
+@using AutoCut.Core.Models
+@inherits FluxorComponent
+@inject IState<SettingsState> SettingsState
+@inject IStringLocalizer<GlobalResources> Localizer
+@inject IDispatcher Dispatcher
+@inject NavigationManager NavigationManager
 
 <main>
     <div class="card">
-        <h1>Settings</h1>
+        <h1>@Localizer["Settings"]</h1>
+
+        <h2>@Localizer["Sheet"]</h2>
+        <label>
+            @Localizer["Length"]
+            <input type="number" @bind="SheetTemplate.Length"/>
+        </label>
+        <label>
+            @Localizer["Width"]
+            <input type="number" @bind="SheetTemplate.Width"/>
+        </label>
+        <label>
+            @Localizer["Thickness"]
+            <input type="number" @bind="SheetTemplate.Thickness"/>
+        </label>
+        <label>
+            @Localizer["EdgeReductionThickness"]
+            <input type="number" @bind="OptimizerOptions.SheetEdgeReductionThickness"/>
+        </label>
+        @* TODO: extract component for selecting edges and use it here *@
+
+        <h2>@Localizer["Blade"]</h2>
+        <label>
+            @Localizer["Thickness"]
+            <input type="number" @bind="OptimizerOptions.BladeThickness"/>
+        </label>
+
+        <h2>@Localizer["Panels"]</h2>
+        <label>
+            @Localizer["EdgeReductionThickness"]
+            <input type="number" @bind="OptimizerOptions.PanelEdgeReductionThickness"/>
+        </label>
+
+        <input type="submit" value="@Localizer["Save"]" @onclick="SaveSettings"/>
     </div>
 </main>
 
-@code {
+@code
+{
+    private OptimizerOptions OptimizerOptions { get; set; } = null!;
 
+    private Sheet SheetTemplate { get; set; } = null!;
+
+    protected override void OnInitialized()
+    {
+        OptimizerOptions = SettingsState.Value.OptimizerOptions;
+        SheetTemplate = SettingsState.Value.SheetTemplate;
+
+        base.OnInitialized();
+    }
+
+    private void SaveSettings()
+    {
+        Dispatcher.Dispatch(new UpdateSettingsAction(OptimizerOptions, SheetTemplate));
+        NavigationManager.NavigateTo("");
+    }
 }

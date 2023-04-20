@@ -1,6 +1,11 @@
-﻿@inherits FluxorComponent
+﻿@using AutoCut.Frontend.Stores.Settings
+@using AutoCut.Frontend.Stores.Optimization
+@using System.Text.Json
+@inherits FluxorComponent
 @inject IDispatcher Dispatcher
-@inject NavigationManager NavigationManager
+@inject IJSRuntime JsRuntime
+@inject IState<SettingsState> SettingsState
+@inject IState<OptimizationState> OptimizationState
 
 <header>
     <nav>
@@ -16,7 +21,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/>
                 </svg>
             </button>
-            <button class="button">
+            <button class="button" onclick="@Export">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <title>export</title>
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
@@ -38,3 +43,28 @@
         </div>
     </nav>
 </header>
+
+@code
+{
+    private async Task Export()
+    {
+        var exportData = new
+        {
+            Options = SettingsState.Value.OptimizerOptions,
+            SettingsState.Value.SheetTemplate,
+            Sheets = OptimizationState.Value.OptimizedSheets,
+            Cuts = Array.Empty<int>() // placeholder, while cuts are not implemented
+        };
+
+        var options = new JsonSerializerOptions
+        {
+            WriteIndented = true
+        };
+
+        var json = JsonSerializer.SerializeToUtf8Bytes(exportData, options);
+
+        using var streamReference = new DotNetStreamReference(new MemoryStream(json));
+
+        await JsRuntime.InvokeVoidAsync("downloadFileFromStream", "export.json", streamReference);
+    }
+}

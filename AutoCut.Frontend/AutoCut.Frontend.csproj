@@ -34,6 +34,13 @@
         <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\ICON-LICENSE"/>
         <_ContentIncludedByDefault Remove="wwwroot\css\open-iconic\README.md"/>
         <_ContentIncludedByDefault Remove="wwwroot\sample-data\weather.json"/>
+        <_ContentIncludedByDefault Remove="Components\AddPanel\AddPanel.razor"/>
+        <_ContentIncludedByDefault Remove="Components\ActionButtons\ActionButtons.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Panels\Panels.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Tables\Tables.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Visualization\CurrentVisualization.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Visualization\SvgVisualization.razor"/>
+        <_ContentIncludedByDefault Remove="Components\Visualization\VisualizationList.razor"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -53,6 +60,22 @@
             <AutoGen>True</AutoGen>
             <DependentUpon>tempname.resx</DependentUpon>
         </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="Components\Elements\"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <AdditionalFiles Include="Components\Elements\ActionButtons\ActionButtons.razor"/>
+        <AdditionalFiles Include="Components\Elements\AddPanel\AddPanel.razor"/>
+        <AdditionalFiles Include="Components\Elements\AppBar\AppBar.razor"/>
+        <AdditionalFiles Include="Components\Elements\Cuts\Cuts.razor"/>
+        <AdditionalFiles Include="Components\Elements\Panels\Panels.razor"/>
+        <AdditionalFiles Include="Components\Elements\Tables\Tables.razor"/>
+        <AdditionalFiles Include="Components\Elements\Visualization\CurrentVisualization.razor"/>
+        <AdditionalFiles Include="Components\Elements\Visualization\SvgVisualization.razor"/>
+        <AdditionalFiles Include="Components\Elements\Visualization\VisualizationList.razor"/>
     </ItemGroup>
 
 </Project>

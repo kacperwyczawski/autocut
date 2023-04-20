@@ -1,14 +1,14 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
 	
 	
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=6024e4c5_002D0b7b_002D42a7_002Db680_002D33f9c6413e53/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="PanelUtilitiesTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=6024e4c5_002D0b7b_002D42a7_002Db680_002D33f9c6413e53/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="PanelUtilitiesTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;xUnit::69DF46F1-6E03-4187-A67E-9662438C9722::net7.0::AutoCut.Core.UnitTests.Models.Panels.PanelUtilitiesTests&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;xUnit::69DF46F1-6E03-4187-A67E-9662438C9722::net7.0::AutoCut.Core.UnitTests.Optimization.OptimizerTests.SinglePanel&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;xUnit::69DF46F1-6E03-4187-A67E-9662438C9722::net7.0::AutoCut.Core.UnitTests.Optimization.OptimizerTests&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=97370f1f_002Dd9e4_002D4236_002Db0e3_002D014db333ee88/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="PanelUtilitiesTests #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=97370f1f_002Dd9e4_002D4236_002Db0e3_002D014db333ee88/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="PanelUtilitiesTests #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;xUnit::69DF46F1-6E03-4187-A67E-9662438C9722::net7.0::AutoCut.Core.UnitTests.Models.Panels.PanelUtilitiesTests&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;xUnit::69DF46F1-6E03-4187-A67E-9662438C9722::net7.0::AutoCut.Core.UnitTests.Optimization.OptimizerTests.SinglePanel&lt;/TestId&gt;&#xD;

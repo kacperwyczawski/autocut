@@ -4,26 +4,27 @@
 
 <section>
     <div class="input-fields">
-        <label>
-            <p>
-                @Localizer["Length"] <span class="units">(mm)</span>
-            </p>
-            <input type="text" inputmode="numeric" @bind="_panel.Panel.Length" id="first-field"/>
-        </label>
-        <label>
-            <p>
-                @Localizer["Width"] <span class="units">(mm)</span>
-            </p>
-            <input type="text" inputmode="numeric" @bind="_panel.Panel.Width"/>
-        </label>
-        <label>
-            @Localizer["Quantity"]
-            <input type="text" inputmode="numeric" @bind="_panel.Quantity"/>
-        </label>
-        <label>
-            @Localizer["Name"]
-            <input type="text" @bind="_panel.Panel.Name"/>
-        </label>
+        <Input
+            TValue="decimal"
+            Label="@Localizer["Length"]"
+            HtmlInputMode="numeric"
+            Units="mm"
+            @bind-Value="_panel.Panel.Length"/>
+        <Input
+            TValue="decimal"
+            Label="@Localizer["Width"]"
+            HtmlInputMode="numeric"
+            Units="mm"
+            @bind-Value="_panel.Panel.Width"/>
+        <Input
+            TValue="int"
+            Label="@Localizer["Quantity"]"
+            HtmlInputMode="numeric"
+            @bind-Value="_panel.Quantity"/>
+        <Input
+            TValue="string"
+            Label="@Localizer["Name"]"
+            @bind-Value="_panel.Panel.Name"/>
     </div>
     <div class="edge-buttons">
         <button @onclick="() => _panel.Panel.EdgeReduction.EdgesAlongLenght = _panel.Panel.EdgeReduction.EdgesAlongLenght == 1 ? 0 : 1">

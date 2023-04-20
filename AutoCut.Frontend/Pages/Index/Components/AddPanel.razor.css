@@ -9,38 +9,6 @@
     gap: 5px;
 }
 
-label {
-    display: flex;
-    flex-direction: column;
-    color: var(--text-gray);
-    font-size: 1rem;
-    gap: 5px;
-}
-
-label .units {
-    font-size: 0.8rem;
-}
-
-label p {
-    margin: 0;
-}
-
-input {
-    background-color: var(--bright-background);
-    border: 1px solid var(--bright-border);
-    border-radius: 10px;
-    color: var(--text);
-    padding: 10px;
-    font-size: 1.1rem;
-    width: 6rem;
-    text-align: center;
-}
-
-input:focus {
-    outline: none;
-    border: 1px solid var(--primary);
-}
-
 .edge-buttons {
     display: grid;
     grid-template: 1fr 1fr / 1fr 1fr;

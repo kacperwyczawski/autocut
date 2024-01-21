@@ -16,7 +16,7 @@ const themes = [
 ]
 </script>
 <template>
-    <header class="flex gap-2 p-2">
+    <header class="flex gap-2 p-2 border-b border-base-300">
         <h1 class="grow flex items-center">
             <RouterLink to="/" class="text-3xl font-bold tracking-tight">
                 AutoCut
@@ -52,7 +52,7 @@ const themes = [
             </button>
         </RouterLink>
         <RouterLink to="/export">
-            <button class="btn btn-secondary">
+            <button class="btn btn-primary">
                 Export
             </button>
         </RouterLink>

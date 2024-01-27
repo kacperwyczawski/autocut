@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
+const props = defineProps<{
+    disableOptimization?: boolean;
+}>()
+
 const length = ref(1);
 const width = ref(1);
 const quantity = ref(1);
@@ -48,7 +52,7 @@ function reset() {
             class="btn btn-primary">
             Add panel
         </button>
-        <button class="btn btn-secondary">
+        <button class="btn btn-secondary" :disabled="disableOptimization">
             Optimize
         </button>
     </div>

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ref, watch } from 'vue';
+
 // please keep in sync with themes in tailwind.config.js
 const themes = [
     'light',
@@ -14,6 +16,11 @@ const themes = [
     'dim',
     'nord',
 ]
+
+const currentTheme = ref(localStorage.getItem('theme') || 'coffee')
+watch(currentTheme, (x) => {
+    localStorage.setItem('theme', x)
+})
 </script>
 <template>
     <header class="flex gap-2 p-2 border-b border-base-300">
@@ -35,7 +42,7 @@ const themes = [
             </div>
             <ul tabindex="0" class="dropdown-content z-[1] p-2 shadow-2xl bg-base-300 rounded-box w-52">
                 <li v-for="theme in themes">
-                    <input type="radio" name="theme-dropdown"
+                    <input v-model="currentTheme" type="radio" name="theme-dropdown"
                         class="theme-controller btn btn-sm btn-block btn-ghost justify-start" :aria-label="theme"
                         :value="theme" />
                 </li>

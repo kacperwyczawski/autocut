@@ -15,6 +15,9 @@ const tabList = ['Panels', 'Cuts'];
         </div>
         <div v-if="currentTab === 'Panels'">
             <Panels/>
+            <button class="btn btn-error">
+                Delete all panels
+            </button>
         </div>
     </div>
 </template>

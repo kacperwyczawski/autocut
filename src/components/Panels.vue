@@ -18,7 +18,7 @@ const panels = defineModel<Panel[]>()
                 <td>{{ panel.width }}</td>
                 <td>{{ panel.quantity }}</td>
                 <td>
-                    <div class="border-4 w-6 h-6" :class="{
+                    <div class="border-4 w-6 h-6 rounded-btn" :class="{
                         'border-t-primary': panel.topEdgeReduction,
                         'border-r-primary': panel.rightEdgeReduction,
                         'border-b-primary': panel.bottomEdgeReduction,

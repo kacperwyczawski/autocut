@@ -26,6 +26,11 @@ watch(panelEdgeReduction, (x) => {
   localStorage.setItem('panelEdgeReduction', x.toString())
 })
 
+const edgeReductionButtons = ref(localStorage.getItem('edgeReductionButtons') || 'Combined')
+watch(edgeReductionButtons, (x) => {
+  localStorage.setItem('edgeReductionButtons', x)
+})
+
 function clearAllData() {
   if (confirm('Are you sure? All application data and settings will be cleared.')) {
     localStorage.clear()
@@ -35,6 +40,19 @@ function clearAllData() {
 </script>
 <template>
   <div class="px-2 md:mx-auto">
+    <h2 class="text-2xl font-bold mt-4">
+      App
+    </h2>
+    <label class="form-control w-full max-w-xs pl-4">
+      <div class="label">
+        <span class="label-text">Edge reduction buttons</span>
+      </div>
+      <select v-model="edgeReductionButtons" class="select select-bordered w-full max-w-xs">
+        <option>Hidden</option>
+        <option>Combined</option>
+        <option>Separate</option>
+      </select>
+    </label>
     <h2 class="text-2xl font-bold mt-4">
       Sheet
     </h2>

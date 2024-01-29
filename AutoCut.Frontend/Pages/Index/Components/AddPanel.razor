@@ -1,0 +1,87 @@
+﻿@using AutoCut.Core.Models
+@using AutoCut.Frontend.Stores.Panels.Actions
+@inject IDispatcher Dispatcher
+
+<section>
+    <div class="input-fields">
+        <Input
+            TValue="decimal"
+            Label="@Localizer["Length"]"
+            HtmlInputMode="numeric"
+            Units="mm"
+            @bind-Value="_panel.Panel.Length"/>
+        <Input
+            TValue="decimal"
+            Label="@Localizer["Width"]"
+            HtmlInputMode="numeric"
+            Units="mm"
+            @bind-Value="_panel.Panel.Width"/>
+        <Input
+            TValue="int"
+            Label="@Localizer["Quantity"]"
+            HtmlInputMode="numeric"
+            @bind-Value="_panel.Quantity"/>
+        <Input
+            TValue="string"
+            Label="@Localizer["Name"]"
+            @bind-Value="_panel.Panel.Name"/>
+    </div>
+    <div class="edge-buttons">
+        <button @onclick="() => _panel.Panel.EdgeReduction.EdgesAlongLenght = _panel.Panel.EdgeReduction.EdgesAlongLenght == 1 ? 0 : 1">
+            <EdgesIcon
+                Edges="@(new EdgeReduction(1, 0))"
+                MutedColor="true"
+                Accent="@(_panel.Panel.EdgeReduction.EdgesAlongLenght == 1 ? EdgesIcon.EdgesIconAccent.All : EdgesIcon.EdgesIconAccent.None)"/>
+        </button>
+        <button @onclick="() => _panel.Panel.EdgeReduction.EdgesAlongLenght = _panel.Panel.EdgeReduction.EdgesAlongLenght == 2 ? 0 : 2">
+            <EdgesIcon
+                Edges="@(new EdgeReduction(2, 0))"
+                MutedColor="true"
+                Accent="@(_panel.Panel.EdgeReduction.EdgesAlongLenght == 2 ? EdgesIcon.EdgesIconAccent.All : EdgesIcon.EdgesIconAccent.None)"/>
+        </button>
+        <button @onclick="() => _panel.Panel.EdgeReduction.EdgesAlongWidth = _panel.Panel.EdgeReduction.EdgesAlongWidth == 1 ? 0 : 1">
+            <EdgesIcon
+                Edges="@(new EdgeReduction(0, 1))"
+                MutedColor="true"
+                Accent="@(_panel.Panel.EdgeReduction.EdgesAlongWidth == 1 ? EdgesIcon.EdgesIconAccent.All : EdgesIcon.EdgesIconAccent.None)"/>
+        </button>
+        <button @onclick="() => _panel.Panel.EdgeReduction.EdgesAlongWidth = _panel.Panel.EdgeReduction.EdgesAlongWidth == 2 ? 0 : 2">
+            <EdgesIcon
+                Edges="@(new EdgeReduction(0, 2))"
+                MutedColor="true"
+                Accent="@(_panel.Panel.EdgeReduction.EdgesAlongWidth == 2 ? EdgesIcon.EdgesIconAccent.All : EdgesIcon.EdgesIconAccent.None)"/>
+        </button>
+    </div>
+    <div class="buttons">
+        <button type="submit" @onclick="Add">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+            </svg>
+            @Localizer["Add"]
+        </button>
+        <button type="reset" @onclick="Reset">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/>
+            </svg>
+            @Localizer["Reset"]
+        </button>
+    </div>
+</section>
+
+@code
+{
+    CompressedPanel _panel = CompressedPanel.Default;
+
+    private void Add()
+    {
+    // TODO: Add validation
+        Dispatcher.Dispatch(new AddAction(_panel));
+
+        Reset();
+    }
+
+    private void Reset()
+    {
+        _panel = CompressedPanel.Default;
+    }
+}

@@ -1,0 +1,15 @@
+﻿.color-provider {
+    --background: #0d0d0d;
+    --card-background: #1c1c1e;
+    --bright-background: #2a2a2c;
+    --bright-border: #4b4b4c;
+    --card-border: #252527;
+
+    --primary: #a3e635;
+    --primary-alt: #32cd32;
+    --error: hsl(5, 78%, 55%);
+    --error-alt: hsl(5, 78%, 45%);
+
+    --text: white;
+    --text-gray: #767676;
+}

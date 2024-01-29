@@ -1,0 +1,52 @@
+﻿.scroll {
+    overflow-y: scroll;
+}
+
+table {
+    width: 100%;
+    border-spacing: 0 15px;
+    margin-top: -15px;
+    padding: 0 10px;
+}
+
+table * {
+    text-align: start;
+    border: none;
+}
+
+thead {
+    color: var(--text-gray);
+    font-size: .9rem;
+}
+
+tbody {
+    color: var(--text);
+    font-size: 1.2rem;
+}
+
+.delete-button svg {
+    stroke: var(--error);
+}
+
+.delete-button:active svg {
+    transform: scale(0.95);
+}
+
+.delete-button {
+    border: none;
+    background: none;
+    text-transform: none;
+    padding: 0;
+}
+
+::deep svg {
+    width: 1.2rem;
+    height: 1.2rem;
+}
+
+.no-panels-info {
+    color: var(--text-gray);
+    font-size: 1rem;
+    text-align: center;
+    padding: 0 15px;
+}

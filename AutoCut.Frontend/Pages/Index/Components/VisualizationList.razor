@@ -1,0 +1,14 @@
+﻿@using AutoCut.Frontend.Stores.Optimization
+@inherits FluxorComponent
+@inject IState<OptimizationState> OptimizationState
+
+<section>
+    <ul>
+        @foreach (var sheet in OptimizationState.Value.OptimizedSheets)
+        {
+            <li>
+                <SvgVisualization Sheet="sheet"/>
+            </li>
+        }
+    </ul>
+</section>

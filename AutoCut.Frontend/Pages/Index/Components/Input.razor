@@ -1,0 +1,47 @@
+﻿@typeparam TValue
+
+<label>
+    @Label
+    <div class="input-wrapper">
+        <input type="text" inputmode="@HtmlInputMode" oninput="@UpdateValue" value="@Value"/>
+        @if (Units != null)
+        {
+            <div class="units">
+                @Units
+            </div>
+        }
+    </div>
+</label>
+
+
+@code
+{
+    [Parameter]
+    public TValue? Value { get; set; }
+
+    [Parameter]
+    public EventCallback<TValue?> ValueChanged { get; set; }
+
+    [Parameter]
+    public string HtmlInputMode { get; set; } = "text";
+
+    [Parameter]
+    public string Label { get; set; } = string.Empty;
+
+    [Parameter]
+    public string? Units { get; set; }
+
+    private void UpdateValue(ChangeEventArgs e)
+    {
+        try
+        {
+            Value = (TValue?)Convert.ChangeType(e.Value, typeof(TValue));
+        }
+        catch (Exception)
+        {
+            Value = default;
+        }
+
+        ValueChanged.InvokeAsync(Value);
+    }
+}

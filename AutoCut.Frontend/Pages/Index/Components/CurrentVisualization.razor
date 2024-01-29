@@ -1,0 +1,10 @@
+﻿@using AutoCut.Frontend.Stores.Optimization
+@inherits FluxorComponent
+@inject IState<OptimizationState> OptimizationState
+
+<section>
+    @if (OptimizationState.Value.OptimizedSheets.Any())
+    {
+        <SvgVisualization Sheet="@OptimizationState.Value.OptimizedSheets.First()"/>
+    }
+</section>

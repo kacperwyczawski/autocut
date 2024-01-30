@@ -29,7 +29,7 @@ export default {
       "coffee",
       "dim",
       "nord", {
-        autocut: {
+        lime: {
           "primary": "#a3e635",
           "secondary": "#a3e635",
           "accent": "#a3e635",

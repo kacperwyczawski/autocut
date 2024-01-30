@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 
-// please keep in sync with themes in tailwind.config.js (+ autocut)
+// please keep in sync with themes in tailwind.config.js (+ lime)
 const themes = [
     'light',
     'dark',
@@ -15,7 +15,7 @@ const themes = [
     'coffee',
     'dim',
     'nord',
-    'autocut',
+    'lime',
 ]
 
 const currentTheme = ref(localStorage.getItem('theme') || 'coffee')

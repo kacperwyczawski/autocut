@@ -1,5 +1,7 @@
 <script setup lang="ts">
-const panels = defineModel<Panel[]>()
+import type { Panel } from '@/core/panel';
+
+const panels = defineModel<{ panel: Panel, quantity: number }[]>()
 </script>
 <template>
     <table class="table table-sm">
@@ -13,16 +15,16 @@ const panels = defineModel<Panel[]>()
             </tr>
         </thead>
         <tbody>
-            <tr v-for="(panel, index) in panels" :key="index">
-                <td>{{ panel.length }}</td>
-                <td>{{ panel.width }}</td>
-                <td>{{ panel.quantity }}</td>
+            <tr v-for="(multipanel, index) in panels" :key="index">
+                <td>{{ multipanel.panel.length }}</td>
+                <td>{{ multipanel.panel.width }}</td>
+                <td>{{ multipanel.quantity }}</td>
                 <td>
                     <div class="border-4 w-6 h-6 rounded-btn" :class="{
-                        'border-t-primary': panel.topEdgeReduction,
-                        'border-r-primary': panel.rightEdgeReduction,
-                        'border-b-primary': panel.bottomEdgeReduction,
-                        'border-l-primary': panel.leftEdgeReduction,
+                        'border-t-primary': multipanel.panel.edgeReduction.top,
+                        'border-r-primary': multipanel.panel.edgeReduction.right,
+                        'border-b-primary': multipanel.panel.edgeReduction.bottom,
+                        'border-l-primary': multipanel.panel.edgeReduction.left,
                     }">
                     </div>
                 </td>

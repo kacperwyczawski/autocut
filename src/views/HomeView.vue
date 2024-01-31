@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import ControlPanel from '@/components/ControlPanel.vue';
 import Panels from '@/components/Panels.vue';
+import type { Panel } from '@/core/panel';
 import { ref } from 'vue';
 
 const currentTab = ref('Panels');
 const tabList = ['Panels', 'Cuts'];
 
-const panels = ref<Panel[]>([]);
+const panels = ref<{ panel: Panel, quantity: number }[]>([]);
 </script>
 
 <template>

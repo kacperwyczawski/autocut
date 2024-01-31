@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { Panel } from '@/core/panel';
 import { ref } from 'vue';
 
 defineProps<{
@@ -17,7 +18,7 @@ const bottom = ref(false);
 const left = ref(false);
 
 const emit = defineEmits<{
-    addPanel: [panel: Panel];
+    addPanel: [{ panel: Panel, quantity: number} ];
 }>()
 
 function reset() {
@@ -33,13 +34,18 @@ function reset() {
 
 function addPanel() {
     emit('addPanel', {
-        length: length.value,
-        width: width.value,
+        panel: {
+            length: length.value,
+            width: width.value,
+            edgeReduction: {
+                top: top.value,
+                right: right.value,
+                bottom: bottom.value,
+                left: left.value,
+                thickness: parseInt(localStorage.getItem('panelEdgeReduction') || '3'),
+            },
+        },
         quantity: quantity.value,
-        topEdgeReduction: top.value,
-        rightEdgeReduction: right.value,
-        bottomEdgeReduction: bottom.value,
-        leftEdgeReduction: left.value,
     });
     reset();
 }

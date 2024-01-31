@@ -1,4 +1,4 @@
-import { Panel } from "./panel";
+import type { Panel } from "./panel";
 
 export type OptimizedPanel = {
     panel: Panel;

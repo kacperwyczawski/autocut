@@ -21,7 +21,7 @@ watch(bladeThickness, (x) => {
   localStorage.setItem('bladeThickness', x.toString())
 })
 
-const panelEdgeReduction = ref(parseInt(localStorage.getItem('panelEdgeReduction') || '0'))
+const panelEdgeReduction = ref(parseInt(localStorage.getItem('panelEdgeReduction') || '3'))
 watch(panelEdgeReduction, (x) => {
   localStorage.setItem('panelEdgeReduction', x.toString())
 })

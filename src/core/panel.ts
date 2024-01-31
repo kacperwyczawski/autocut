@@ -1,4 +1,4 @@
-import { EdgeReduction } from "./edgeReduction";
+import type { EdgeReduction } from "./edgeReduction";
 
 export type Panel = {
     length: number;

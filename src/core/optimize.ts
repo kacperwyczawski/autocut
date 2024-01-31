@@ -1,6 +1,6 @@
-import { OptimizedSheet } from "./optimizedSheet";
-import { Panel } from "./panel";
-import { Sheet } from "./sheet";
+import type { OptimizedSheet } from "./optimizedSheet";
+import type { Panel } from "./panel";
+import type { Sheet } from "./sheet";
 
 type FreeSpace = {
     length: number;

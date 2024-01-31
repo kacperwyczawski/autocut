@@ -11,6 +11,7 @@ type FreeSpace = {
 }
 
 export function optimize(sheet: Sheet, panels: Panel[], bladeThickness: number) {
+    console.info("Optimization started");
     let freeRectangles: FreeSpace[] = [];
     panels.sort((a, b) => {
         if (a.length === b.length) {
@@ -53,6 +54,8 @@ export function optimize(sheet: Sheet, panels: Panel[], bladeThickness: number) 
         // add new free rectangles
         freeRectangles.push(...generateNewFreeRectangles(fit, panel, bladeThickness));
     }
+
+    return optimizedSheets;
 }
 
 function generateNewFreeRectangles(fit: FreeSpace, currentPanel: Panel, bladeThickness: number): FreeSpace[] {

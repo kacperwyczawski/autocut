@@ -1,13 +1,26 @@
 <script setup lang="ts">
 import ControlPanel from '@/components/ControlPanel.vue';
 import Panels from '@/components/Panels.vue';
+import OptimizationResults from '@/components/OptimizationResults.vue';
 import type { Panel } from '@/core/panel';
 import { ref } from 'vue';
+import type { Sheet } from '@/core/sheet';
 
 const currentTab = ref('Panels');
 const tabList = ['Panels', 'Cuts'];
-
 const panels = ref<{ panel: Panel, quantity: number }[]>([]);
+const bladeThickness = parseFloat(localStorage.getItem('bladeThickness') ?? '3');
+const sheet: Sheet = {
+  width: parseFloat(localStorage.getItem('sheetWidth') ?? '2800'),
+  length: parseFloat(localStorage.getItem('sheetLength') ?? '2070'),
+  edgeReduction: {
+    top: true,
+    bottom: true,
+    left: true,
+    right: true,
+    thickness: parseFloat(localStorage.getItem('sheetEdgeReduction') ?? '0'),
+  }
+}
 </script>
 
 <template>
@@ -39,6 +52,7 @@ const panels = ref<{ panel: Panel, quantity: number }[]>([]);
           You can open the sidebar by clicking the menu icon
         </span>
       </div>
+      <OptimizationResults v-if="panels.length !== 0" :sheet :panels :blade-thickness="bladeThickness" />
     </div>
     <div class="drawer-side">
       <label for="sidebar" aria-label="close sidebar" class="drawer-overlay"></label>

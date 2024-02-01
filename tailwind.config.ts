@@ -1,5 +1,6 @@
-/** @type {import('tailwindcss').Config} */
-const defaultTheme = require('tailwindcss/defaultTheme')
+import type { Config } from 'tailwindcss'
+import defaultTheme from 'tailwindcss/defaultTheme'
+
 export default {
   content: [
     './index.html',
@@ -41,5 +42,4 @@ export default {
       }
     ],
   },
-}
-
+} satisfies Config

@@ -11,6 +11,7 @@ type FreeSpace = {
 }
 
 export function optimize(sheet: Sheet, panels: Panel[], bladeThickness: number) {
+    // TODO: fail if there is a panel bigger than the sheet
     console.info("Optimization started");
     let freeRectangles: FreeSpace[] = [];
     panels.sort((a, b) => {

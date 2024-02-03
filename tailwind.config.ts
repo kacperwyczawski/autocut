@@ -1,21 +1,16 @@
-import type { Config } from 'tailwindcss'
-import defaultTheme from 'tailwindcss/defaultTheme'
+import type { Config } from "tailwindcss";
+import defaultTheme from "tailwindcss/defaultTheme";
 
 export default {
-  content: [
-    './index.html',
-    './src/**/*.{vue,js,ts,jsx,tsx}',
-  ],
+  content: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter Variable', ...defaultTheme.fontFamily.sans],
+        sans: ["Inter Variable", ...defaultTheme.fontFamily.sans],
       },
     },
   },
-  plugins: [
-    require('daisyui')
-  ],
+  plugins: [require("daisyui")],
   daisyui: {
     themes: [
       "light",
@@ -29,17 +24,18 @@ export default {
       "night",
       "coffee",
       "dim",
-      "nord", {
+      "nord",
+      {
         lime: {
-          "primary": "#a3e635",
-          "secondary": "#a3e635",
-          "accent": "#a3e635",
-          "neutral": "#1c1c1e",
+          primary: "#a3e635",
+          secondary: "#a3e635",
+          accent: "#a3e635",
+          neutral: "#1c1c1e",
           "base-100": "#0d0d0d",
           "base-200": "#1c1c1e",
           "base-300": "#2a2a2c",
-        }
-      }
+        },
+      },
     ],
   },
-} satisfies Config
+} satisfies Config;

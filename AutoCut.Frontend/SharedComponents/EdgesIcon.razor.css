@@ -1,23 +1,23 @@
 ﻿svg.no-accent {
-    fill: var(--text);
+  fill: var(--text);
 }
 
 svg.no-accent.muted {
-    fill: var(--text-gray)
+  fill: var(--text-gray);
 }
 
 svg.border-accent g.base {
-    fill: var(--text);
+  fill: var(--text);
 }
 
 svg.border-accent g.base.muted {
-    fill: var(--text-gray);
+  fill: var(--text-gray);
 }
 
 svg.border-accent g.border {
-    fill: var(--primary);
+  fill: var(--primary);
 }
 
 svg.all-accent {
-    fill: var(--primary);
+  fill: var(--primary);
 }

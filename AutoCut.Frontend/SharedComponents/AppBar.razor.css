@@ -1,62 +1,62 @@
 ﻿nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: var(--background);
-    height: 80px;
-    padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--background);
+  height: 80px;
+  padding: 0 20px;
 }
 
 .logo {
-    font-size: 50px;
+  font-size: 50px;
 }
 
 .logo .normal {
-    font-family: Inter, sans-serif;
-    font-weight: 900;
-    color: var(--text);
+  font-family: Inter, sans-serif;
+  font-weight: 900;
+  color: var(--text);
 }
 
 .logo .fancy {
-    font-family: 'Permanent Marker', sans-serif;
-    font-weight: 400;
-    color: var(--primary);
+  font-family: "Permanent Marker", sans-serif;
+  font-weight: 400;
+  color: var(--primary);
 }
 
 .buttons {
-    display: flex;
-    align-items: center;
-    gap: 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
 .button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: none;
-    border: none;
-    padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0;
 }
 
 .button svg {
-    height: 30px;
-    color: var(--text);
+  height: 30px;
+  color: var(--text);
 }
 
 .button.settings svg {
-    transition: transform 0.2s;
+  transition: transform 0.2s;
 }
 
 .button svg:hover {
-    transform: scale(1.1);
+  transform: scale(1.1);
 }
 
 .button.settings svg:hover {
-    transform: rotate(90deg);
+  transform: rotate(90deg);
 }
 
 /* remove a styling */
 a {
-    text-decoration: none;
-    color: inherit;
+  text-decoration: none;
+  color: inherit;
 }

@@ -3,11 +3,14 @@ import ControlPanel from '@/components/ControlPanel.vue';
 import Panels from '@/components/Panels.vue';
 import OptimizationResults from '@/components/OptimizationResults.vue';
 import type { Panel } from '@/core/panel';
-import { ref } from 'vue';
+import { ref, type Ref } from 'vue';
 import type { Sheet } from '@/core/sheet';
 
+// tabs
 const currentTab = ref('Panels');
 const tabList = ['Panels', 'Cuts'];
+
+// optimization
 const panels = ref<{ panel: Panel, quantity: number }[]>([]);
 const bladeThickness = parseFloat(localStorage.getItem('bladeThickness') ?? '3');
 const sheet: Sheet = {
@@ -21,13 +24,37 @@ const sheet: Sheet = {
     thickness: parseFloat(localStorage.getItem('sheetEdgeReduction') ?? '0'),
   }
 }
+
+// export and import modals
+const exportModal: Ref<HTMLDialogElement | null> = ref(null);
+const importModal: Ref<HTMLDialogElement | null> = ref(null);
 </script>
 
 <template>
   <div class="drawer md:drawer-open">
     <input id="sidebar" type="checkbox" class="drawer-toggle" />
     <div class="drawer-content p-2">
-      <ControlPanel @add-panel="(panel) => panels.push(panel)" :disable-optimization="panels.length === 0"/>
+      <ControlPanel @add-panel="(panel, quantity) => panels.push({ panel, quantity })"
+        @export="exportModal!.showModal()"
+        @import="importModal!.showModal()" />
+      <dialog id="exportModal" ref="exportModal" class="modal">
+        <div class="modal-box">
+          <h3 class="font-bold text-lg">Export</h3>
+          <p class="py-4">Not implemented yet, press <kbd class="kbd">ESC</kbd> or click outside to close</p>
+        </div>
+        <form method="dialog" class="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
+      <dialog id="exportModal" ref="importModal" class="modal">
+        <div class="modal-box">
+          <h3 class="font-bold text-lg">Import</h3>
+          <p class="py-4">Not implemented yet, press <kbd class="kbd">ESC</kbd> or click outside to close</p>
+        </div>
+        <form method="dialog" class="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
       <div v-if="panels.length === 0" role="alert" class="alert alert-info mt-2">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"

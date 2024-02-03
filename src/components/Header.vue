@@ -54,15 +54,5 @@ watch(currentTheme, (x) => {
                 Settings
             </button>
         </RouterLink>
-        <RouterLink to="/import">
-            <button class="btn">
-                Import
-            </button>
-        </RouterLink>
-        <RouterLink to="/export">
-            <button class="btn btn-primary">
-                Export
-            </button>
-        </RouterLink>
     </header>
 </template>

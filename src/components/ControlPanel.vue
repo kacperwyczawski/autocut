@@ -2,10 +2,6 @@
 import type { Panel } from '@/core/panel';
 import { ref } from 'vue';
 
-defineProps<{
-    disableOptimization?: boolean;
-}>()
-
 const edgeReductionButtons = localStorage.getItem('edgeReductionButtons') || 'Combined';
 
 const length = ref(1);
@@ -18,7 +14,9 @@ const bottom = ref(false);
 const left = ref(false);
 
 const emit = defineEmits<{
-    addPanel: [{ panel: Panel, quantity: number} ];
+    addPanel: [panel: Panel, quantity: number],
+    import: [],
+    export: []
 }>()
 
 function reset() {
@@ -34,7 +32,6 @@ function reset() {
 
 function addPanel() {
     emit('addPanel', {
-        panel: {
             length: length.value,
             width: width.value,
             edgeReduction: {
@@ -45,8 +42,8 @@ function addPanel() {
                 thickness: parseInt(localStorage.getItem('panelEdgeReduction') || '3'),
             },
         },
-        quantity: quantity.value,
-    });
+        quantity.value,
+    );
     reset();
 }
 </script>
@@ -105,8 +102,11 @@ function addPanel() {
         <button @click="addPanel" class="btn btn-primary">
             Add panel
         </button>
-        <button class="btn btn-secondary" :disabled="disableOptimization">
-            Optimize
+        <button @click="$emit('import')" class="btn">
+            Import
+        </button>
+        <button @click="$emit('export')" class="btn btn-secondary">
+            Export
         </button>
     </div>
 </template>

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 
+// TODO: one composable to rule them all
+
 const sheetLength = ref(parseInt(localStorage.getItem('sheetLength') || '2800'))
 watch(sheetLength, (x) => {
   localStorage.setItem('sheetLength', x.toString())

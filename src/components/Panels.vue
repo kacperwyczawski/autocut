@@ -21,7 +21,7 @@ const panels = defineModel<{ panel: Panel; quantity: number }[]>();
         <td>{{ multipanel.quantity }}</td>
         <td>
           <div
-            class="border-4 w-6 h-6 rounded-btn"
+            class="border-4 border-base-300 w-6 h-6 rounded-btn"
             :class="{
               'border-t-primary': multipanel.panel.edgeReduction.top,
               'border-r-primary': multipanel.panel.edgeReduction.right,

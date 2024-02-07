@@ -16,8 +16,11 @@ const left = ref(false);
 
 const emit = defineEmits<{
   addPanel: [panel: Panel, quantity: number];
-  import: [];
   export: [];
+}>();
+
+defineProps<{
+  disableExporting: boolean;
 }>();
 
 function reset() {
@@ -154,7 +157,12 @@ function addPanel() {
       />
     </div>
     <button @click="addPanel" class="btn btn-primary">Add panel</button>
-    <button @click="$emit('import')" class="btn">Import</button>
-    <button @click="$emit('export')" class="btn btn-secondary">Export</button>
+    <button
+      @click="$emit('export')"
+      :disabled="disableExporting"
+      class="btn btn-secondary"
+    >
+      Export results
+    </button>
   </div>
 </template>

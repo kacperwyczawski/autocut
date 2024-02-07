@@ -40,6 +40,7 @@ const importModal: Ref<HTMLDialogElement | null> = ref(null);
         @add-panel="(panel, quantity) => panels.push({ panel, quantity })"
         @export="exportModal!.showModal()"
         @import="importModal!.showModal()"
+        :disable-exporting="panels.length === 0"
       />
       <dialog id="exportModal" ref="exportModal" class="modal">
         <div class="modal-box">

@@ -29,7 +29,6 @@ const sheet: Sheet = {
 
 // export and import modals
 const exportModal: Ref<HTMLDialogElement | null> = ref(null);
-const importModal: Ref<HTMLDialogElement | null> = ref(null);
 </script>
 
 <template>
@@ -39,24 +38,11 @@ const importModal: Ref<HTMLDialogElement | null> = ref(null);
       <ControlPanel
         @add-panel="(panel, quantity) => panels.push({ panel, quantity })"
         @export="exportModal!.showModal()"
-        @import="importModal!.showModal()"
         :disable-exporting="panels.length === 0"
       />
       <dialog id="exportModal" ref="exportModal" class="modal">
         <div class="modal-box">
           <h3 class="font-bold text-lg">Export</h3>
-          <p class="py-4">
-            Not implemented yet, press <kbd class="kbd">ESC</kbd> or click
-            outside to close
-          </p>
-        </div>
-        <form method="dialog" class="modal-backdrop">
-          <button>close</button>
-        </form>
-      </dialog>
-      <dialog id="exportModal" ref="importModal" class="modal">
-        <div class="modal-box">
-          <h3 class="font-bold text-lg">Import</h3>
           <p class="py-4">
             Not implemented yet, press <kbd class="kbd">ESC</kbd> or click
             outside to close
@@ -87,7 +73,7 @@ const importModal: Ref<HTMLDialogElement | null> = ref(null);
           <path d="M12 16v-4" />
           <path d="M12 8h.01" />
         </svg>
-        <span> Add some panels first </span>
+        <span>Add some panels first</span>
       </div>
       <div role="alert" class="alert alert-info mt-2 md:hidden">
         <svg
@@ -138,13 +124,16 @@ const importModal: Ref<HTMLDialogElement | null> = ref(null);
         </div>
         <div v-if="currentTab === 'Panels'">
           <Panels v-model="panels" />
-          <button
-            v-show="panels.length !== 0"
-            class="btn btn-error btn-outline"
-            @click="panels = []"
-          >
-            Delete all panels
-          </button>
+          <div class="join" v-show="panels.length !== 0">
+            <button
+              class="btn btn-error btn-outline join-item"
+              @click="panels = []"
+            >
+              Delete all panels
+            </button>
+            <button class="btn btn-outline join-item">Export panels</button>
+            <button class="btn btn-outline join-item">Import panels</button>
+          </div>
         </div>
         <div v-else-if="currentTab === 'Cuts'">
           <div role="alert" class="alert alert-warning mt-2">

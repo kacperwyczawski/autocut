@@ -3,14 +3,12 @@ import ControlPanel from "@/components/ControlPanel.vue";
 import Panels from "@/components/Panels.vue";
 import OptimizationResults from "@/components/OptimizationResults.vue";
 import type { Panel } from "@/core/panel";
-import { ref, type Ref } from "vue";
+import { computed, ref, type Ref } from "vue";
 import type { Sheet } from "@/core/sheet";
 
-// tabs
 const currentTab = ref("Panels");
 const tabList = ["Panels", "Cuts"];
 
-// optimization
 const panels = ref<{ panel: Panel; quantity: number }[]>([]);
 const bladeThickness = parseFloat(
   localStorage.getItem("bladeThickness") ?? "3",
@@ -27,8 +25,46 @@ const sheet: Sheet = {
   },
 };
 
-// export and import modals
-const exportModal: Ref<HTMLDialogElement | null> = ref(null);
+const exportDialog: Ref<HTMLDialogElement> = ref(null!);
+
+const exportPanelsDialog: Ref<HTMLDialogElement> = ref(null!);
+const panelsExportData = computed(() => {
+  return JSON.stringify(panels.value, null, 2);
+});
+function exportPanels() {
+  const blob = new Blob([panelsExportData.value], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.style.display = "none";
+  a.href = url;
+  a.download = "panels.json";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+const importPanelsDialog: Ref<HTMLDialogElement> = ref(null!);
+const importPanelsInput: Ref<HTMLInputElement> = ref(null!);
+function importPanels() {
+  const file = importPanelsInput.value.files?.[0];
+  if (!file) {
+    alert("No file selected");
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const data = JSON.parse(reader.result as string);
+      if (Array.isArray(data)) {
+        panels.value = data;
+      } else {
+        throw new Error("Invalid data");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Invalid file");
+    }
+  };
+  reader.readAsText(file);
+}
 </script>
 
 <template>
@@ -37,21 +73,9 @@ const exportModal: Ref<HTMLDialogElement | null> = ref(null);
     <div class="drawer-content p-2">
       <ControlPanel
         @add-panel="(panel, quantity) => panels.push({ panel, quantity })"
-        @export="exportModal!.showModal()"
+        @export="exportDialog.showModal()"
         :disable-exporting="panels.length === 0"
       />
-      <dialog id="exportModal" ref="exportModal" class="modal">
-        <div class="modal-box">
-          <h3 class="font-bold text-lg">Export</h3>
-          <p class="py-4">
-            Not implemented yet, press <kbd class="kbd">ESC</kbd> or click
-            outside to close
-          </p>
-        </div>
-        <form method="dialog" class="modal-backdrop">
-          <button>close</button>
-        </form>
-      </dialog>
       <div
         v-if="panels.length === 0"
         role="alert"
@@ -124,15 +148,27 @@ const exportModal: Ref<HTMLDialogElement | null> = ref(null);
         </div>
         <div v-if="currentTab === 'Panels'">
           <Panels v-model="panels" />
-          <div class="join" v-show="panels.length !== 0">
+          <div class="join">
             <button
+              v-if="panels.length !== 0"
               class="btn btn-error btn-outline join-item"
               @click="panels = []"
             >
               Delete all panels
             </button>
-            <button class="btn btn-outline join-item">Export panels</button>
-            <button class="btn btn-outline join-item">Import panels</button>
+            <button
+              v-if="panels.length !== 0"
+              @click="exportPanelsDialog.showModal()"
+              class="btn btn-outline join-item"
+            >
+              Export panels
+            </button>
+            <button
+              @click="importPanelsDialog.showModal()"
+              class="btn btn-outline join-item"
+            >
+              Import panels
+            </button>
           </div>
         </div>
         <div v-else-if="currentTab === 'Cuts'">
@@ -156,4 +192,74 @@ const exportModal: Ref<HTMLDialogElement | null> = ref(null);
       </div>
     </div>
   </div>
+  <!-- Dialogs -->
+  <dialog id="exportDialog" ref="exportDialog" class="modal">
+    <div class="modal-box">
+      <h3 class="font-bold text-lg">Export</h3>
+      <p class="py-4">
+        Not implemented yet, press <kbd class="kbd">ESC</kbd> or click outside
+        to close
+      </p>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+      <button>close</button>
+    </form>
+  </dialog>
+  <dialog id="exportPanelsDialog" ref="exportPanelsDialog" class="modal">
+    <div class="modal-box">
+      <h3 class="font-bold text-lg">Export panels</h3>
+      <p class="py-4">
+        Export the list of panels to a JSON file, so you can import it later.
+      </p>
+      <div class="mockup-code before:hidden max-h-[50vh] overflow-y-scroll">
+        <pre><code>{{ panelsExportData }}</code></pre>
+      </div>
+      <div class="modal-action">
+        <form method="dialog" class="flex gap-2">
+          <button class="btn btn-primary" @click="exportPanels">Export</button>
+          <button class="btn">Cancel</button>
+        </form>
+      </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+      <button>close</button>
+    </form>
+  </dialog>
+  <dialog id="importPanelsDialog" ref="importPanelsDialog" class="modal">
+    <div class="modal-box">
+      <h3 class="font-bold text-lg">Import panels</h3>
+      <p class="py-4">Import panels from a JSON file exported from this app.</p>
+      <div role="alert" class="alert alert-warning">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="stroke-current shrink-0 h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+          />
+        </svg>
+        <span>This action will overwrite the current list of panels</span>
+      </div>
+      <div class="modal-action">
+        <form method="dialog" class="flex gap-2">
+          <input
+            type="file"
+            id="importPanelsInput"
+            ref="importPanelsInput"
+            class="file-input file-input-bordered w-full"
+          />
+          <button class="btn btn-primary" @click="importPanels">Import</button>
+          <button class="btn">Cancel</button>
+        </form>
+      </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+      <button>close</button>
+    </form>
+  </dialog>
 </template>

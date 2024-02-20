@@ -1,3 +1,4 @@
+import type { Cut } from "./cut";
 import type { OptimizedSheet } from "./optimizedSheet";
 import type { Panel } from "./panel";
 import type { Sheet } from "./sheet";
@@ -14,7 +15,7 @@ export function optimize(
   sheet: Sheet,
   panels: Panel[],
   bladeThickness: number,
-) {
+): OptimizedSheet[] {
   // TODO: fail if there is a panel bigger than the sheet
   console.info("Optimization started");
   let freeRectangles: FreeSpace[] = [];
@@ -39,6 +40,7 @@ export function optimize(
       const newSheet: OptimizedSheet = {
         sheet: { ...sheet },
         panels: [],
+        cuts: [],
       };
       optimizedSheets.push(newSheet);
       fit = {
@@ -58,48 +60,82 @@ export function optimize(
       x: fit.x,
       y: fit.y,
     });
-
-    // add new free rectangles
-    freeRectangles.push(
-      ...generateNewFreeRectangles(fit, panel, bladeThickness),
+    console.debug(
+      `Adding panel ${panel.length}x${panel.width} to sheet, at ${fit.x},${fit.y}`,
     );
+
+    // generate new cuts and free rectangles if needed
+    if (fit.length === panel.length && fit.width === panel.width) {
+      // panel fits perfectly 👌
+      // so no new free rectangles
+      // TODO: Check if cuts are needed
+    } else if (fit.length === panel.length) {
+      const newFreeRectangle = { ...fit };
+      newFreeRectangle.y = fit.y + panel.width + bladeThickness;
+      newFreeRectangle.width = fit.width - panel.width;
+      freeRectangles.push(newFreeRectangle);
+
+      const newCut: Cut = {
+        x: fit.x,
+        y: fit.y + panel.width,
+        length: fit.length,
+        direction: "horizontal",
+      };
+      fit.sheet.cuts.push(newCut);
+    } else if (fit.width === panel.width) {
+      const newFreeRectangle = { ...fit };
+      newFreeRectangle.x = fit.x + panel.length + bladeThickness;
+      newFreeRectangle.length = fit.length - panel.length;
+      freeRectangles.push(newFreeRectangle);
+
+      const newCut: Cut = {
+        x: fit.x + panel.length,
+        y: fit.y,
+        length: fit.width,
+        direction: "vertical",
+      };
+      fit.sheet.cuts.push(newCut);
+    } else {
+      // panel is smaller than fit, so we need to create two new free rectangles and two new cuts
+
+      // TODO: maybe change preference based on length/width ratio of sheet
+
+      // for now prefer horizontal cut, like this:
+      // +---+---+
+      // | N |   | <- N = new panel
+      // +---+---+
+      // |       |
+      // +---+---+
+
+      const newFreeRectangleBelow = { ...fit };
+      newFreeRectangleBelow.y = fit.y + panel.width + bladeThickness;
+      newFreeRectangleBelow.width = fit.width - panel.width - bladeThickness;
+      freeRectangles.push(newFreeRectangleBelow);
+
+      const newFreeRectangleToTheRight = { ...fit };
+      newFreeRectangleToTheRight.x = fit.x + panel.length + bladeThickness;
+      newFreeRectangleToTheRight.length =
+        fit.length - panel.length - bladeThickness;
+      newFreeRectangleToTheRight.width = panel.width + bladeThickness;
+      freeRectangles.push(newFreeRectangleToTheRight);
+
+      const newHorizontalCut: Cut = {
+        x: fit.x,
+        y: fit.y + panel.width,
+        length: fit.length,
+        direction: "horizontal",
+      };
+      fit.sheet.cuts.push(newHorizontalCut);
+
+      const newVerticalCut: Cut = {
+        x: fit.x + panel.length,
+        y: fit.y,
+        length: panel.width + bladeThickness / 2,
+        direction: "vertical",
+      };
+      fit.sheet.cuts.push(newVerticalCut);
+    }
   }
 
   return optimizedSheets;
-}
-
-function generateNewFreeRectangles(
-  fit: FreeSpace,
-  currentPanel: Panel,
-  bladeThickness: number,
-): FreeSpace[] {
-  if (fit.length === currentPanel.length && fit.width === currentPanel.width) {
-    // panel fits perfectly 👌
-    // so no new free rectangles
-    return [];
-  } else if (fit.length === currentPanel.length) {
-    const result = { ...fit };
-    result.y = fit.y + currentPanel.width + bladeThickness;
-    result.width = fit.width - currentPanel.width;
-    return [result];
-  } else if (fit.width === currentPanel.width) {
-    const result = { ...fit };
-    result.x = fit.x + currentPanel.length + bladeThickness;
-    result.length = fit.length - currentPanel.length;
-    return [result];
-  } else {
-    // TODO: maybe change preference based on length/width ratio of sheet
-    // prefer horizontal split/cut
-
-    const panelBelow = { ...fit };
-    panelBelow.y = fit.y + currentPanel.width + bladeThickness;
-    panelBelow.width = fit.width - currentPanel.width - bladeThickness;
-
-    const panelToTheRight = { ...fit };
-    panelToTheRight.x = fit.x + currentPanel.length + bladeThickness;
-    panelToTheRight.length = fit.length - currentPanel.length - bladeThickness;
-    panelToTheRight.width = currentPanel.width + bladeThickness;
-
-    return [panelBelow, panelToTheRight];
-  }
 }

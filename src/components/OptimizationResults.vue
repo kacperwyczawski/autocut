@@ -18,8 +18,16 @@ defineProps<{
         :y="optimizedPanel.y"
         :width="optimizedPanel.panel.length"
         :height="optimizedPanel.panel.width"
-        class="stroke-neutral fill-base-200"
+        class="fill-base-200"
       ></rect>
+      <line
+        v-for="cut in optimizedSheet.cuts"
+        :x1="cut.x"
+        :y1="cut.y"
+        :x2="cut.direction === 'horizontal' ? cut.x + cut.length : cut.x"
+        :y2="cut.direction === 'horizontal' ? cut.y : cut.y + cut.length"
+        class="stroke-neutral"
+      ></line>
     </svg>
   </div>
 </template>

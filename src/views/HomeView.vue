@@ -200,18 +200,25 @@ function importPanels() {
     </div>
   </div>
   <!-- Dialogs -->
-  <dialog id="exportOptimizationDialog" ref="exportOptimizationDialog" class="modal">
+  <dialog
+    id="exportOptimizationDialog"
+    ref="exportOptimizationDialog"
+    class="modal"
+  >
     <div class="modal-box">
       <h3 class="font-bold text-lg">Export</h3>
       <p class="py-4">
-        Export results of the optimization to a JSON file. It does not include the list of panels.
+        Export results of the optimization to a JSON file. It does not include
+        the list of panels.
       </p>
       <div class="mockup-code before:hidden max-h-[50vh] overflow-y-scroll">
         <pre><code>{{ optimizationExportData }}</code></pre>
       </div>
       <div class="modal-action">
         <form method="dialog" class="flex gap-2">
-          <button @click="exportOptimization" class="btn btn-primary">Export</button>
+          <button @click="exportOptimization" class="btn btn-primary">
+            Export
+          </button>
           <button class="btn">Cancel</button>
         </form>
       </div>

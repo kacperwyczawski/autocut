@@ -2,9 +2,11 @@
 import ControlPanel from "@/components/ControlPanel.vue";
 import Panels from "@/components/Panels.vue";
 import OptimizationResults from "@/components/OptimizationResults.vue";
+import { useJsonExport } from "@/composables/useJsonExport";
 import type { Panel } from "@/core/panel";
 import { computed, ref, type Ref } from "vue";
 import type { Sheet } from "@/core/sheet";
+import { optimize } from "@/core/optimize";
 
 const currentTab = ref("Panels");
 const tabList = ["Panels", "Cuts"];
@@ -25,22 +27,29 @@ const sheet: Sheet = {
   },
 };
 
-const exportDialog: Ref<HTMLDialogElement> = ref(null!);
+const optimizationResult = computed(() => {
+  const flattenedPanels = panels.value.flatMap((p) =>
+    Array<Panel>(p.quantity).fill(p.panel),
+  );
+  return optimize(sheet, flattenedPanels, bladeThickness);
+});
+
+const exportOptimizationDialog: Ref<HTMLDialogElement> = ref(null!);
+const optimizationExportData = computed(() => {
+  return JSON.stringify(optimizationResult.value, null, 2);
+});
+function exportOptimization() {
+  useJsonExport(optimizationExportData, "optimization");
+}
 
 const exportPanelsDialog: Ref<HTMLDialogElement> = ref(null!);
 const panelsExportData = computed(() => {
   return JSON.stringify(panels.value, null, 2);
 });
 function exportPanels() {
-  const blob = new Blob([panelsExportData.value], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.style.display = "none";
-  a.href = url;
-  a.download = "panels.json";
-  a.click();
-  URL.revokeObjectURL(url);
+  useJsonExport(panelsExportData, "panels");
 }
+
 const importPanelsDialog: Ref<HTMLDialogElement> = ref(null!);
 const importPanelsInput: Ref<HTMLInputElement> = ref(null!);
 function importPanels() {
@@ -73,7 +82,7 @@ function importPanels() {
     <div class="drawer-content p-2">
       <ControlPanel
         @add-panel="(panel, quantity) => panels.push({ panel, quantity })"
-        @export="exportDialog.showModal()"
+        @export="exportOptimizationDialog.showModal()"
         :disable-exporting="panels.length === 0"
       />
       <div
@@ -120,9 +129,7 @@ function importPanels() {
       </div>
       <OptimizationResults
         v-if="panels.length !== 0"
-        :sheet
-        :panels
-        :blade-thickness="bladeThickness"
+        :sheets="optimizationResult"
       />
     </div>
     <div class="drawer-side">
@@ -193,13 +200,21 @@ function importPanels() {
     </div>
   </div>
   <!-- Dialogs -->
-  <dialog id="exportDialog" ref="exportDialog" class="modal">
+  <dialog id="exportOptimizationDialog" ref="exportOptimizationDialog" class="modal">
     <div class="modal-box">
       <h3 class="font-bold text-lg">Export</h3>
       <p class="py-4">
-        Not implemented yet, press <kbd class="kbd">ESC</kbd> or click outside
-        to close
+        Export results of the optimization to a JSON file. It does not include the list of panels.
       </p>
+      <div class="mockup-code before:hidden max-h-[50vh] overflow-y-scroll">
+        <pre><code>{{ optimizationExportData }}</code></pre>
+      </div>
+      <div class="modal-action">
+        <form method="dialog" class="flex gap-2">
+          <button @click="exportOptimization" class="btn btn-primary">Export</button>
+          <button class="btn">Cancel</button>
+        </form>
+      </div>
     </div>
     <form method="dialog" class="modal-backdrop">
       <button>close</button>
@@ -216,7 +231,7 @@ function importPanels() {
       </div>
       <div class="modal-action">
         <form method="dialog" class="flex gap-2">
-          <button class="btn btn-primary" @click="exportPanels">Export</button>
+          <button @click="exportPanels" class="btn btn-primary">Export</button>
           <button class="btn">Cancel</button>
         </form>
       </div>

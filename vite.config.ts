@@ -9,6 +9,25 @@ export default defineConfig({
     vue(),
     VitePWA({
       registerType: "autoUpdate",
+      includeAssets: ["favicon.ico", "apple-touch-icon.png", "icon.png"],
+      manifest: {
+        name: "AutoCut",
+        short_name: "AutoCut",
+        description: "Sheet cutting optimization software",
+        theme_color: "#ffffff",
+        icons: [
+          {
+            src: "icon.png",
+            sizes: "192x192",
+            type: "image/png",
+          },
+          {
+            src: "icon.png",
+            sizes: "512x512",
+            type: "image/png",
+          },
+        ],
+      },
     }),
   ],
   resolve: {

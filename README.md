@@ -2,7 +2,7 @@
 - Website
   - [x] Themes
   - [x] Persistent settings
-  - [ ] PWA
+  - [x] PWA
   - [ ] Shortcuts
 - Panels
   - [x] Import / Export

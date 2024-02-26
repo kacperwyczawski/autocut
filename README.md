@@ -4,7 +4,6 @@
   - [x] Persistent settings
   - [ ] PWA
   - [ ] Shortcuts
-  - [ ] Splash texts
 - Panels
   - [x] Import / Export
   - [ ] Preview

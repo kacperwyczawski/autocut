@@ -54,7 +54,8 @@ function addPanel() {
 }
 </script>
 <template>
-  <div class="flex gap-2 flex-wrap items-end">
+  <div @keyup.enter="addPanel"
+  class="flex gap-2 flex-wrap items-end">
     <label for="sidebar" class="btn drawer-button md:hidden">
       <svg
         xmlns="http://www.w3.org/2000/svg"

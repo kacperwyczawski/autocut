@@ -8,7 +8,7 @@ const edgeReductionButtons =
 const length = ref(1);
 const width = ref(1);
 const quantity = ref(1);
-const firstInput = ref<any>(null);
+const firstInput = ref<HTMLInputElement>(null!);
 const top = ref(false);
 const right = ref(false);
 const bottom = ref(false);
@@ -28,6 +28,7 @@ function reset() {
   width.value = 1;
   quantity.value = 1;
   firstInput.value.focus();
+  firstInput.value.select();
   top.value = false;
   right.value = false;
   bottom.value = false;

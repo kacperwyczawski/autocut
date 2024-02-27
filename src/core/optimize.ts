@@ -60,9 +60,6 @@ export function optimize(
       x: fit.x,
       y: fit.y,
     });
-    console.debug(
-      `Adding panel ${panel.length}x${panel.width} to sheet, at ${fit.x},${fit.y}`,
-    );
 
     // generate new cuts and free rectangles if needed
     if (fit.length === panel.length && fit.width === panel.width) {

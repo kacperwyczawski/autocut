@@ -30,6 +30,9 @@ watch(currentTheme, (x) => {
         AutoCut
       </RouterLink>
     </h1>
+    <a class="btn" href="https://github.com/kacperwyczawski/autocut/commits/main/">
+      Changelog
+    </a>
     <a class="btn" href="https://github.com/kacperwyczawski/autocut">
       Source
     </a>

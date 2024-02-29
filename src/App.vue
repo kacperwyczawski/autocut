@@ -4,7 +4,7 @@ import Header from "./components/Header.vue";
 </script>
 
 <template>
-  <div class="h-dvh flex flex-col [&>:last-child]:grow">
+  <div class="grid grid-rows-[4rem_calc(100dvh_-_4rem)]">
     <Header />
     <RouterView />
   </div>

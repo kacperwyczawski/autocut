@@ -78,7 +78,9 @@ function importPanels() {
 
 <template>
   <div class="flex h-full">
-    <div class="p-2 min-w-[22rem] bg-base-200 hidden md:block shrink-0 overflow-y-scroll">
+    <div
+      class="p-2 min-w-[22rem] bg-base-200 hidden md:block shrink-0 overflow-y-scroll"
+    >
       <div role="tablist" class="tabs tabs-boxed p-0">
         <a
           v-for="tab in tabList"
@@ -95,6 +97,7 @@ function importPanels() {
       </div>
       <div v-if="currentTab === 'Panels'">
         <Panels v-model="panels" />
+        <!-- TODO: replace this join with FABs -->
         <div class="join">
           <button
             v-if="panels.length !== 0"
@@ -165,6 +168,27 @@ function importPanels() {
           <path d="M12 8h.01" />
         </svg>
         <span>Add some panels first</span>
+      </div>
+      <div role="alert" class="alert alert-info mt-2 md:hidden">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="lucide lucide-info"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <path d="M12 16v-4" />
+          <path d="M12 8h.01" />
+        </svg>
+        <span
+          >To unleash the full potential of this app, use a larger screen</span
+        >
       </div>
       <OptimizationResults
         v-if="panels.length !== 0"

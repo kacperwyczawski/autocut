@@ -5,9 +5,9 @@ import { ref } from "vue";
 const edgeReductionButtons =
   localStorage.getItem("edgeReductionButtons") || "Combined";
 
-const length = ref(1);
-const width = ref(1);
-const quantity = ref(1);
+const length = ref(NaN);
+const width = ref(NaN);
+const quantity = ref(NaN);
 const firstInput = ref<HTMLInputElement>(null!);
 const top = ref(false);
 const right = ref(false);
@@ -25,11 +25,10 @@ defineProps<{
 }>();
 
 function reset() {
-  length.value = 1;
-  width.value = 1;
-  quantity.value = 1;
+  length.value = NaN;
+  width.value = NaN;
+  quantity.value = NaN;
   firstInput.value.focus();
-  firstInput.value.select();
   top.value = false;
   right.value = false;
   bottom.value = false;
@@ -37,6 +36,7 @@ function reset() {
 }
 
 function addPanel() {
+  if (!length.value || !width.value || !quantity.value) return;
   emit(
     "addPanel",
     {
@@ -138,9 +138,7 @@ function addPanel() {
       />
     </div>
     <button @click="addPanel" class="btn btn-secondary">Add panel</button>
-    <button @click="$emit('optimize')" class="btn btn-primary">
-      Optimize
-    </button>
+    <button @click="$emit('optimize')" class="btn btn-primary">Optimize</button>
     <button @click="$emit('export')" :disabled="disableExporting" class="btn">
       Export results
     </button>

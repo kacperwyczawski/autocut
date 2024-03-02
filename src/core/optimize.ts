@@ -17,7 +17,7 @@ export function optimize(
   bladeThickness: number,
 ): OptimizedSheet[] {
   // TODO: fail if there is a panel bigger than the sheet
-  console.info("Optimization started");
+  console.time("optimization");
   let freeRectangles: FreeSpace[] = [];
   panels.sort((a, b) => {
     if (a.length === b.length) {
@@ -134,5 +134,6 @@ export function optimize(
     }
   }
 
+  console.timeEnd("optimization");
   return optimizedSheets;
 }

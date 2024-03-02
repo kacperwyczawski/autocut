@@ -7,6 +7,7 @@ import type { Panel } from "@/core/panel";
 import { computed, ref, type Ref } from "vue";
 import type { Sheet } from "@/core/sheet";
 import { optimize } from "@/core/optimize";
+import type { OptimizedSheet } from "@/core/optimizedSheet";
 
 const currentTab = ref("Panels");
 const tabList = ["Panels", "Cuts"];
@@ -27,12 +28,14 @@ const sheet: Sheet = {
   },
 };
 
-const optimizationResult = computed(() => {
+let optimizationResult: Ref<OptimizedSheet[]> = ref([]);
+function flattenAndOptimize() {
+  console.log("flattenAndOptimize");
   const flattenedPanels = panels.value.flatMap((p) =>
     Array<Panel>(p.quantity).fill(p.panel),
   );
-  return optimize(sheet, flattenedPanels, bladeThickness);
-});
+  optimizationResult.value = optimize(sheet, flattenedPanels, bladeThickness);
+}
 
 const exportOptimizationDialog: Ref<HTMLDialogElement> = ref(null!);
 const optimizationExportData = computed(() => {
@@ -142,8 +145,14 @@ function importPanels() {
     </div>
     <div class="p-2 overflow-y-scroll grow">
       <ControlPanel
-        @add-panel="(panel, quantity) => panels.push({ panel, quantity })"
+        @add-panel="
+          (panel, quantity) => {
+            panels.push({ panel, quantity });
+            optimizationResult = [];
+          }
+        "
         @export="exportOptimizationDialog.showModal()"
+        @optimize="flattenAndOptimize"
         :disable-exporting="panels.length === 0"
       />
       <div

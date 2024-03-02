@@ -17,6 +17,7 @@ const left = ref(false);
 const emit = defineEmits<{
   addPanel: [panel: Panel, quantity: number];
   export: [];
+  optimize: [];
 }>();
 
 defineProps<{
@@ -136,12 +137,11 @@ function addPanel() {
         class="checkbox w-12 h-12 [--chkbg:theme(colors.base-100)] [--chkfg:theme(colors.base-content)] border-8 border-base-300 border-l-primary rounded-btn"
       />
     </div>
-    <button @click="addPanel" class="btn btn-primary">Add panel</button>
-    <button
-      @click="$emit('export')"
-      :disabled="disableExporting"
-      class="btn btn-secondary"
-    >
+    <button @click="addPanel" class="btn btn-secondary">Add panel</button>
+    <button @click="$emit('optimize')" class="btn btn-primary">
+      Optimize
+    </button>
+    <button @click="$emit('export')" :disabled="disableExporting" class="btn">
       Export results
     </button>
   </div>

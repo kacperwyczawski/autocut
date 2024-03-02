@@ -7,7 +7,7 @@ const edgeReductionButtons =
 
 const length = ref(NaN);
 const width = ref(NaN);
-const quantity = ref(NaN);
+const quantity = ref(1);
 const firstInput = ref<HTMLInputElement>(null!);
 const top = ref(false);
 const right = ref(false);
@@ -27,7 +27,7 @@ defineProps<{
 function reset() {
   length.value = NaN;
   width.value = NaN;
-  quantity.value = NaN;
+  quantity.value = 1;
   firstInput.value.focus();
   top.value = false;
   right.value = false;

@@ -140,7 +140,7 @@ function importPanels() {
         </div>
       </div>
     </div>
-    <div class="p-2 overflow-y-scroll">
+    <div class="p-2 overflow-y-scroll grow">
       <ControlPanel
         @add-panel="(panel, quantity) => panels.push({ panel, quantity })"
         @export="exportOptimizationDialog.showModal()"

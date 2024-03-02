@@ -65,7 +65,6 @@ function addPanel() {
         v-model.number="length"
         type="number"
         min="1"
-        placeholder="8000"
         class="input input-bordered"
         ref="firstInput"
       />
@@ -79,7 +78,6 @@ function addPanel() {
         v-model.number="width"
         type="number"
         min="1"
-        placeholder="10000"
         class="input input-bordered"
       />
     </label>
@@ -91,7 +89,6 @@ function addPanel() {
         v-model.number="quantity"
         type="number"
         min="1"
-        placeholder="Type here"
         class="input input-bordered"
       />
     </label>

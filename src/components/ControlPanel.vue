@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import type { EdgeReduction } from "@/core/edgeReduction";
 import type { Panel } from "@/core/panel";
-import { ref } from "vue";
+import { computed, ref, type ComputedRef } from "vue";
 
 const edgeReductionButtons =
   localStorage.getItem("edgeReductionButtons") || "Combined";
@@ -9,13 +10,22 @@ const length = ref(NaN);
 const width = ref(NaN);
 const quantity = ref(1);
 const firstInput = ref<HTMLInputElement>(null!);
+
 const top = ref(false);
 const right = ref(false);
 const bottom = ref(false);
 const left = ref(false);
+const edgeReduction: ComputedRef<EdgeReduction> = computed(() => ({
+  top: top.value,
+  right: right.value,
+  bottom: bottom.value,
+  left: left.value,
+  thickness: parseInt(localStorage.getItem("panelEdgeReduction") || "3"),
+}));
 
 const emit = defineEmits<{
   addPanel: [panel: Panel, quantity: number];
+  previewPanel: [panel: Panel];
   export: [];
   optimize: [];
 }>();
@@ -35,34 +45,40 @@ function reset() {
   left.value = false;
 }
 
-function addPanel() {
+function handlePanelAdd() {
   if (!length.value || !width.value || !quantity.value) return;
   emit(
     "addPanel",
     {
       length: length.value,
       width: width.value,
-      edgeReduction: {
-        top: top.value,
-        right: right.value,
-        bottom: bottom.value,
-        left: left.value,
-        thickness: parseInt(localStorage.getItem("panelEdgeReduction") || "3"),
-      },
+      edgeReduction: edgeReduction.value,
     },
     quantity.value,
   );
   reset();
 }
+
+// TODO: preview edge reduction
+function handlePanelDimensionsChange() {
+  if (length.value && width.value) {
+    emit("previewPanel", {
+      length: length.value,
+      width: width.value,
+      edgeReduction: edgeReduction.value,
+    });
+  }
+}
 </script>
 <template>
-  <div @keyup.enter="addPanel" class="flex gap-2 flex-wrap items-end">
+  <div @keyup.enter="handlePanelAdd" class="flex gap-2 flex-wrap items-end">
     <label class="form-control grow">
       <div class="label">
         <span class="label-text">Length</span>
         <span class="label-text-alt">mm</span>
       </div>
       <input
+        @input="handlePanelDimensionsChange"
         v-model.number="length"
         type="number"
         min="1"
@@ -76,6 +92,7 @@ function addPanel() {
         <span class="label-text-alt">mm</span>
       </div>
       <input
+        @input="handlePanelDimensionsChange"
         v-model.number="width"
         type="number"
         min="1"
@@ -137,7 +154,7 @@ function addPanel() {
         class="checkbox w-12 h-12 [--chkbg:theme(colors.base-100)] [--chkfg:theme(colors.base-content)] border-8 border-base-300 border-l-primary rounded-btn"
       />
     </div>
-    <button @click="addPanel" class="btn btn-secondary">Add panel</button>
+    <button @click="handlePanelAdd" class="btn btn-secondary">Add panel</button>
     <button @click="$emit('optimize')" class="btn btn-primary">Optimize</button>
     <button @click="$emit('export')" :disabled="disableExporting" class="btn">
       Export results

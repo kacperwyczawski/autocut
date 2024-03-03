@@ -5,6 +5,7 @@ defineProps<{
   sheets: OptimizedSheet[];
 }>();
 </script>
+// TODO: use PreviewOfPanel.vue and switch to html instead of svg
 <template>
   <div class="flex flex-col gap-2 pt-2">
     <svg

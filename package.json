@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.0.16",
+    "@fontsource/roboto-mono": "^5.0.16",
     "vue": "^3.3.11",
     "vue-router": "^4.2.5"
   },

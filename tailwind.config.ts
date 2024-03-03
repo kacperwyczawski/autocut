@@ -7,6 +7,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ["Inter Variable", ...defaultTheme.fontFamily.sans],
+        mono: ["Roboto Mono", ...defaultTheme.fontFamily.mono],
       },
     },
   },

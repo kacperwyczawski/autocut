@@ -8,11 +8,11 @@ import { computed, ref, type Ref } from "vue";
 import type { Sheet } from "@/core/sheet";
 import { optimize } from "@/core/optimize";
 import type { OptimizedSheet } from "@/core/optimizedSheet";
+import PreviewOfPanel from "@/components/PreviewOfPanel.vue";
 
 const currentTab = ref("Panels");
 const tabList = ["Panels", "Cuts"];
 
-const panels = ref<{ panel: Panel; quantity: number }[]>([]);
 const bladeThickness = parseFloat(
   localStorage.getItem("bladeThickness") ?? "3",
 );
@@ -28,13 +28,20 @@ const sheet: Sheet = {
   },
 };
 
-let optimizationResult: Ref<OptimizedSheet[]> = ref([]);
-function flattenAndOptimize() {
-  console.log("flattenAndOptimize");
+const optimizationResult: Ref<OptimizedSheet[] | null> = ref(null);
+function handleOptimize() {
+  panelInPreview.value = null;
   const flattenedPanels = panels.value.flatMap((p) =>
     Array<Panel>(p.quantity).fill(p.panel),
   );
   optimizationResult.value = optimize(sheet, flattenedPanels, bladeThickness);
+}
+
+const panels = ref<{ panel: Panel; quantity: number }[]>([]);
+function handlePanelAdd(panel: Panel, quantity: number) {
+  panels.value.push({ panel, quantity });
+  optimizationResult.value = null;
+  panelInPreview.value = null;
 }
 
 const exportOptimizationDialog: Ref<HTMLDialogElement> = ref(null!);
@@ -77,6 +84,12 @@ function importPanels() {
   };
   reader.readAsText(file);
 }
+
+const panelInPreview: Ref<Panel | null> = ref(null);
+function handlePanelPreview(panel: Panel) {
+  optimizationResult.value = [];
+  panelInPreview.value = panel;
+}
 </script>
 
 <template>
@@ -100,7 +113,6 @@ function importPanels() {
       </div>
       <div v-if="currentTab === 'Panels'">
         <Panels v-model="panels" />
-        <!-- TODO: replace this join with FABs -->
         <div class="join">
           <button
             v-if="panels.length !== 0"
@@ -145,14 +157,10 @@ function importPanels() {
     </div>
     <div class="p-2 overflow-y-scroll grow">
       <ControlPanel
-        @add-panel="
-          (panel, quantity) => {
-            panels.push({ panel, quantity });
-            optimizationResult = [];
-          }
-        "
+        @add-panel="handlePanelAdd"
+        @preview-panel="handlePanelPreview"
         @export="exportOptimizationDialog.showModal()"
-        @optimize="flattenAndOptimize"
+        @optimize="handleOptimize"
         :disable-exporting="panels.length === 0"
       />
       <div
@@ -199,10 +207,8 @@ function importPanels() {
           >To unleash the full potential of this app, use a larger screen</span
         >
       </div>
-      <OptimizationResults
-        v-if="panels.length !== 0"
-        :sheets="optimizationResult"
-      />
+      <OptimizationResults v-if="optimizationResult" :sheets="optimizationResult" />
+      <PreviewOfPanel v-if="panelInPreview" :panelInPreview />
     </div>
   </div>
   <!-- Dialogs -->

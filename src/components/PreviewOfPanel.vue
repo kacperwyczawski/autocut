@@ -17,23 +17,27 @@ function digitCount(n: number) {
 const showLength = computed(
   () =>
     container.value &&
-    container.value.clientWidth > digitCount(props.panelInPreview!.length) * letterWidth &&
+    container.value.clientWidth >
+      digitCount(props.panelInPreview!.length) * letterWidth &&
     container.value.clientHeight > letterHeight,
 );
-const showWidth = computed(
-  () =>
-    {
-      console.log("container.value", container.value);
-      console.log("container.value.clientHeight", container.value?.clientHeight);
-      console.log("digitCount(...)", digitCount(props.panelInPreview!.width));
-      console.log("digitCount(...) * letterHeight", digitCount(props.panelInPreview!.width) * letterHeight);
-      console.log("container.value.clientWidth", container.value?.clientWidth);
-      console.log("letterHeight", letterHeight);
-      return container.value &&
-        container.value.clientHeight > digitCount(props.panelInPreview!.width) * letterWidth &&
-        container.value.clientWidth > letterHeight;
-    },
-);
+const showWidth = computed(() => {
+  console.log("container.value", container.value);
+  console.log("container.value.clientHeight", container.value?.clientHeight);
+  console.log("digitCount(...)", digitCount(props.panelInPreview!.width));
+  console.log(
+    "digitCount(...) * letterHeight",
+    digitCount(props.panelInPreview!.width) * letterHeight,
+  );
+  console.log("container.value.clientWidth", container.value?.clientWidth);
+  console.log("letterHeight", letterHeight);
+  return (
+    container.value &&
+    container.value.clientHeight >
+      digitCount(props.panelInPreview!.width) * letterWidth &&
+    container.value.clientWidth > letterHeight
+  );
+});
 </script>
 <template>
   <div

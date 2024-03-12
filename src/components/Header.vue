@@ -1,11 +1,19 @@
 <script setup lang="ts">
 import HeaderButtons from "@/components/HeaderButtons.vue";
+const commitHash = __COMMIT_HASH__;
 </script>
 <template>
   <header class="navbar border-b border-base-300">
-    <RouterLink to="/" class="navbar-start text-3xl font-bold tracking-tight">
-      AutoCut
-    </RouterLink>
+    <div class="navbar-start gap-2">
+      <RouterLink to="/" class="text-3xl font-bold tracking-tight">
+        AutoCut
+      </RouterLink>
+      <a
+        href="https://github.com/kacperwyczawski/autocut/commits/main/"
+        class="badge"
+        >{{ commitHash }}</a
+      >
+    </div>
     <div class="navbar-end hidden md:flex gap-2">
       <HeaderButtons :extended-themes="true" />
     </div>

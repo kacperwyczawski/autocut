@@ -207,7 +207,10 @@ function handlePanelPreview(panel: Panel) {
           >To unleash the full potential of this app, use a larger screen</span
         >
       </div>
-      <OptimizationResults v-if="optimizationResult" :sheets="optimizationResult" />
+      <OptimizationResults
+        v-if="optimizationResult"
+        :sheets="optimizationResult"
+      />
       <PreviewOfPanel v-if="panelInPreview" :panelInPreview />
     </div>
   </div>

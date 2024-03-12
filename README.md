@@ -4,10 +4,10 @@
   - [x] Themes
   - [x] Persistent settings
   - [x] PWA
-  - [ ] Shortcuts
+  - [x] Shortcuts
 - Panels
   - [x] Import / Export
-  - [ ] Preview
+  - [x] Preview
 - Optimization
   - [x] Panels
   - [x] Cuts

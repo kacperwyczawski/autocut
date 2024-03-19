@@ -1,17 +1,13 @@
 <script setup lang="ts">
 import type { Panel } from "@/core/panel";
-import { ref } from "vue";
 
 const props = defineProps<{
   panelInPreview: Panel | null;
 }>();
-
-const container = ref<HTMLDivElement | null>(null);
 </script>
 <template>
   <div
     v-if="panelInPreview"
-    ref="container"
     class="border-2 border-secondary max-h-96 relative font-mono text-center"
     :style="{
       aspectRatio: `${panelInPreview.length / panelInPreview.width}`,

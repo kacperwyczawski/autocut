@@ -5,7 +5,6 @@ import { watch, watchEffect } from "vue";
 const props = defineProps<{
   panelInPreview: Panel | null;
 }>();
-
 </script>
 <template>
   <div

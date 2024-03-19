@@ -107,48 +107,42 @@ watchEffect(() => {
         class="input input-bordered"
       />
     </label>
-    <div v-if="edgeReductionButtons === 'Combined'" class="h-12 w-12 relative">
+    <div :class="{
+      'h-12 w-12 relative': edgeReductionButtons === 'Combined',
+      'flex gap-2': edgeReductionButtons === 'Separate',
+      'hidden': edgeReductionButtons === 'Hidden',
+    }">
       <input
         v-model="top"
         type="checkbox"
-        class="absolute top-0 left-2 right-2 h-2 min-h-2 appearance-none btn btn-outline p-0 checked:btn-primary"
+        :class="{
+          'absolute top-0 left-2 right-2 h-2 min-h-2 appearance-none btn btn-outline p-0 checked:btn-primary': edgeReductionButtons === 'Combined',
+          'checkbox w-12 h-12 [--chkbg:theme(colors.base-100)] [--chkfg:theme(colors.base-content)] border-8 border-base-300 border-t-primary rounded-btn': edgeReductionButtons === 'Separate',
+        }"
       />
       <input
         v-model="right"
         type="checkbox"
-        class="absolute top-2 right-0 w-2 h-8 min-h-8 appearance-none btn btn-outline p-0 checked:btn-primary"
+        :class="{
+          'absolute top-2 right-0 w-2 h-8 min-h-8 appearance-none btn btn-outline p-0 checked:btn-primary': edgeReductionButtons === 'Combined',
+          'checkbox w-12 h-12 [--chkbg:theme(colors.base-100)] [--chkfg:theme(colors.base-content)] border-8 border-base-300 border-r-primary rounded-btn': edgeReductionButtons === 'Separate',
+        }"
       />
       <input
         v-model="bottom"
         type="checkbox"
-        class="absolute bottom-0 left-2 right-2 h-2 min-h-2 appearance-none btn btn-outline p-0 checked:btn-primary"
+        :class="{
+          'absolute bottom-0 left-2 right-2 h-2 min-h-2 appearance-none btn btn-outline p-0 checked:btn-primary': edgeReductionButtons === 'Combined',
+          'checkbox w-12 h-12 [--chkbg:theme(colors.base-100)] [--chkfg:theme(colors.base-content)] border-8 border-base-300 border-b-primary rounded-btn': edgeReductionButtons === 'Separate',
+        }"
       />
       <input
         v-model="left"
         type="checkbox"
-        class="absolute top-2 left-0 w-2 h-8 min-h-8 appearance-none btn btn-outline p-0 checked:btn-primary"
-      />
-    </div>
-    <div v-else-if="edgeReductionButtons === 'Separate'" class="flex gap-2">
-      <input
-        v-model="top"
-        type="checkbox"
-        class="checkbox w-12 h-12 [--chkbg:theme(colors.base-100)] [--chkfg:theme(colors.base-content)] border-8 border-base-300 border-t-primary rounded-btn"
-      />
-      <input
-        v-model="right"
-        type="checkbox"
-        class="checkbox w-12 h-12 [--chkbg:theme(colors.base-100)] [--chkfg:theme(colors.base-content)] border-8 border-base-300 border-r-primary rounded-btn"
-      />
-      <input
-        v-model="bottom"
-        type="checkbox"
-        class="checkbox w-12 h-12 [--chkbg:theme(colors.base-100)] [--chkfg:theme(colors.base-content)] border-8 border-base-300 border-b-primary rounded-btn"
-      />
-      <input
-        v-model="left"
-        type="checkbox"
-        class="checkbox w-12 h-12 [--chkbg:theme(colors.base-100)] [--chkfg:theme(colors.base-content)] border-8 border-base-300 border-l-primary rounded-btn"
+        :class="{
+          'absolute top-2 left-0 w-2 h-8 min-h-8 appearance-none btn btn-outline p-0 checked:btn-primary': edgeReductionButtons === 'Combined',
+          'checkbox w-12 h-12 [--chkbg:theme(colors.base-100)] [--chkfg:theme(colors.base-content)] border-8 border-base-300 border-l-primary rounded-btn': edgeReductionButtons === 'Separate',
+        }"
       />
     </div>
     <button @click="handlePanelAdd" class="btn btn-secondary">Add panel</button>

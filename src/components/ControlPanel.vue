@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { EdgeReduction } from "@/core/edgeReduction";
 import type { Panel } from "@/core/panel";
-import { computed, ref, type ComputedRef } from "vue";
+import { computed, ref, type ComputedRef, watchEffect } from "vue";
 
 const edgeReductionButtons =
   localStorage.getItem("edgeReductionButtons") || "Combined";
@@ -59,8 +59,7 @@ function handlePanelAdd() {
   reset();
 }
 
-// TODO: preview edge reduction
-function handlePanelDimensionsChange() {
+watchEffect(() => {
   if (length.value && width.value) {
     emit("previewPanel", {
       length: length.value,
@@ -68,7 +67,7 @@ function handlePanelDimensionsChange() {
       edgeReduction: edgeReduction.value,
     });
   }
-}
+});
 </script>
 <template>
   <div @keyup.enter="handlePanelAdd" class="flex gap-2 flex-wrap items-end">
@@ -78,7 +77,6 @@ function handlePanelDimensionsChange() {
         <span class="label-text-alt">mm</span>
       </div>
       <input
-        @input="handlePanelDimensionsChange"
         v-model.number="length"
         type="number"
         min="1"
@@ -92,7 +90,6 @@ function handlePanelDimensionsChange() {
         <span class="label-text-alt">mm</span>
       </div>
       <input
-        @input="handlePanelDimensionsChange"
         v-model.number="width"
         type="number"
         min="1"

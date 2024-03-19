@@ -107,41 +107,51 @@ watchEffect(() => {
         class="input input-bordered"
       />
     </label>
-    <div :class="{
-      'h-12 w-12 relative': edgeReductionButtons === 'Combined',
-      'flex gap-2': edgeReductionButtons === 'Separate',
-      'hidden': edgeReductionButtons === 'Hidden',
-    }">
+    <div
+      :class="{
+        'h-12 w-12 relative': edgeReductionButtons === 'Combined',
+        'flex gap-2': edgeReductionButtons === 'Separate',
+        hidden: edgeReductionButtons === 'Hidden',
+      }"
+    >
       <input
         v-model="top"
         type="checkbox"
         :class="{
-          'absolute top-0 left-2 right-2 h-2 min-h-2 appearance-none btn btn-outline p-0 checked:btn-primary': edgeReductionButtons === 'Combined',
-          'checkbox w-12 h-12 [--chkbg:theme(colors.base-100)] [--chkfg:theme(colors.base-content)] border-8 border-base-300 border-t-primary rounded-btn': edgeReductionButtons === 'Separate',
+          'absolute top-0 left-2 right-2 h-2 min-h-2 appearance-none btn btn-outline p-0 checked:btn-primary':
+            edgeReductionButtons === 'Combined',
+          'checkbox w-12 h-12 [--chkbg:theme(colors.base-100)] [--chkfg:theme(colors.base-content)] border-8 border-base-300 border-t-primary rounded-btn':
+            edgeReductionButtons === 'Separate',
         }"
       />
       <input
         v-model="right"
         type="checkbox"
         :class="{
-          'absolute top-2 right-0 w-2 h-8 min-h-8 appearance-none btn btn-outline p-0 checked:btn-primary': edgeReductionButtons === 'Combined',
-          'checkbox w-12 h-12 [--chkbg:theme(colors.base-100)] [--chkfg:theme(colors.base-content)] border-8 border-base-300 border-r-primary rounded-btn': edgeReductionButtons === 'Separate',
+          'absolute top-2 right-0 w-2 h-8 min-h-8 appearance-none btn btn-outline p-0 checked:btn-primary':
+            edgeReductionButtons === 'Combined',
+          'checkbox w-12 h-12 [--chkbg:theme(colors.base-100)] [--chkfg:theme(colors.base-content)] border-8 border-base-300 border-r-primary rounded-btn':
+            edgeReductionButtons === 'Separate',
         }"
       />
       <input
         v-model="bottom"
         type="checkbox"
         :class="{
-          'absolute bottom-0 left-2 right-2 h-2 min-h-2 appearance-none btn btn-outline p-0 checked:btn-primary': edgeReductionButtons === 'Combined',
-          'checkbox w-12 h-12 [--chkbg:theme(colors.base-100)] [--chkfg:theme(colors.base-content)] border-8 border-base-300 border-b-primary rounded-btn': edgeReductionButtons === 'Separate',
+          'absolute bottom-0 left-2 right-2 h-2 min-h-2 appearance-none btn btn-outline p-0 checked:btn-primary':
+            edgeReductionButtons === 'Combined',
+          'checkbox w-12 h-12 [--chkbg:theme(colors.base-100)] [--chkfg:theme(colors.base-content)] border-8 border-base-300 border-b-primary rounded-btn':
+            edgeReductionButtons === 'Separate',
         }"
       />
       <input
         v-model="left"
         type="checkbox"
         :class="{
-          'absolute top-2 left-0 w-2 h-8 min-h-8 appearance-none btn btn-outline p-0 checked:btn-primary': edgeReductionButtons === 'Combined',
-          'checkbox w-12 h-12 [--chkbg:theme(colors.base-100)] [--chkfg:theme(colors.base-content)] border-8 border-base-300 border-l-primary rounded-btn': edgeReductionButtons === 'Separate',
+          'absolute top-2 left-0 w-2 h-8 min-h-8 appearance-none btn btn-outline p-0 checked:btn-primary':
+            edgeReductionButtons === 'Combined',
+          'checkbox w-12 h-12 [--chkbg:theme(colors.base-100)] [--chkfg:theme(colors.base-content)] border-8 border-base-300 border-l-primary rounded-btn':
+            edgeReductionButtons === 'Separate',
         }"
       />
     </div>

@@ -1,17 +1,12 @@
 <script setup lang="ts">
 import type { Panel } from "@/core/panel";
-import { computed, ref, watchEffect } from "vue";
+import { ref } from "vue";
 
 const props = defineProps<{
   panelInPreview: Panel | null;
 }>();
 
 const container = ref<HTMLDivElement | null>(null);
-const letterWidth = 10;
-const letterHeight = 16;
-function digitCount(n: number) {
-  return Math.floor(Math.log10(n) + 1);
-}
 </script>
 <template>
   <div

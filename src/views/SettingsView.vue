@@ -4,12 +4,12 @@ import useSettings from "@/composables/useSettings";
 // TODO: one composable to rule them all
 
 const {
-  edgeReductionButtons,
-  sheetLength,
-  sheetWidth,
-  sheetEdgeReduction,
-  bladeThickness,
-  panelEdgeReduction,
+	edgeReductionButtons,
+	sheetLength,
+	sheetWidth,
+	sheetEdgeReduction,
+	bladeThickness,
+	panelEdgeReduction,
 } = useSettings();
 
 function clearAllData() {

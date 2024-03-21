@@ -46,21 +46,18 @@ export default function useSettings() {
 		localStorage.setItem("edgeReductionButtons", x);
 	});
 
-	const currentTheme = ref(
-		localStorage.getItem("currentTheme") || "retro",
-	);
+	const currentTheme = ref(localStorage.getItem("currentTheme") || "retro");
 	watch(currentTheme, (x) => {
 		localStorage.setItem("currentTheme", x);
-
 	});
 
-    return {
-        sheetLength,
-        sheetWidth,
-        sheetEdgeReduction,
-        bladeThickness,
-        panelEdgeReduction,
-        edgeReductionButtons,
+	return {
+		sheetLength,
+		sheetWidth,
+		sheetEdgeReduction,
+		bladeThickness,
+		panelEdgeReduction,
+		edgeReductionButtons,
 		currentTheme,
-    }
+	};
 }

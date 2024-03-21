@@ -34,7 +34,11 @@ function handleOptimize() {
 	const flattenedPanels = panels.value.flatMap((p) =>
 		Array<Panel>(p.quantity).fill(p.panel),
 	);
-	optimizationResult.value = optimize(sheet, flattenedPanels, bladeThickness.value);
+	optimizationResult.value = optimize(
+		sheet,
+		flattenedPanels,
+		bladeThickness.value,
+	);
 }
 
 const panels = ref<{ panel: Panel; quantity: number }[]>([]);

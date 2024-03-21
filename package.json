@@ -8,8 +8,7 @@
 		"build": "run-p type-check \"build-only {@}\" --",
 		"preview": "vite preview",
 		"build-only": "vite build",
-		"type-check": "vue-tsc --build --force",
-		"prepare": "husky"
+		"type-check": "vue-tsc --build --force"
 	},
 	"dependencies": {
 		"@fontsource-variable/inter": "^5.0.16",

@@ -22,9 +22,8 @@ export function optimize(
 	panels.sort((a, b) => {
 		if (a.length === b.length) {
 			return b.width - a.width;
-		} else {
-			return b.length - a.length;
 		}
+		return b.length - a.length;
 	});
 	// TODO: apply edge reduction
 	const optimizedSheets: OptimizedSheet[] = [];

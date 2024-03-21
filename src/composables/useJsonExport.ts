@@ -11,7 +11,7 @@ export default function useJsonExport<T>(data: any, name: string): void {
 	const a = document.createElement("a");
 	a.style.display = "none";
 	a.href = url;
-	a.download = name + ".json";
+	a.download = `${name}.json`;
 	a.click();
 	URL.revokeObjectURL(url);
 }

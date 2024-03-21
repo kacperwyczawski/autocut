@@ -1,55 +1,24 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import useSettings from "@/composables/useSettings";
 
 // TODO: one composable to rule them all
 
-const sheetLength = ref(
-  parseInt(localStorage.getItem("sheetLength") || "2800"),
-);
-watch(sheetLength, (x) => {
-  localStorage.setItem("sheetLength", x.toString());
-});
-
-const sheetWidth = ref(parseInt(localStorage.getItem("sheetWidth") || "2070"));
-watch(sheetWidth, (x) => {
-  localStorage.setItem("sheetWidth", x.toString());
-});
-
-const sheetEdgeReduction = ref(
-  parseInt(localStorage.getItem("sheetEdgeReduction") || "0"),
-);
-watch(sheetEdgeReduction, (x) => {
-  localStorage.setItem("sheetEdgeReduction", x.toString());
-});
-
-const bladeThickness = ref(
-  parseInt(localStorage.getItem("bladeThickness") || "3"),
-);
-watch(bladeThickness, (x) => {
-  localStorage.setItem("bladeThickness", x.toString());
-});
-
-const panelEdgeReduction = ref(
-  parseInt(localStorage.getItem("panelEdgeReduction") || "3"),
-);
-watch(panelEdgeReduction, (x) => {
-  localStorage.setItem("panelEdgeReduction", x.toString());
-});
-
-const edgeReductionButtons = ref(
-  localStorage.getItem("edgeReductionButtons") || "Combined",
-);
-watch(edgeReductionButtons, (x) => {
-  localStorage.setItem("edgeReductionButtons", x);
-});
+const {
+  edgeReductionButtons,
+  sheetLength,
+  sheetWidth,
+  sheetEdgeReduction,
+  bladeThickness,
+  panelEdgeReduction,
+} = useSettings();
 
 function clearAllData() {
-  if (
-    confirm("Are you sure? All application data and settings will be cleared.")
-  ) {
-    localStorage.clear();
-    location.reload();
-  }
+	if (
+		confirm("Are you sure? All application data and settings will be cleared.")
+	) {
+		localStorage.clear();
+		location.reload();
+	}
 }
 </script>
 <template>

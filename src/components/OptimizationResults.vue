@@ -2,7 +2,7 @@
 import type { OptimizedSheet } from "@/core/optimizedSheet";
 
 defineProps<{
-  sheets: OptimizedSheet[];
+	sheets: OptimizedSheet[];
 }>();
 </script>
 // TODO: use PreviewOfPanel.vue and switch to html instead of svg

@@ -1,13 +1,13 @@
 <script setup lang="ts">
+import useSettings from "@/composables/useSettings";
 import type { EdgeReduction } from "@/core/edgeReduction";
 import type { Panel } from "@/core/panel";
-import { computed, ref, type ComputedRef, watchEffect } from "vue";
+import { type ComputedRef, computed, ref, watchEffect } from "vue";
 
-const edgeReductionButtons =
-  localStorage.getItem("edgeReductionButtons") || "Combined";
+const { edgeReductionButtons } = useSettings();
 
-const length = ref(NaN);
-const width = ref(NaN);
+const length = ref(Number.NaN);
+const width = ref(Number.NaN);
 const quantity = ref(1);
 const firstInput = ref<HTMLInputElement>(null!);
 
@@ -16,57 +16,57 @@ const right = ref(false);
 const bottom = ref(false);
 const left = ref(false);
 const edgeReduction: ComputedRef<EdgeReduction> = computed(() => ({
-  top: top.value,
-  right: right.value,
-  bottom: bottom.value,
-  left: left.value,
-  thickness: parseInt(localStorage.getItem("panelEdgeReduction") || "3"),
+	top: top.value,
+	right: right.value,
+	bottom: bottom.value,
+	left: left.value,
+	thickness: useSettings().bladeThickness.value,
 }));
 
 const emit = defineEmits<{
-  addPanel: [panel: Panel, quantity: number];
-  previewPanel: [panel: Panel];
-  export: [];
-  optimize: [];
+	addPanel: [panel: Panel, quantity: number];
+	previewPanel: [panel: Panel];
+	export: [];
+	optimize: [];
 }>();
 
 defineProps<{
-  disableExporting: boolean;
+	disableExporting: boolean;
 }>();
 
 function reset() {
-  length.value = NaN;
-  width.value = NaN;
-  quantity.value = 1;
-  firstInput.value.focus();
-  top.value = false;
-  right.value = false;
-  bottom.value = false;
-  left.value = false;
+	length.value = Number.NaN;
+	width.value = Number.NaN;
+	quantity.value = 1;
+	firstInput.value.focus();
+	top.value = false;
+	right.value = false;
+	bottom.value = false;
+	left.value = false;
 }
 
 function handlePanelAdd() {
-  if (!length.value || !width.value || !quantity.value) return;
-  emit(
-    "addPanel",
-    {
-      length: length.value,
-      width: width.value,
-      edgeReduction: edgeReduction.value,
-    },
-    quantity.value,
-  );
-  reset();
+	if (!length.value || !width.value || !quantity.value) return;
+	emit(
+		"addPanel",
+		{
+			length: length.value,
+			width: width.value,
+			edgeReduction: edgeReduction.value,
+		},
+		quantity.value,
+	);
+	reset();
 }
 
 watchEffect(() => {
-  if (length.value && width.value) {
-    emit("previewPanel", {
-      length: length.value,
-      width: width.value,
-      edgeReduction: edgeReduction.value,
-    });
-  }
+	if (length.value && width.value) {
+		emit("previewPanel", {
+			length: length.value,
+			width: width.value,
+			edgeReduction: edgeReduction.value,
+		});
+	}
 });
 </script>
 <template>

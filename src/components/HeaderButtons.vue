@@ -1,30 +1,27 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import useSettings from "@/composables/useSettings";
 
 defineProps<{
-  extendedThemes: boolean;
+	extendedThemes: boolean;
 }>();
 
 const themes = [
-  "light",
-  "dark",
-  "cupcake",
-  "bumblebee",
-  "synthwave",
-  "retro",
-  "cyberpunk",
-  "dracula",
-  "night",
-  "coffee",
-  "dim",
-  "nord",
-  "lime", // additional custom theme
+	"light",
+	"dark",
+	"cupcake",
+	"bumblebee",
+	"synthwave",
+	"retro",
+	"cyberpunk",
+	"dracula",
+	"night",
+	"coffee",
+	"dim",
+	"nord",
+	"lime", // additional custom theme
 ];
 
-const currentTheme = ref(localStorage.getItem("theme") || "retro");
-watch(currentTheme, (x) => {
-  localStorage.setItem("theme", x);
-});
+const { currentTheme } = useSettings();
 </script>
 <template>
   <div v-if="extendedThemes" class="dropdown">

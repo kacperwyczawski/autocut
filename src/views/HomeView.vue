@@ -1,94 +1,94 @@
 <script setup lang="ts">
 import ControlPanel from "@/components/ControlPanel.vue";
-import Panels from "@/components/Panels.vue";
 import OptimizationResults from "@/components/OptimizationResults.vue";
-import { useJsonExport } from "@/composables/useJsonExport";
-import type { Panel } from "@/core/panel";
-import { computed, ref, type Ref } from "vue";
-import type { Sheet } from "@/core/sheet";
+import Panels from "@/components/Panels.vue";
+import PreviewOfPanel from "@/components/PreviewOfPanel.vue";
+import useJsonExport from "@/composables/useJsonExport";
+import useSettings from "@/composables/useSettings";
 import { optimize } from "@/core/optimize";
 import type { OptimizedSheet } from "@/core/optimizedSheet";
-import PreviewOfPanel from "@/components/PreviewOfPanel.vue";
+import type { Panel } from "@/core/panel";
+import type { Sheet } from "@/core/sheet";
+import { type Ref, computed, ref } from "vue";
 
 const currentTab = ref("Panels");
 const tabList = ["Panels", "Cuts"];
 
-const bladeThickness = parseFloat(
-  localStorage.getItem("bladeThickness") ?? "3",
-);
+const { bladeThickness } = useSettings();
+
 const sheet: Sheet = {
-  width: parseFloat(localStorage.getItem("sheetWidth") ?? "2800"),
-  length: parseFloat(localStorage.getItem("sheetLength") ?? "2070"),
-  edgeReduction: {
-    top: true,
-    bottom: true,
-    left: true,
-    right: true,
-    thickness: parseFloat(localStorage.getItem("sheetEdgeReduction") ?? "0"),
-  },
+	width: useSettings().sheetWidth.value,
+	length: useSettings().sheetLength.value,
+	edgeReduction: {
+		top: true,
+		bottom: true,
+		left: true,
+		right: true,
+		thickness: useSettings().bladeThickness.value,
+	},
 };
 
 const optimizationResult: Ref<OptimizedSheet[] | null> = ref(null);
 function handleOptimize() {
-  panelInPreview.value = null;
-  const flattenedPanels = panels.value.flatMap((p) =>
-    Array<Panel>(p.quantity).fill(p.panel),
-  );
-  optimizationResult.value = optimize(sheet, flattenedPanels, bladeThickness);
+	panelInPreview.value = null;
+	const flattenedPanels = panels.value.flatMap((p) =>
+		Array<Panel>(p.quantity).fill(p.panel),
+	);
+	optimizationResult.value = optimize(sheet, flattenedPanels, bladeThickness.value);
 }
 
 const panels = ref<{ panel: Panel; quantity: number }[]>([]);
 function handlePanelAdd(panel: Panel, quantity: number) {
-  panels.value.push({ panel, quantity });
-  optimizationResult.value = null;
-  panelInPreview.value = null;
+	panels.value.push({ panel, quantity });
+	optimizationResult.value = null;
+	panelInPreview.value = null;
 }
 
 const exportOptimizationDialog: Ref<HTMLDialogElement> = ref(null!);
 const optimizationExportData = computed(() => {
-  return JSON.stringify(optimizationResult.value, null, 2);
+	return JSON.stringify(optimizationResult.value, null, 2);
 });
 function exportOptimization() {
-  useJsonExport(optimizationExportData, "optimization");
+	useJsonExport(optimizationExportData, "optimization");
 }
 
 const exportPanelsDialog: Ref<HTMLDialogElement> = ref(null!);
 const panelsExportData = computed(() => {
-  return JSON.stringify(panels.value, null, 2);
+	return JSON.stringify(panels.value, null, 2);
 });
 function exportPanels() {
-  useJsonExport(panelsExportData, "panels");
+	useJsonExport(panelsExportData, "panels");
 }
 
 const importPanelsDialog: Ref<HTMLDialogElement> = ref(null!);
 const importPanelsInput: Ref<HTMLInputElement> = ref(null!);
 function importPanels() {
-  const file = importPanelsInput.value.files?.[0];
-  if (!file) {
-    alert("No file selected");
-    return;
-  }
-  const reader = new FileReader();
-  reader.onload = () => {
-    try {
-      const data = JSON.parse(reader.result as string);
-      if (Array.isArray(data)) {
-        panels.value = data;
-      } else {
-        throw new Error("Invalid data");
-      }
-    } catch (error) {
-      console.error(error);
-      alert("Invalid file");
-    }
-  };
-  reader.readAsText(file);
+	const file = importPanelsInput.value.files?.[0];
+	if (!file) {
+		alert("No file selected");
+		return;
+	}
+	const reader = new FileReader();
+	reader.onload = () => {
+		try {
+			const data = JSON.parse(reader.result as string);
+			if (Array.isArray(data)) {
+				panels.value = data;
+			} else {
+				throw new Error("Invalid data");
+			}
+		} catch (error) {
+			console.error(error);
+			alert("Invalid file");
+		}
+	};
+	reader.readAsText(file);
 }
 
 const panelInPreview: Ref<Panel | null> = ref(null);
 function handlePanelPreview(panel: Panel) {
-  optimizationResult.value = [];
-  panelInPreview.value = panel;
+	optimizationResult.value = [];
+	panelInPreview.value = panel;
 }
 </script>
 

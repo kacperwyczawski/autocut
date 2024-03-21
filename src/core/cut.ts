@@ -5,8 +5,8 @@
  * @property {number} length - In mm
  */
 export type Cut = {
-  x: number;
-  y: number;
-  length: number;
-  direction: "vertical" | "horizontal";
+	x: number;
+	y: number;
+	length: number;
+	direction: "vertical" | "horizontal";
 };

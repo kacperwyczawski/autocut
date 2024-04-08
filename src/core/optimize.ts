@@ -18,7 +18,7 @@ export function optimize(
 	bladeThickness: number,
 ): OptimizationResult {
 	// TODO: fail if there is a panel bigger than the sheet, return error through result (discriminated union :D)
-	console.time("optimization");
+	const startTime = performance.now();
 	const freeRectangles: FreeSpace[] = [];
 	panels.sort((a, b) => {
 		if (a.length === b.length) {
@@ -132,11 +132,12 @@ export function optimize(
 			fit.sheet.cuts.push(newVerticalCut);
 		}
 	}
-	console.timeEnd("optimization");
+	const endTime = performance.now();
 	return {
 		sheets: optimizedSheets,
 		bladeThickness,
 		wastePercentage: getWastePercentage(freeRectangles, sheet),
+		time: endTime - startTime,
 	};
 }
 

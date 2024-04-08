@@ -4,4 +4,5 @@ export type OptimizationResult = {
 	sheets: OptimizedSheet[];
 	bladeThickness: number;
 	wastePercentage: number;
+	time: number;
 };

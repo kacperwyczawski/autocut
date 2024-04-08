@@ -9,7 +9,10 @@ defineProps<{
 <template>
   <div class="mt-2 flex gap-1">
     <span class="badge">
-      Waste percentage: {{ Math.round(optimization.wastePercentage) }}%
+      Waste: {{ Math.round(optimization.wastePercentage) }}%
+    </span>
+    <span class="badge">
+      Time: {{ Math.round(optimization.time) }}ms
     </span>
   </div>
   <div class="flex flex-col gap-2 mt-2">

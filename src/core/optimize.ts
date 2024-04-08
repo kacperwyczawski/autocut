@@ -1,4 +1,5 @@
 import type { Cut } from "./cut";
+import type { OptimizationResult } from "./optimizationResult";
 import type { OptimizedSheet } from "./optimizedSheet";
 import type { Panel } from "./panel";
 import type { Sheet } from "./sheet";
@@ -15,7 +16,7 @@ export function optimize(
 	sheet: Sheet,
 	panels: Panel[],
 	bladeThickness: number,
-): OptimizedSheet[] {
+): OptimizationResult {
 	// TODO: fail if there is a panel bigger than the sheet
 	console.time("optimization");
 	const freeRectangles: FreeSpace[] = [];
@@ -27,7 +28,6 @@ export function optimize(
 	});
 	// TODO: apply edge reduction
 	const optimizedSheets: OptimizedSheet[] = [];
-
 	for (const panel of panels) {
 		// extract smallest fit, if there is none, create new stock panel
 		let fit: FreeSpace | null =
@@ -132,7 +132,10 @@ export function optimize(
 			fit.sheet.cuts.push(newVerticalCut);
 		}
 	}
-
 	console.timeEnd("optimization");
-	return optimizedSheets;
+	return {
+		sheets: optimizedSheets,
+		bladeThickness,
+		wastePercentage: 0,
+	};
 }

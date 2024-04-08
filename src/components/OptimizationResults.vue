@@ -1,14 +1,15 @@
 <script setup lang="ts">
+import type { OptimizationResult } from "@/core/optimizationResult";
 import type { OptimizedSheet } from "@/core/optimizedSheet";
 
 defineProps<{
-	sheets: OptimizedSheet[];
+	optimization: OptimizationResult;
 }>();
 </script>
 <template>
   <div class="flex flex-col gap-2 pt-2">
     <div
-      v-for="sheet in sheets"
+      v-for="sheet in optimization.sheets"
       class="border-2 border-secondary border-dashed relative font-mono text-center"
       :style="{
         aspectRatio: `${sheet.sheet.length / sheet.sheet.width}`,

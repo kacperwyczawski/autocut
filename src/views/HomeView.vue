@@ -5,8 +5,8 @@ import Panels from "@/components/Panels.vue";
 import PreviewOfPanel from "@/components/PreviewOfPanel.vue";
 import useJsonExport from "@/composables/useJsonExport";
 import useSettings from "@/composables/useSettings";
+import type { OptimizationResult } from "@/core/optimizationResult";
 import { optimize } from "@/core/optimize";
-import type { OptimizedSheet } from "@/core/optimizedSheet";
 import type { Panel } from "@/core/panel";
 import type { Sheet } from "@/core/sheet";
 import { type Ref, computed, ref } from "vue";
@@ -28,7 +28,7 @@ const sheet: Sheet = {
 	},
 };
 
-const optimizationResult: Ref<OptimizedSheet[] | null> = ref(null);
+const optimizationResult: Ref<OptimizationResult | null> = ref(null);
 function handleOptimize() {
 	panelInPreview.value = null;
 	const flattenedPanels = panels.value.flatMap((p) =>
@@ -91,7 +91,7 @@ function importPanels() {
 
 const panelInPreview: Ref<Panel | null> = ref(null);
 function handlePanelPreview(panel: Panel) {
-	optimizationResult.value = [];
+	optimizationResult.value = null;
 	panelInPreview.value = panel;
 }
 </script>
@@ -213,7 +213,7 @@ function handlePanelPreview(panel: Panel) {
       </div>
       <OptimizationResults
         v-if="optimizationResult"
-        :sheets="optimizationResult"
+        :optimization="optimizationResult"
       />
       <PreviewOfPanel v-if="panelInPreview" :panelInPreview />
     </div>

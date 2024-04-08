@@ -5,10 +5,7 @@ import { toValue } from "vue";
  * @param data Data to export
  * @param name Name to be used for the exported file, without the extension
  */
-export default function useJsonExport<T>(
-	data: T,
-	name: string,
-): void {
+export default function useJsonExport<T>(data: T, name: string): void {
 	const blob = new Blob([toValue(data as any)], { type: "application/json" });
 	const url = URL.createObjectURL(blob);
 	const a = document.createElement("a");

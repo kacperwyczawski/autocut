@@ -136,16 +136,20 @@ export function optimize(
 	return {
 		sheets: optimizedSheets,
 		bladeThickness,
-		wastePercentage: getWastePercentage(freeRectangles, sheet),
+		wastePercentage: getWastePercentage(optimizedSheets),
 		time: endTime - startTime,
 	};
 }
 
-function getWastePercentage(freeRectangles: FreeSpace[], sheet: Sheet): number {
-	const totalArea = sheet.length * sheet.width;
-	const usedArea = freeRectangles.reduce(
-		(acc, freeSpace) => acc + freeSpace.length * freeSpace.width,
-		0,
-	);
-	return (1 - usedArea / totalArea) * 100;
+function getWastePercentage(sheets: OptimizedSheet[]) {
+	const usedArea = sheets.reduce((acc, sheet) => {
+		const panelArea = sheet.panels.reduce(
+			(acc, panel) => acc + panel.panel.length * panel.panel.width,
+			0,
+		);
+		return acc + panelArea;
+	}
+	, 0);
+	const totalArea = sheets.reduce((acc, sheet) => acc + sheet.sheet.length * sheet.sheet.width, 0);
+	return 100 - (usedArea / totalArea) * 100;
 }

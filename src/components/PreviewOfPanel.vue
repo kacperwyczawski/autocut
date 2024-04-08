@@ -9,7 +9,7 @@ const props = defineProps<{
 <template>
   <div
     v-if="panelInPreview"
-    class="border-2 border-secondary max-h-96 relative font-mono text-center"
+    class="border-2 border-secondary max-h-96 relative font-mono text-center mt-2"
     :style="{
       aspectRatio: `${panelInPreview.length / panelInPreview.width}`,
     }"

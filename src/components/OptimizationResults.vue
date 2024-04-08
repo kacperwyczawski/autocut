@@ -7,7 +7,12 @@ defineProps<{
 }>();
 </script>
 <template>
-  <div class="flex flex-col gap-2 pt-2">
+  <div class="mt-2 flex gap-1">
+    <span class="badge">
+      Waste percentage: {{ Math.round(optimization.wastePercentage) }}%
+    </span>
+  </div>
+  <div class="flex flex-col gap-2 mt-2">
     <div
       v-for="sheet in optimization.sheets"
       class="border-2 border-secondary border-dashed relative font-mono text-center"

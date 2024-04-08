@@ -17,7 +17,7 @@ export function optimize(
 	panels: Panel[],
 	bladeThickness: number,
 ): OptimizationResult {
-	// TODO: fail if there is a panel bigger than the sheet
+	// TODO: fail if there is a panel bigger than the sheet, return error through result (discriminated union :D)
 	console.time("optimization");
 	const freeRectangles: FreeSpace[] = [];
 	panels.sort((a, b) => {
@@ -136,6 +136,15 @@ export function optimize(
 	return {
 		sheets: optimizedSheets,
 		bladeThickness,
-		wastePercentage: 0,
+		wastePercentage: getWastePercentage(freeRectangles, sheet),
 	};
+}
+
+function getWastePercentage(freeRectangles: FreeSpace[], sheet: Sheet): number {
+	const totalArea = sheet.length * sheet.width;
+	const usedArea = freeRectangles.reduce(
+		(acc, freeSpace) => acc + freeSpace.length * freeSpace.width,
+		0,
+	);
+	return (1 - usedArea / totalArea) * 100;
 }

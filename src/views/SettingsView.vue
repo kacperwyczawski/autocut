@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import useSettings from "@/composables/useSettings";
 
-// TODO: one composable to rule them all
-
 const {
 	edgeReductionButtons,
 	sheetLength,

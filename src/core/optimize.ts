@@ -39,13 +39,22 @@ export function optimize(
 	// TODO: apply edge reduction
 	const optimizedSheets: OptimizedSheet[] = [];
 	for (const panel of panels) {
-		// extract smallest fit, if there is none, create new stock panel
+		// extract best fit
+		freeRectangles.sort((a, b) => {
+			if (a.width === b.width) {
+				return a.length - b.length;
+			}
+			return a.width - b.width;
+		}
+		);
 		let fit: FreeSpace | null =
 			freeRectangles.find(
 				(freeSpace) =>
 					freeSpace.length >= panel.length && freeSpace.width >= panel.width,
-			) ?? null;
+			) ??
+			null;
 		if (!fit) {
+			// if no fit is found, create a new sheet
 			const newSheet: OptimizedSheet = {
 				sheet: { ...sheet },
 				panels: [],
@@ -60,7 +69,7 @@ export function optimize(
 				sheet: newSheet,
 			};
 		} else {
-			// remove fit from free rectangles
+			// if fit is found, remove it from free rectangles
 			freeRectangles.splice(freeRectangles.indexOf(fit), 1);
 		}
 
@@ -104,7 +113,8 @@ export function optimize(
 		} else {
 			// panel is smaller than fit, so we need to create two new free rectangles and two new cuts
 
-			// TODO: maybe change preference based on length/width ratio of sheet
+			// TODO: maybe change preference based on length/width ratio of sheet.
+			// it would require changing the sort function of freeRectangles
 
 			// for now prefer horizontal cut, like this:
 			// +---+---+
@@ -113,17 +123,17 @@ export function optimize(
 			// |       |
 			// +---+---+
 
-			const newFreeRectangleBelow = { ...fit };
-			newFreeRectangleBelow.y = fit.y + panel.width + bladeThickness;
-			newFreeRectangleBelow.width = fit.width - panel.width - bladeThickness;
-			freeRectangles.push(newFreeRectangleBelow);
-
 			const newFreeRectangleToTheRight = { ...fit };
 			newFreeRectangleToTheRight.x = fit.x + panel.length + bladeThickness;
 			newFreeRectangleToTheRight.length =
 				fit.length - panel.length - bladeThickness;
 			newFreeRectangleToTheRight.width = panel.width + bladeThickness;
 			freeRectangles.push(newFreeRectangleToTheRight);
+
+			const newFreeRectangleBelow = { ...fit };
+			newFreeRectangleBelow.y = fit.y + panel.width + bladeThickness;
+			newFreeRectangleBelow.width = fit.width - panel.width - bladeThickness;
+			freeRectangles.push(newFreeRectangleBelow);
 
 			const newHorizontalCut: Cut = {
 				x: fit.x,

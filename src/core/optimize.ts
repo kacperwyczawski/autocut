@@ -17,42 +17,18 @@ export function optimize(
 	panels: Panel[],
 	bladeThickness: number,
 ): OptimizationResult {
-	if (
-		panels.some(
-			(panel) => panel.length > sheet.length || panel.width > sheet.width,
-		)
-	) {
-		return "at least one panel is bigger than the sheet";
-	}
-	if (panels.length === 0) {
-		return "no panels to optimize";
-	}
-
+	validatePanels(panels, sheet);
 	const startTime = performance.now();
-	const freeRectangles: FreeSpace[] = [];
-	panels.sort((a, b) => {
-		if (a.length === b.length) {
-			return b.width - a.width;
-		}
-		return b.length - a.length;
-	});
+	const freeSpaces: FreeSpace[] = [];
+	panels.sort((a, b) =>
+		a.length === b.length ? b.width - a.width : b.length - a.length,
+	);
+	console.log(panels);
 	// TODO: apply edge reduction
 	const optimizedSheets: OptimizedSheet[] = [];
+	let passCount = 0;
 	for (const panel of panels) {
-		// extract best fit
-		freeRectangles.sort((a, b) => {
-			if (a.width === b.width) {
-				return a.length - b.length;
-			}
-			return a.width - b.width;
-		}
-		);
-		let fit: FreeSpace | null =
-			freeRectangles.find(
-				(freeSpace) =>
-					freeSpace.length >= panel.length && freeSpace.width >= panel.width,
-			) ??
-			null;
+		let fit = findBestFit(freeSpaces, panel);
 		if (!fit) {
 			// if no fit is found, create a new sheet
 			const newSheet: OptimizedSheet = {
@@ -70,7 +46,7 @@ export function optimize(
 			};
 		} else {
 			// if fit is found, remove it from free rectangles
-			freeRectangles.splice(freeRectangles.indexOf(fit), 1);
+			freeSpaces.splice(freeSpaces.indexOf(fit), 1);
 		}
 
 		fit.sheet.panels.push({
@@ -85,10 +61,10 @@ export function optimize(
 			// so no new free rectangles
 			// TODO: Check if cuts are needed
 		} else if (fit.length === panel.length) {
-			const newFreeRectangle = { ...fit };
-			newFreeRectangle.y = fit.y + panel.width + bladeThickness;
-			newFreeRectangle.width = fit.width - panel.width;
-			freeRectangles.push(newFreeRectangle);
+			const newFreeSpace = { ...fit };
+			newFreeSpace.y = fit.y + panel.width + bladeThickness;
+			newFreeSpace.width = fit.width - panel.width;
+			freeSpaces.push(newFreeSpace);
 
 			const newCut: Cut = {
 				x: fit.x,
@@ -98,10 +74,10 @@ export function optimize(
 			};
 			fit.sheet.cuts.push(newCut);
 		} else if (fit.width === panel.width) {
-			const newFreeRectangle = { ...fit };
-			newFreeRectangle.x = fit.x + panel.length + bladeThickness;
-			newFreeRectangle.length = fit.length - panel.length;
-			freeRectangles.push(newFreeRectangle);
+			const newFreeSpace = { ...fit };
+			newFreeSpace.x = fit.x + panel.length + bladeThickness;
+			newFreeSpace.length = fit.length - panel.length;
+			freeSpaces.push(newFreeSpace);
 
 			const newCut: Cut = {
 				x: fit.x + panel.length,
@@ -114,7 +90,7 @@ export function optimize(
 			// panel is smaller than fit, so we need to create two new free rectangles and two new cuts
 
 			// TODO: maybe change preference based on length/width ratio of sheet.
-			// it would require changing the sort function of freeRectangles
+			// it would require changing the sort function of freeSpaces
 
 			// for now prefer horizontal cut, like this:
 			// +---+---+
@@ -123,17 +99,21 @@ export function optimize(
 			// |       |
 			// +---+---+
 
-			const newFreeRectangleToTheRight = { ...fit };
-			newFreeRectangleToTheRight.x = fit.x + panel.length + bladeThickness;
-			newFreeRectangleToTheRight.length =
-				fit.length - panel.length - bladeThickness;
-			newFreeRectangleToTheRight.width = panel.width + bladeThickness;
-			freeRectangles.push(newFreeRectangleToTheRight);
+			// new idea below:
+			// new panels can be placed in every possible fit, and can be rotated. after some set depth the algorithm would evaluate wast percentage and choose the best variant
+			// and cut would be either horizontal or vertical. both options would be checked
 
-			const newFreeRectangleBelow = { ...fit };
-			newFreeRectangleBelow.y = fit.y + panel.width + bladeThickness;
-			newFreeRectangleBelow.width = fit.width - panel.width - bladeThickness;
-			freeRectangles.push(newFreeRectangleBelow);
+			const newFreeSpaceToTheRight = { ...fit };
+			newFreeSpaceToTheRight.x = fit.x + panel.length + bladeThickness;
+			newFreeSpaceToTheRight.length =
+				fit.length - panel.length - bladeThickness;
+			newFreeSpaceToTheRight.width = panel.width + bladeThickness;
+			freeSpaces.push(newFreeSpaceToTheRight);
+
+			const newFreeSpaceBelow = { ...fit };
+			newFreeSpaceBelow.y = fit.y + panel.width + bladeThickness;
+			newFreeSpaceBelow.width = fit.width - panel.width - bladeThickness;
+			freeSpaces.push(newFreeSpaceBelow);
 
 			const newHorizontalCut: Cut = {
 				x: fit.x,
@@ -151,6 +131,10 @@ export function optimize(
 			};
 			fit.sheet.cuts.push(newVerticalCut);
 		}
+		passCount++;
+		console.info(
+			`Pass ${passCount}: waste: ${getWastePercentage(optimizedSheets)}%`,
+		);
 	}
 	const endTime = performance.now();
 	return {
@@ -174,4 +158,29 @@ function getWastePercentage(sheets: OptimizedSheet[]) {
 		0,
 	);
 	return 100 - (usedArea / totalArea) * 100;
+}
+
+function validatePanels(panels: Panel[], sheet: Sheet) {
+	if (
+		panels.some(
+			(panel) => panel.length > sheet.length || panel.width > sheet.width,
+		)
+	) {
+		return "at least one panel is bigger than the sheet";
+	}
+	if (panels.length === 0) {
+		return "no panels to optimize";
+	}
+}
+
+function findBestFit(freeSpaces: FreeSpace[], panel: Panel): FreeSpace | null {
+	const sorted = freeSpaces.sort((a, b) =>
+		a.width === b.width ? a.length - b.length : a.width - b.width,
+	);
+	return (
+		sorted.find(
+			(freeSpace) =>
+				freeSpace.length >= panel.length && freeSpace.width >= panel.width,
+		) ?? null
+	);
 }

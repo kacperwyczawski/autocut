@@ -7,3 +7,6 @@ export type OptimizedSheet = {
 	panels: OptimizedPanel[];
 	cuts: Cut[];
 };
+
+// TODO: maybe replace this with a class called sheet and type sheet with sheetTemplate.
+// Then this class could have a constructor that takes a sheetTemplate

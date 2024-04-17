@@ -38,6 +38,7 @@ function handleOptimize() {
 		sheet,
 		flattenedPanels,
 		bladeThickness.value,
+    3,
 	);
 }
 

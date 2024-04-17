@@ -21,16 +21,7 @@ export function optimize(
 	// TODO: apply edge reduction
 	const optimizedSheets: OptimizedSheet[] = [];
 	for (let panelIndex = 0; panelIndex < panels.length; panelIndex++) {
-		// TODO: local types for this: (variant and generation)
-		const generations: {
-			sheets: OptimizedSheet[];
-			baseFit:
-				| {
-						sheetIndex: number;
-						freeSpaceIndex: number;
-				  }
-				| FreeSpace;
-		}[][] = [];
+		const generations: Generation[] = [];
 		// TODO: abort when there is only one variant in generation 0
 		for (let i = 0; i <= depth; i++) {
 			const currentPanel = panels[panelIndex + i];
@@ -303,3 +294,15 @@ function generateNewFreeSpaces(
 	}
 	return newFreeSpaces;
 }
+
+type Variant = {
+	sheets: OptimizedSheet[];
+	baseFit:
+		| {
+				sheetIndex: number;
+				freeSpaceIndex: number;
+		  }
+		| FreeSpace;
+};
+
+type Generation = Variant[];

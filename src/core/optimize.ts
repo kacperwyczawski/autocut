@@ -17,10 +17,8 @@ export function optimize(
 	panels.sort((a, b) =>
 		a.length === b.length ? b.width - a.width : b.length - a.length,
 	);
-	console.log(panels);
 	// TODO: apply edge reduction
 	const optimizedSheets: OptimizedSheet[] = [];
-	console.debug("start");
 	for (let panelIndex = 0; panelIndex < panels.length; panelIndex++) {
 		// TODO: local types for this: (variant and generation)
 		let generations: {
@@ -30,15 +28,12 @@ export function optimize(
 				freeSpaceIndex: number;
 			} | FreeSpace;
 		}[][] = [];
-		console.debug(`panel: ${panels[panelIndex].length} x ${panels[panelIndex].width}`)
-		console.debug("    initial optimized sheets: ", optimizedSheets);
 		// TODO: abort when there is only one variant in generation 0
 		for (let i = 0; i <= depth; i++) {
 			const currentPanel = panels[panelIndex + i];
 			if (!currentPanel) {
 				break;
 			}
-			console.debug("        generation: ", i);
 			// TODO: rotation possibility
 			// TODO: setting to disable rotation
 			const previousGeneration = generations[i - 1]
@@ -50,7 +45,6 @@ export function optimize(
 			for (const previousVariant of previousGeneration) {
 				const fits = findFits(previousVariant.sheets, currentPanel);
 				for (const fit of fits) {
-					console.debug("            variant: ", fits.indexOf(fit));
 					const newOptimizedSheets = structuredClone(previousVariant.sheets);
 					newOptimizedSheets[fit.sheetIndex].panels.push({
 						panel: currentPanel,
@@ -68,7 +62,6 @@ export function optimize(
 						baseFit: i === 0 ? fit : previousVariant.baseFit,
 					});
 				}
-				console.debug("            variant: ", fits.length);
 				const fit = {
 					x: 0,
 					y: 0,
@@ -101,18 +94,13 @@ export function optimize(
 				});
 			}
 		}
-		console.debug("    generations: ", generations);
 		const finalGeneration = generations[generations.length - 1]
-		console.debug("    finalGeneration: ", finalGeneration);
 		const bestVariant = finalGeneration.sort((a, b) => // TODO: abstract sorting functions
 			// TODO: sort by cut count and cut total length
 			a.sheets.length - b.sheets.length,
 		)[0];
-		console.debug("    bestVariant: ", bestVariant);
 		const bestFit = bestVariant.baseFit;
-		console.debug("    bestFit: ", bestFit);
 		if ("sheetIndex" in bestFit) {
-			console.debug("    provides sheet");
 			optimizedSheets[bestFit.sheetIndex].panels.push({
 				panel: panels[panelIndex],
 				x: optimizedSheets[bestFit.sheetIndex].freeSpaces[bestFit.freeSpaceIndex].x,
@@ -125,7 +113,6 @@ export function optimize(
 			);
 			optimizedSheets[bestFit.sheetIndex].freeSpaces.splice(bestFit.freeSpaceIndex, 1, ...newFreeSpaces);
 		} else {
-			console.debug("    new sheet needed");
 			const newOptimizedSheet = {
 				sheet: structuredClone(sheet),
 				panels: [
@@ -144,7 +131,6 @@ export function optimize(
 			};
 			optimizedSheets.push(newOptimizedSheet);
 		}
-		console.debug("    optimizedSheets: ", optimizedSheets);
 	}
 	const endTime = performance.now();
 	return {
@@ -208,6 +194,7 @@ function findFits(sheets: OptimizedSheet[], panel: Panel): {
 }
 
 function generateNewFreeSpaces(oldFit: FreeSpace, panel: Panel, bladeThickness: number): FreeSpace[] {
+	// TODO: this is sometimes generating too many free spaces, for example two 500x500 panels
 	// TODO: yield return if it exists in JavaScript
 	const newFreeSpaces: FreeSpace[] = [];
 	if (oldFit.length === panel.length && oldFit.width === panel.width) {

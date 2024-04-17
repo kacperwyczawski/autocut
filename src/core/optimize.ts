@@ -1,3 +1,5 @@
+import { toRaw } from "vue";
+import type { FreeSpace } from "./freeSpace";
 import type { OptimizationResult } from "./optimizationResult";
 import type { OptimizedSheet } from "./optimizedSheet";
 import type { Panel } from "./panel";
@@ -9,15 +11,9 @@ export function optimize(
 	bladeThickness: number,
 	depth: number,
 ): OptimizationResult {
-	console.debug("optimize");
-	console.debug("panels:", panels);
-	// deproxy panels
-	panels = panels.map((panel) => ({ ...panel }));
-	console.debug("panels:", panels);
+	panels = panels.map((panel) => toRaw(panel));
 	validatePanels(panels, sheet);
 	const startTime = performance.now();
-	// TODO: consider adding freeSpaces to optimizedSheet instead of using separate array
-	const freeSpaces: FreeSpace[] = [];
 	panels.sort((a, b) =>
 		a.length === b.length ? b.width - a.width : b.length - a.length,
 	);
@@ -26,49 +22,16 @@ export function optimize(
 	const optimizedSheets: OptimizedSheet[] = [];
 	console.debug("start");
 	for (let panelIndex = 0; panelIndex < panels.length; panelIndex++) {
-		// let fit = findBestFit(freeSpaces, panel);
-		// if (!fit) {
-		// 	// if no fit is found, create a new sheet
-		// 	const newSheet: OptimizedSheet = {
-		// 		sheet: { ...sheet },
-		// 		panels: [],
-		// 		cuts: [],
-		// 	};
-		// 	optimizedSheets.push(newSheet);
-		// 	fit = {
-		// 		x: 0,
-		// 		y: 0,
-		// 		length: sheet.length,
-		// 		width: sheet.width,
-		// 		sheet: newSheet,
-		// 	};
-		// } else {
-		// 	// if fit is found, remove it from free rectangles
-		// 	freeSpaces.splice(freeSpaces.indexOf(fit), 1);
-		// }
-
-		// fit.sheet.panels.push({
-		// 	panel,
-		// 	x: fit.x,
-		// 	y: fit.y,
-		// });
-
-		// HERE WAS ADDING NEW FREE SPACES AND NEW CUTS. removed that bigass elif for clarity
-
-		// passCount++;
-		// console.info(
-		// 	`Pass ${passCount}: waste: ${getWastePercentage(optimizedSheets)}%`,
-		// );
-
 		// TODO: local types for this: (variant and generation)
 		let generations: {
 			sheets: OptimizedSheet[];
-			freeSpaces: FreeSpace[];
-			baseFit: FreeSpace | DetachedFreeSpace;
+			baseFit: {
+				sheetIndex: number;
+				freeSpaceIndex: number;
+			} | FreeSpace;
 		}[][] = [];
 		console.debug(`panel: ${panels[panelIndex].length} x ${panels[panelIndex].width}`)
-		console.debug("    initial free spaces: ", freeSpaces);
-		console.debug("    initial optimized sheets: ", structuredClone(optimizedSheets));
+		console.debug("    initial optimized sheets: ", optimizedSheets);
 		// TODO: abort when there is only one variant in generation 0
 		for (let i = 0; i <= depth; i++) {
 			const currentPanel = panels[panelIndex + i];
@@ -81,61 +44,56 @@ export function optimize(
 			const previousGeneration = generations[i - 1]
 			?? [{
 				sheets: optimizedSheets,
-				freeSpaces,
 			}];
 			generations[i] = [];
 			const nextGeneration = generations[i];
 			for (const previousVariant of previousGeneration) {
-				const fits = findFits(previousVariant.freeSpaces, currentPanel);
+				const fits = findFits(previousVariant.sheets, currentPanel);
 				for (const fit of fits) {
 					console.debug("            variant: ", fits.indexOf(fit));
-					const newOptimizedSheets = [...previousVariant.sheets];
-					newOptimizedSheets[newOptimizedSheets.indexOf(fit.sheet)].panels.push({
+					const newOptimizedSheets = structuredClone(previousVariant.sheets);
+					newOptimizedSheets[fit.sheetIndex].panels.push({
 						panel: currentPanel,
-						x: fit.x,
-						y: fit.y,
+						x: newOptimizedSheets[fit.sheetIndex].freeSpaces[fit.freeSpaceIndex].x,
+						y: newOptimizedSheets[fit.sheetIndex].freeSpaces[fit.freeSpaceIndex].y,
 					});
 					const newFreeSpaces = generateNewFreeSpaces(
-						fit,
+						newOptimizedSheets[fit.sheetIndex].freeSpaces[fit.freeSpaceIndex],
 						currentPanel,
 						bladeThickness,
 					);
-					newFreeSpaces.concat(previousVariant.freeSpaces.filter(
-						(freeSpace) => freeSpace !== fit,
+					newFreeSpaces.concat(previousVariant.sheets[fit.sheetIndex].freeSpaces.filter(
+						(_, index) => index !== fit.freeSpaceIndex, // TODO: filter is probably not the best way
 					));
 					nextGeneration.push({
 						sheets: newOptimizedSheets,
-						freeSpaces: newFreeSpaces,
 						baseFit: i === 0 ? fit : previousVariant.baseFit,
 					});
 				}
 				console.debug("            variant: ", fits.length);
-				const newOptimizedSheet: OptimizedSheet = {
-					sheet: { ...sheet },
-					panels: [],
-					cuts: [],
-				};
 				const fit = {
 					x: 0,
 					y: 0,
 					length: sheet.length,
 					width: sheet.width,
-					sheet: newOptimizedSheet,
+				};
+				const newOptimizedSheet: OptimizedSheet = {
+					sheet: { ...sheet },
+					panels: [],
+					cuts: [],
+					freeSpaces: generateNewFreeSpaces(
+						fit,
+						currentPanel,
+						bladeThickness,
+					),
 				};
 				newOptimizedSheet.panels.push({
 					panel: currentPanel,
 					x: 0, // TODO: sheet edge reduction
 					y: 0,
 				});
-				const newFreeSpaces = generateNewFreeSpaces(
-					fit,
-					currentPanel,
-					bladeThickness,
-				);
-				newFreeSpaces.concat(previousVariant.freeSpaces);
 				nextGeneration.push({
 					sheets: [...previousVariant.sheets, newOptimizedSheet],
-					freeSpaces: newFreeSpaces,
 					baseFit: i === 0 ? {
 						x: 0,
 						y: 0,
@@ -154,34 +112,31 @@ export function optimize(
 		)[0];
 		console.debug("    bestVariant: ", bestVariant);
 		const bestFit = bestVariant.baseFit;
-		console.debug(`    bestFit: ${bestFit.x} x ${bestFit.y}`);
 		console.debug("    bestFit: ", bestFit);
-		if ("sheet" in bestFit) {
+		if ("sheetIndex" in bestFit) {
 			// do nothing, because the sheet already exists
 			console.debug("    provides sheet");
 		} else {
 			console.debug("    new sheet needed");
 			const newOptimizedSheet = {
 				sheet: structuredClone(sheet),
-				panels: [],
+				panels: [
+					{
+						panel: panels[panelIndex],
+						x: bestFit.x,
+						y: bestFit.y,
+					},
+				],
 				cuts: [],
+				freeSpaces: generateNewFreeSpaces(
+					bestFit,
+					panels[panelIndex],
+					bladeThickness,
+				),
 			};
 			optimizedSheets.push(newOptimizedSheet);
-			const newFreeSpaces = generateNewFreeSpaces(
-				{
-					x: 0,
-					y: 0,
-					length: sheet.length,
-					width: sheet.width,
-					sheet: optimizedSheets[optimizedSheets.length - 1],
-				},
-				panels[panelIndex],
-				bladeThickness,
-			);
-			freeSpaces.push(...newFreeSpaces);
 		}
 		console.debug("    optimizedSheets: ", optimizedSheets);
-		console.debug("    freeSpaces: ", freeSpaces);
 	}
 	const endTime = performance.now();
 	return {
@@ -220,27 +175,27 @@ function validatePanels(panels: Panel[], sheet: Sheet) {
 	}
 }
 
-function findBestFit(freeSpaces: FreeSpace[], panel: Panel): FreeSpace | null {
-	const sorted = freeSpaces.sort((a, b) =>
-		a.width === b.width ? a.length - b.length : a.width - b.width,
-	);
-	return (
-		sorted.find(
-			(freeSpace) =>
-				freeSpace.length >= panel.length && freeSpace.width >= panel.width,
-		) ?? null
-	);
-}
-
-function findFits(freeSpaces: FreeSpace[], panel: Panel): FreeSpace[] {
-	return freeSpaces.filter(
-		(freeSpace) =>
-			freeSpace.length >= panel.length && freeSpace.width >= panel.width,
+function findFits(sheets: OptimizedSheet[], panel: Panel): {
+	sheetIndex: number;
+	freeSpaceIndex: number;
+}[] {
+	return sheets.flatMap((sheet, sheetIndex) =>
+		sheet.freeSpaces.map((freeSpace, freeSpaceIndex) => ({
+			sheetIndex,
+			freeSpaceIndex,
+			freeSpace,
+		})),
+	).filter(
+		(fit) =>
+			fit.freeSpace.length >= panel.length &&
+			fit.freeSpace.width >= panel.width,
 	).sort((a, b) =>
-		a.width === b.width ? a.length - b.length : a.width - b.width,
+		a.freeSpace.width === b.freeSpace.width
+			? a.freeSpace.length - b.freeSpace.length
+			: a.freeSpace.width - b.freeSpace.width,
 	);
 	
-	// TODO: maybe sort when new are added
+	// TODO: maybe sort only when new are added, (insert in the right place)
 	// TODO: check if sorting by area is better
 }
 
@@ -323,18 +278,3 @@ function generateNewFreeSpaces(oldFit: FreeSpace, panel: Panel, bladeThickness: 
 	}
 	return newFreeSpaces;
 }
-
-type FreeSpace = {
-	length: number;
-	width: number;
-	x: number;
-	y: number;
-	sheet: OptimizedSheet;
-};
-
-type DetachedFreeSpace = {
-	length: number;
-	width: number;
-	x: number;
-	y: number;
-};

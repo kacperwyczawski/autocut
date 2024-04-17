@@ -62,9 +62,7 @@ export function optimize(
 						currentPanel,
 						bladeThickness,
 					);
-					newFreeSpaces.concat(previousVariant.sheets[fit.sheetIndex].freeSpaces.filter(
-						(_, index) => index !== fit.freeSpaceIndex, // TODO: filter is probably not the best way
-					));
+					newOptimizedSheets[fit.sheetIndex].freeSpaces.splice(fit.freeSpaceIndex, 1, ...newFreeSpaces);
 					nextGeneration.push({
 						sheets: newOptimizedSheets,
 						baseFit: i === 0 ? fit : previousVariant.baseFit,
@@ -114,8 +112,18 @@ export function optimize(
 		const bestFit = bestVariant.baseFit;
 		console.debug("    bestFit: ", bestFit);
 		if ("sheetIndex" in bestFit) {
-			// do nothing, because the sheet already exists
 			console.debug("    provides sheet");
+			optimizedSheets[bestFit.sheetIndex].panels.push({
+				panel: panels[panelIndex],
+				x: optimizedSheets[bestFit.sheetIndex].freeSpaces[bestFit.freeSpaceIndex].x,
+				y: optimizedSheets[bestFit.sheetIndex].freeSpaces[bestFit.freeSpaceIndex].y,
+			});
+			const newFreeSpaces = generateNewFreeSpaces(
+				optimizedSheets[bestFit.sheetIndex].freeSpaces[bestFit.freeSpaceIndex],
+				panels[panelIndex],
+				bladeThickness,
+			);
+			optimizedSheets[bestFit.sheetIndex].freeSpaces.splice(bestFit.freeSpaceIndex, 1, ...newFreeSpaces);
 		} else {
 			console.debug("    new sheet needed");
 			const newOptimizedSheet = {

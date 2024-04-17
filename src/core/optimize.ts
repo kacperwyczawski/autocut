@@ -143,7 +143,6 @@ export function optimize(
 			};
 			optimizedSheets.push(newOptimizedSheet);
 		}
-		console.debug(structuredClone(optimizedSheets));
 	}
 	const endTime = performance.now();
 	return {

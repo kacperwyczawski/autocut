@@ -131,6 +131,7 @@ export function optimize(
 			};
 			optimizedSheets.push(newOptimizedSheet);
 		}
+		console.debug(structuredClone(optimizedSheets));
 	}
 	const endTime = performance.now();
 	return {
@@ -194,7 +195,6 @@ function findFits(sheets: OptimizedSheet[], panel: Panel): {
 }
 
 function generateNewFreeSpaces(oldFit: FreeSpace, panel: Panel, bladeThickness: number): FreeSpace[] {
-	// TODO: this is sometimes generating too many free spaces, for example two 500x500 panels
 	// TODO: yield return if it exists in JavaScript
 	const newFreeSpaces: FreeSpace[] = [];
 	if (oldFit.length === panel.length && oldFit.width === panel.width) {
@@ -247,7 +247,7 @@ function generateNewFreeSpaces(oldFit: FreeSpace, panel: Panel, bladeThickness: 
 		newFreeSpaceToTheRight.x = oldFit.x + panel.length + bladeThickness;
 		newFreeSpaceToTheRight.length =
 			oldFit.length - panel.length - bladeThickness;
-		newFreeSpaceToTheRight.width = panel.width + bladeThickness;
+		newFreeSpaceToTheRight.width = panel.width;
 		newFreeSpaces.push(newFreeSpaceToTheRight);
 
 		const newFreeSpaceBelow = { ...oldFit };

@@ -1,7 +1,7 @@
 import type { Cut } from "./cut";
+import type { FreeSpace } from "./freeSpace";
 import type { OptimizedPanel } from "./optimizedPanel";
 import type { Sheet } from "./sheet";
-import type { FreeSpace } from "./freeSpace";
 
 export type OptimizedSheet = {
 	sheet: Sheet;

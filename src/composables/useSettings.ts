@@ -4,6 +4,24 @@ import { ref, watch } from "vue";
  * Exports the settings loaded from local storage and watches for their changes
  */
 export default function useSettings() {
+	// App
+
+	const edgeReductionButtons = ref(
+		localStorage.getItem("edgeReductionButtons") || "Combined",
+	);
+	watch(edgeReductionButtons, (x) => {
+		localStorage.setItem("edgeReductionButtons", x);
+	});
+
+	const optimizationDepth = ref(
+		Number.parseInt(localStorage.getItem("optimizationDepth") || "4"),
+	);
+	watch(optimizationDepth, (x) => {
+		localStorage.setItem("optimizationDepth", x.toString());
+	});
+
+	// Sheet
+
 	const sheetLength = ref(
 		Number.parseInt(localStorage.getItem("sheetLength") || "2800"),
 	);
@@ -25,6 +43,8 @@ export default function useSettings() {
 		localStorage.setItem("sheetEdgeReduction", x.toString());
 	});
 
+	// Blade
+
 	const bladeThickness = ref(
 		Number.parseInt(localStorage.getItem("bladeThickness") || "3"),
 	);
@@ -32,19 +52,16 @@ export default function useSettings() {
 		localStorage.setItem("bladeThickness", x.toString());
 	});
 
+	// Panels
+
 	const panelEdgeReduction = ref(
 		Number.parseInt(localStorage.getItem("panelEdgeReduction") || "3"),
 	);
 	watch(panelEdgeReduction, (x) => {
 		localStorage.setItem("panelEdgeReduction", x.toString());
 	});
-
-	const edgeReductionButtons = ref(
-		localStorage.getItem("edgeReductionButtons") || "Combined",
-	);
-	watch(edgeReductionButtons, (x) => {
-		localStorage.setItem("edgeReductionButtons", x);
-	});
+	
+	// Other
 
 	const currentTheme = ref(localStorage.getItem("currentTheme") || "retro");
 	watch(currentTheme, (x) => {
@@ -59,5 +76,6 @@ export default function useSettings() {
 		panelEdgeReduction,
 		edgeReductionButtons,
 		currentTheme,
+		optimizationDepth,
 	};
 }

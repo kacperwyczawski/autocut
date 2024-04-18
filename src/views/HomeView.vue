@@ -14,7 +14,7 @@ import { type Ref, computed, ref } from "vue";
 const currentTab = ref("Panels");
 const tabList = ["Panels", "Cuts"];
 
-const { bladeThickness } = useSettings();
+const { bladeThickness, optimizationDepth } = useSettings();
 
 const sheet: Sheet = {
 	width: useSettings().sheetWidth.value,
@@ -24,7 +24,7 @@ const sheet: Sheet = {
 		bottom: true,
 		left: true,
 		right: true,
-		thickness: useSettings().bladeThickness.value,
+		thickness: bladeThickness.value,
 	},
 };
 
@@ -38,7 +38,7 @@ function handleOptimize() {
 		sheet,
 		flattenedPanels,
 		bladeThickness.value,
-		3,
+		optimizationDepth.value,
 	);
 }
 

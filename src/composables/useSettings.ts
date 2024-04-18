@@ -55,7 +55,7 @@ export default function useSettings() {
 	// Panels
 
 	const panelEdgeReduction = ref(
-		Number.parseInt(localStorage.getItem("panelEdgeReduction") || "3"),
+		Number.parseInt(localStorage.getItem("panelEdgeReduction") || "0"),
 	);
 	watch(panelEdgeReduction, (x) => {
 		localStorage.setItem("panelEdgeReduction", x.toString());

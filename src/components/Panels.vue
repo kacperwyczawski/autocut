@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { PanelTemplate } from "@/core/panel";
+import type { PanelTemplate } from "@/core/panelTemplate";
 
 const panels = defineModel<{ panel: PanelTemplate; quantity: number }[]>();
 </script>

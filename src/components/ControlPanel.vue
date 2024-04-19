@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import useSettings from "@/composables/useSettings";
 import type { EdgeReduction } from "@/core/edgeReduction";
-import type { PanelTemplate } from "@/core/panel";
+import type { PanelTemplate } from "@/core/panelTemplate";
 import { type ComputedRef, computed, ref, watchEffect } from "vue";
 
 const { edgeReductionButtons } = useSettings();

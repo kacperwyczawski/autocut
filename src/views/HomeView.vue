@@ -7,8 +7,8 @@ import useJsonExport from "@/composables/useJsonExport";
 import useSettings from "@/composables/useSettings";
 import type { OptimizationResult } from "@/core/optimizationResult";
 import { optimize } from "@/core/optimize";
-import type { PanelTemplate } from "@/core/panel";
-import type { SheetTemplate } from "@/core/sheet";
+import type { PanelTemplate } from "@/core/panelTemplate";
+import type { SheetTemplate } from "@/core/sheetTemplate";
 import { type Ref, computed, ref } from "vue";
 
 const currentTab = ref("Panels");

@@ -60,7 +60,7 @@ export default function useSettings() {
 	watch(panelEdgeReduction, (x) => {
 		localStorage.setItem("panelEdgeReduction", x.toString());
 	});
-	
+
 	// Other
 
 	const currentTheme = ref(localStorage.getItem("currentTheme") || "retro");

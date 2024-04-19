@@ -3,7 +3,7 @@ import useSettings from "@/composables/useSettings";
 
 const {
 	edgeReductionButtons,
-  optimizationDepth,
+	optimizationDepth,
 	sheetLength,
 	sheetWidth,
 	sheetEdgeReduction,

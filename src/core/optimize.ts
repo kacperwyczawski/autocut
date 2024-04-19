@@ -1,8 +1,8 @@
 import { toRaw } from "vue";
 import type { FreeSpace } from "./freeSpace";
 import type { OptimizationResult } from "./optimizationResult";
-import type { sheet } from "./sheet";
 import type { PanelTemplate } from "./panelTemplate";
+import type { sheet } from "./sheet";
 import type { SheetTemplate } from "./sheetTemplate";
 
 export function optimize(
@@ -11,7 +11,7 @@ export function optimize(
 	bladeThickness: number,
 	depth: number,
 ): OptimizationResult {
-	// biome-ignore list/style/noParameterAssign: panels needs to be free of Proxies
+	// biome-ignore lint/style/noParameterAssign: panels needs to be free of Proxies
 	panels = panels.map((panel) => toRaw(panel));
 	validatePanels(panels, sheetTemplate);
 	const startTime = performance.now();
@@ -43,10 +43,8 @@ export function optimize(
 					const newSheets = structuredClone(previousVariant.sheets);
 					newSheets[fit.sheetIndex].panels.push({
 						template: currentPanel,
-						x: newSheets[fit.sheetIndex].freeSpaces[fit.freeSpaceIndex]
-							.x,
-						y: newSheets[fit.sheetIndex].freeSpaces[fit.freeSpaceIndex]
-							.y,
+						x: newSheets[fit.sheetIndex].freeSpaces[fit.freeSpaceIndex].x,
+						y: newSheets[fit.sheetIndex].freeSpaces[fit.freeSpaceIndex].y,
 					});
 					const newFreeSpaces = generateNewFreeSpaces(
 						newSheets[fit.sheetIndex].freeSpaces[fit.freeSpaceIndex],
@@ -107,12 +105,8 @@ export function optimize(
 		if ("sheetIndex" in bestFit) {
 			sheets[bestFit.sheetIndex].panels.push({
 				template: panels[panelIndex],
-				x: sheets[bestFit.sheetIndex].freeSpaces[
-					bestFit.freeSpaceIndex
-				].x,
-				y: sheets[bestFit.sheetIndex].freeSpaces[
-					bestFit.freeSpaceIndex
-				].y,
+				x: sheets[bestFit.sheetIndex].freeSpaces[bestFit.freeSpaceIndex].x,
+				y: sheets[bestFit.sheetIndex].freeSpaces[bestFit.freeSpaceIndex].y,
 			});
 			const newFreeSpaces = generateNewFreeSpaces(
 				sheets[bestFit.sheetIndex].freeSpaces[bestFit.freeSpaceIndex],

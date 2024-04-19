@@ -70,8 +70,7 @@ watchEffect(() => {
 });
 </script>
 <template>
-  <!-- TODO: ctrl + enter to optimize -->
-  <div @keyup.enter="handlePanelAdd" class="flex gap-2 flex-wrap items-end">
+  <div @keyup.enter="handlePanelAdd" @keyup.ctrl.enter="$emit('optimize')" class="flex gap-2 flex-wrap items-end">
     <label class="form-control grow">
       <div class="label">
         <span class="label-text">Length</span>

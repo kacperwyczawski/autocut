@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { Panel } from "@/core/panel";
+import type { PanelTemplate } from "@/core/panel";
 
-const panels = defineModel<{ panel: Panel; quantity: number }[]>();
+const panels = defineModel<{ panel: PanelTemplate; quantity: number }[]>();
 </script>
 <template>
   <table class="table table-sm">

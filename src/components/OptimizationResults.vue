@@ -40,48 +40,48 @@ defineProps<{
         v-for="sheet in optimization.sheets"
         class="border-2 border-secondary border-dashed relative font-mono text-center"
         :style="{
-          aspectRatio: `${sheet.sheet.length / sheet.sheet.width}`,
+          aspectRatio: `${sheet.template.length / sheet.template.width}`,
         }"
       >
         <div
           v-for="panel in sheet.panels"
           class="border-2 border-secondary fill-base-200 absolute"
           :style="{
-            left: `${(panel.x / sheet.sheet.length) * 100}%`,
-            top: `${(panel.y / sheet.sheet.width) * 100}%`,
-            width: `${(panel.panel.length / sheet.sheet.length) * 100}%`,
-            height: `${(panel.panel.width / sheet.sheet.width) * 100}%`,
+            left: `${(panel.x / sheet.template.length) * 100}%`,
+            top: `${(panel.y / sheet.template.width) * 100}%`,
+            width: `${(panel.template.length / sheet.template.length) * 100}%`,
+            height: `${(panel.template.width / sheet.template.width) * 100}%`,
           }"
           :class="{
-            'border-t-primary': panel.panel.edgeReduction.top,
-            'border-r-primary': panel.panel.edgeReduction.right,
-            'border-b-primary': panel.panel.edgeReduction.bottom,
-            'border-l-primary': panel.panel.edgeReduction.left,
+            'border-t-primary': panel.template.edgeReduction.top,
+            'border-r-primary': panel.template.edgeReduction.right,
+            'border-b-primary': panel.template.edgeReduction.bottom,
+            'border-l-primary': panel.template.edgeReduction.left,
           }"
         >
           <div class="absolute -top-1 inset-x-0">
-            {{ panel.panel.length }}
+            {{ panel.template.length }}
           </div>
           <div
             class="absolute -left-1 inset-y-0 [writing-mode:vertical-rl] [text-orientation: mixed]"
           >
-            {{ panel.panel.width }}
+            {{ panel.template.width }}
           </div>
         </div>
         <div
           v-for="cut in sheet.cuts"
           class="absolute bg-base-300"
           :style="{
-            left: `calc(${(cut.x / sheet.sheet.length) * 100}% - 1px)`,
-            top: `calc(${(cut.y / sheet.sheet.width) * 100}% - 1px)`,
+            left: `calc(${(cut.x / sheet.template.length) * 100}% - 1px)`,
+            top: `calc(${(cut.y / sheet.template.width) * 100}% - 1px)`,
             width:
               cut.direction === 'horizontal'
-                ? `${(cut.length / sheet.sheet.length) * 100}%`
+                ? `${(cut.length / sheet.template.length) * 100}%`
                 : '2px',
             height:
               cut.direction === 'horizontal'
                 ? '2px'
-                : `${(cut.length / sheet.sheet.width) * 100}%`,
+                : `${(cut.length / sheet.template.width) * 100}%`,
           }"
         ></div>
       </div>

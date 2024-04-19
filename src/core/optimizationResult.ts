@@ -1,8 +1,8 @@
-import type { OptimizedSheet } from "./optimizedSheet";
+import type { sheet } from "./sheet";
 
 export type OptimizationResult =
 	| {
-			sheets: OptimizedSheet[];
+			sheets: sheet[];
 			bladeThickness: number;
 			wastePercentage: number;
 			time: number;

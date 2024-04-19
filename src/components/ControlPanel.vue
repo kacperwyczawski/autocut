@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import useSettings from "@/composables/useSettings";
 import type { EdgeReduction } from "@/core/edgeReduction";
-import type { Panel } from "@/core/panel";
+import type { PanelTemplate } from "@/core/panel";
 import { type ComputedRef, computed, ref, watchEffect } from "vue";
 
 const { edgeReductionButtons } = useSettings();
@@ -24,8 +24,8 @@ const edgeReduction: ComputedRef<EdgeReduction> = computed(() => ({
 }));
 
 const emit = defineEmits<{
-	addPanel: [panel: Panel, quantity: number];
-	previewPanel: [panel: Panel];
+	addPanel: [panel: PanelTemplate, quantity: number];
+	previewPanel: [panel: PanelTemplate];
 	export: [];
 	optimize: [];
 }>();
@@ -70,6 +70,7 @@ watchEffect(() => {
 });
 </script>
 <template>
+  <!-- TODO: ctrl + enter to optimize -->
   <div @keyup.enter="handlePanelAdd" class="flex gap-2 flex-wrap items-end">
     <label class="form-control grow">
       <div class="label">

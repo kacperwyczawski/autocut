@@ -1,25 +1,25 @@
 import { toRaw } from "vue";
 import type { FreeSpace } from "./freeSpace";
 import type { OptimizationResult } from "./optimizationResult";
-import type { OptimizedSheet } from "./optimizedSheet";
-import type { Panel } from "./panel";
-import type { Sheet } from "./sheet";
+import type { sheet } from "./sheet";
+import type { PanelTemplate } from "./panelTemplate";
+import type { SheetTemplate } from "./sheetTemplate";
 
 export function optimize(
-	sheet: Sheet,
-	panels: Panel[],
+	sheetTemplate: SheetTemplate,
+	panels: PanelTemplate[],
 	bladeThickness: number,
 	depth: number,
 ): OptimizationResult {
 	// biome-ignore list/style/noParameterAssign: panels needs to be free of Proxies
 	panels = panels.map((panel) => toRaw(panel));
-	validatePanels(panels, sheet);
+	validatePanels(panels, sheetTemplate);
 	const startTime = performance.now();
 	panels.sort((a, b) =>
 		a.length === b.length ? b.width - a.width : b.length - a.length,
 	);
 	// TODO: apply edge reduction
-	const optimizedSheets: OptimizedSheet[] = [];
+	const sheets: sheet[] = [];
 	for (let panelIndex = 0; panelIndex < panels.length; panelIndex++) {
 		const generations: Generation[] = [];
 		// TODO: abort when there is only one variant in generation 0
@@ -32,7 +32,7 @@ export function optimize(
 			// TODO: setting to disable rotation
 			const previousGeneration = generations[i - 1] ?? [
 				{
-					sheets: optimizedSheets,
+					sheets: sheets,
 				},
 			];
 			generations[i] = [];
@@ -40,55 +40,55 @@ export function optimize(
 			for (const previousVariant of previousGeneration) {
 				const fits = findFits(previousVariant.sheets, currentPanel);
 				for (const fit of fits) {
-					const newOptimizedSheets = structuredClone(previousVariant.sheets);
-					newOptimizedSheets[fit.sheetIndex].panels.push({
-						panel: currentPanel,
-						x: newOptimizedSheets[fit.sheetIndex].freeSpaces[fit.freeSpaceIndex]
+					const newSheets = structuredClone(previousVariant.sheets);
+					newSheets[fit.sheetIndex].panels.push({
+						template: currentPanel,
+						x: newSheets[fit.sheetIndex].freeSpaces[fit.freeSpaceIndex]
 							.x,
-						y: newOptimizedSheets[fit.sheetIndex].freeSpaces[fit.freeSpaceIndex]
+						y: newSheets[fit.sheetIndex].freeSpaces[fit.freeSpaceIndex]
 							.y,
 					});
 					const newFreeSpaces = generateNewFreeSpaces(
-						newOptimizedSheets[fit.sheetIndex].freeSpaces[fit.freeSpaceIndex],
+						newSheets[fit.sheetIndex].freeSpaces[fit.freeSpaceIndex],
 						currentPanel,
 						bladeThickness,
 					);
-					newOptimizedSheets[fit.sheetIndex].freeSpaces.splice(
+					newSheets[fit.sheetIndex].freeSpaces.splice(
 						fit.freeSpaceIndex,
 						1,
 						...newFreeSpaces,
 					);
 					nextGeneration.push({
-						sheets: newOptimizedSheets,
+						sheets: newSheets,
 						baseFit: i === 0 ? fit : previousVariant.baseFit,
 					});
 				}
 				const fit = {
 					x: 0,
 					y: 0,
-					length: sheet.length,
-					width: sheet.width,
+					length: sheetTemplate.length,
+					width: sheetTemplate.width,
 				};
-				const newOptimizedSheet: OptimizedSheet = {
-					sheet: { ...sheet },
+				const newSheet: sheet = {
+					template: { ...sheetTemplate },
 					panels: [],
 					cuts: [],
 					freeSpaces: generateNewFreeSpaces(fit, currentPanel, bladeThickness),
 				};
-				newOptimizedSheet.panels.push({
-					panel: currentPanel,
+				newSheet.panels.push({
+					template: currentPanel,
 					x: 0, // TODO: sheet edge reduction
 					y: 0,
 				});
 				nextGeneration.push({
-					sheets: [...previousVariant.sheets, newOptimizedSheet],
+					sheets: [...previousVariant.sheets, newSheet],
 					baseFit:
 						i === 0
 							? {
 									x: 0,
 									y: 0,
-									length: sheet.length,
-									width: sheet.width,
+									length: sheetTemplate.length,
+									width: sheetTemplate.width,
 							  }
 							: previousVariant.baseFit,
 				});
@@ -105,31 +105,31 @@ export function optimize(
 		)[0];
 		const bestFit = bestVariant.baseFit;
 		if ("sheetIndex" in bestFit) {
-			optimizedSheets[bestFit.sheetIndex].panels.push({
-				panel: panels[panelIndex],
-				x: optimizedSheets[bestFit.sheetIndex].freeSpaces[
+			sheets[bestFit.sheetIndex].panels.push({
+				template: panels[panelIndex],
+				x: sheets[bestFit.sheetIndex].freeSpaces[
 					bestFit.freeSpaceIndex
 				].x,
-				y: optimizedSheets[bestFit.sheetIndex].freeSpaces[
+				y: sheets[bestFit.sheetIndex].freeSpaces[
 					bestFit.freeSpaceIndex
 				].y,
 			});
 			const newFreeSpaces = generateNewFreeSpaces(
-				optimizedSheets[bestFit.sheetIndex].freeSpaces[bestFit.freeSpaceIndex],
+				sheets[bestFit.sheetIndex].freeSpaces[bestFit.freeSpaceIndex],
 				panels[panelIndex],
 				bladeThickness,
 			);
-			optimizedSheets[bestFit.sheetIndex].freeSpaces.splice(
+			sheets[bestFit.sheetIndex].freeSpaces.splice(
 				bestFit.freeSpaceIndex,
 				1,
 				...newFreeSpaces,
 			);
 		} else {
-			const newOptimizedSheet = {
-				sheet: structuredClone(sheet),
+			const newSheet: sheet = {
+				template: structuredClone(sheetTemplate),
 				panels: [
 					{
-						panel: panels[panelIndex],
+						template: panels[panelIndex],
 						x: bestFit.x,
 						y: bestFit.y,
 					},
@@ -141,34 +141,34 @@ export function optimize(
 					bladeThickness,
 				),
 			};
-			optimizedSheets.push(newOptimizedSheet);
+			sheets.push(newSheet);
 		}
 	}
 	const endTime = performance.now();
 	return {
-		sheets: optimizedSheets,
+		sheets: sheets,
 		bladeThickness,
-		wastePercentage: getWastePercentage(optimizedSheets),
+		wastePercentage: getWastePercentage(sheets),
 		time: endTime - startTime,
 	};
 }
 
-function getWastePercentage(sheets: OptimizedSheet[]) {
+function getWastePercentage(sheets: sheet[]) {
 	const usedArea = sheets.reduce((acc, sheet) => {
 		const panelArea = sheet.panels.reduce(
-			(acc, panel) => acc + panel.panel.length * panel.panel.width,
+			(acc, panel) => acc + panel.template.length * panel.template.width,
 			0,
 		);
 		return acc + panelArea;
 	}, 0);
 	const totalArea = sheets.reduce(
-		(acc, sheet) => acc + sheet.sheet.length * sheet.sheet.width,
+		(acc, sheet) => acc + sheet.template.length * sheet.template.width,
 		0,
 	);
 	return 100 - (usedArea / totalArea) * 100;
 }
 
-function validatePanels(panels: Panel[], sheet: Sheet) {
+function validatePanels(panels: PanelTemplate[], sheet: SheetTemplate) {
 	if (
 		panels.some(
 			(panel) => panel.length > sheet.length || panel.width > sheet.width,
@@ -182,8 +182,8 @@ function validatePanels(panels: Panel[], sheet: Sheet) {
 }
 
 function findFits(
-	sheets: OptimizedSheet[],
-	panel: Panel,
+	sheets: sheet[],
+	panel: PanelTemplate,
 ): {
 	sheetIndex: number;
 	freeSpaceIndex: number;
@@ -213,7 +213,7 @@ function findFits(
 
 function generateNewFreeSpaces(
 	oldFit: FreeSpace,
-	panel: Panel,
+	panel: PanelTemplate,
 	bladeThickness: number,
 ): FreeSpace[] {
 	const newFreeSpaces: FreeSpace[] = [];
@@ -295,7 +295,7 @@ function generateNewFreeSpaces(
 }
 
 type Variant = {
-	sheets: OptimizedSheet[];
+	sheets: sheet[];
 	baseFit:
 		| {
 				sheetIndex: number;

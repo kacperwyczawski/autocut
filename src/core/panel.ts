@@ -1,7 +1,7 @@
-import type { EdgeReduction } from "./edgeReduction";
+import type { PanelTemplate } from "./panelTemplate";
 
 export type Panel = {
-	length: number;
-	width: number;
-	edgeReduction: EdgeReduction;
+	template: PanelTemplate;
+	x: number;
+	y: number;
 };

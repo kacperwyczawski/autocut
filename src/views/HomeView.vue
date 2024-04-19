@@ -7,8 +7,8 @@ import useJsonExport from "@/composables/useJsonExport";
 import useSettings from "@/composables/useSettings";
 import type { OptimizationResult } from "@/core/optimizationResult";
 import { optimize } from "@/core/optimize";
-import type { Panel } from "@/core/panel";
-import type { Sheet } from "@/core/sheet";
+import type { PanelTemplate } from "@/core/panel";
+import type { SheetTemplate } from "@/core/sheet";
 import { type Ref, computed, ref } from "vue";
 
 const currentTab = ref("Panels");
@@ -16,7 +16,7 @@ const tabList = ["Panels", "Cuts"];
 
 const { bladeThickness, optimizationDepth } = useSettings();
 
-const sheet: Sheet = {
+const sheet: SheetTemplate = {
 	width: useSettings().sheetWidth.value,
 	length: useSettings().sheetLength.value,
 	edgeReduction: {
@@ -32,7 +32,7 @@ const optimizationResult: Ref<OptimizationResult | null> = ref(null);
 function handleOptimize() {
 	panelInPreview.value = null;
 	const flattenedPanels = panels.value.flatMap((p) =>
-		Array<Panel>(p.quantity).fill(p.panel),
+		Array<PanelTemplate>(p.quantity).fill(p.panel),
 	);
 	optimizationResult.value = optimize(
 		sheet,
@@ -42,8 +42,8 @@ function handleOptimize() {
 	);
 }
 
-const panels = ref<{ panel: Panel; quantity: number }[]>([]);
-function handlePanelAdd(panel: Panel, quantity: number) {
+const panels = ref<{ panel: PanelTemplate; quantity: number }[]>([]);
+function handlePanelAdd(panel: PanelTemplate, quantity: number) {
 	panels.value.push({ panel, quantity });
 	optimizationResult.value = null;
 	panelInPreview.value = null;
@@ -90,8 +90,8 @@ function importPanels() {
 	reader.readAsText(file);
 }
 
-const panelInPreview: Ref<Panel | null> = ref(null);
-function handlePanelPreview(panel: Panel) {
+const panelInPreview: Ref<PanelTemplate | null> = ref(null);
+function handlePanelPreview(panel: PanelTemplate) {
 	optimizationResult.value = null;
 	panelInPreview.value = panel;
 }

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { Panel } from "@/core/panel";
+import type { PanelTemplate } from "@/core/panel";
 import { watch, watchEffect } from "vue";
 
 const props = defineProps<{
-	panelInPreview: Panel | null;
+	panelInPreview: PanelTemplate | null;
 }>();
 </script>
 <template>

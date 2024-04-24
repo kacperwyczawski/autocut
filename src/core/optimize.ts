@@ -104,9 +104,41 @@ export function optimize(
 			(
 				a,
 				b, // TODO: abstract sorting functions
-			) =>
-				// TODO: sort by cut count and cut total length
-				a.sheets.length - b.sheets.length,
+			) => {
+				if (a.sheets.length !== b.sheets.length) {
+					return a.sheets.length - b.sheets.length;
+				}
+				const aCutCount = a.sheets.reduce(
+					(acc, sheet) => acc + sheet.cuts.length,
+					0,
+				);
+				const bCutCount = b.sheets.reduce(
+					(acc, sheet) => acc + sheet.cuts.length,
+					0,
+				);
+				if (aCutCount !== bCutCount) {
+					return aCutCount - bCutCount;
+				}
+				const aCutLength = a.sheets.reduce(
+					(acc, sheet) =>
+						acc +
+						sheet.cuts.reduce(
+							(acc, cut) => acc + cut.length,
+							0,
+						),
+					0,
+				);
+				const bCutLength = b.sheets.reduce(
+					(acc, sheet) =>
+						acc +
+						sheet.cuts.reduce(
+							(acc, cut) => acc + cut.length,
+							0,
+						),
+					0,
+				);
+				return aCutLength - bCutLength;
+			}
 		)[0];
 		const bestFit = bestVariant.baseFit;
 		if ("sheetIndex" in bestFit) {

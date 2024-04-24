@@ -22,7 +22,6 @@ export function optimize(
 	const sheets: sheet[] = [];
 	for (let panelIndex = 0; panelIndex < panels.length; panelIndex++) {
 		const generations: Generation[] = [];
-		// TODO: abort when there is only one variant in generation 0
 		for (let i = 0; i <= depth; i++) {
 			const currentPanel = panels[panelIndex + i];
 			if (!currentPanel) {
@@ -90,6 +89,9 @@ export function optimize(
 							  }
 							: previousVariant.baseFit,
 				});
+			}
+			if (nextGeneration.length === 1) {
+				break;
 			}
 		}
 		const finalGeneration = generations[generations.length - 1];

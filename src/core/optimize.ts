@@ -4,6 +4,7 @@ import type { OptimizationResult } from "./optimizationResult";
 import type { PanelTemplate } from "./panelTemplate";
 import type { sheet } from "./sheet";
 import type { SheetTemplate } from "./sheetTemplate";
+import type { Cut } from "./cut";
 
 export function optimize(
 	sheetTemplate: SheetTemplate,
@@ -39,13 +40,14 @@ export function optimize(
 			for (const previousVariant of previousGeneration) {
 				const fits = findFits(previousVariant.sheets, currentPanel);
 				for (const fit of fits) {
+					// place on existing sheet, in free space
 					const newSheets = structuredClone(previousVariant.sheets);
 					newSheets[fit.sheetIndex].panels.push({
 						template: currentPanel,
 						x: newSheets[fit.sheetIndex].freeSpaces[fit.freeSpaceIndex].x,
 						y: newSheets[fit.sheetIndex].freeSpaces[fit.freeSpaceIndex].y,
 					});
-					const newFreeSpaces = generateNewFreeSpaces(
+					const newData = generateNewData(
 						newSheets[fit.sheetIndex].freeSpaces[fit.freeSpaceIndex],
 						currentPanel,
 						bladeThickness,
@@ -53,24 +55,27 @@ export function optimize(
 					newSheets[fit.sheetIndex].freeSpaces.splice(
 						fit.freeSpaceIndex,
 						1,
-						...newFreeSpaces,
+						...newData.freeSpaces,
 					);
+					newSheets[fit.sheetIndex].cuts.push(...newData.cuts);
 					nextGeneration.push({
 						sheets: newSheets,
 						baseFit: i === 0 ? fit : previousVariant.baseFit,
 					});
 				}
+				// place on new sheet
 				const fit = {
 					x: 0,
 					y: 0,
 					length: sheetTemplate.length,
 					width: sheetTemplate.width,
 				};
+				const newData = generateNewData(fit, currentPanel, bladeThickness);
 				const newSheet: sheet = {
 					template: { ...sheetTemplate },
 					panels: [],
-					cuts: [],
-					freeSpaces: generateNewFreeSpaces(fit, currentPanel, bladeThickness),
+					cuts: newData.cuts,
+					freeSpaces: newData.freeSpaces,
 				};
 				newSheet.panels.push({
 					template: currentPanel,
@@ -110,7 +115,7 @@ export function optimize(
 				x: sheets[bestFit.sheetIndex].freeSpaces[bestFit.freeSpaceIndex].x,
 				y: sheets[bestFit.sheetIndex].freeSpaces[bestFit.freeSpaceIndex].y,
 			});
-			const newFreeSpaces = generateNewFreeSpaces(
+			const newData = generateNewData(
 				sheets[bestFit.sheetIndex].freeSpaces[bestFit.freeSpaceIndex],
 				panels[panelIndex],
 				bladeThickness,
@@ -118,9 +123,15 @@ export function optimize(
 			sheets[bestFit.sheetIndex].freeSpaces.splice(
 				bestFit.freeSpaceIndex,
 				1,
-				...newFreeSpaces,
+				...newData.freeSpaces,
 			);
+			sheets[bestFit.sheetIndex].cuts.push(...newData.cuts);
 		} else {
+			const newData = generateNewData(
+				bestFit,
+				panels[panelIndex],
+				bladeThickness,
+			);
 			const newSheet: sheet = {
 				template: structuredClone(sheetTemplate),
 				panels: [
@@ -130,12 +141,8 @@ export function optimize(
 						y: bestFit.y,
 					},
 				],
-				cuts: [],
-				freeSpaces: generateNewFreeSpaces(
-					bestFit,
-					panels[panelIndex],
-					bladeThickness,
-				),
+				cuts: newData.cuts,
+				freeSpaces: newData.freeSpaces,
 			};
 			sheets.push(newSheet);
 		}
@@ -207,43 +214,46 @@ function findFits(
 	// TODO: check if sorting by area is better
 }
 
-function generateNewFreeSpaces(
+function generateNewData(
 	oldFit: FreeSpace,
 	panel: PanelTemplate,
 	bladeThickness: number,
-): FreeSpace[] {
-	const newFreeSpaces: FreeSpace[] = [];
+): {
+	freeSpaces: FreeSpace[],
+	cuts: Cut[],
+} {
+	const freeSpaces: FreeSpace[] = [];
+	const cuts: Cut[] = [];
+
 	if (oldFit.length === panel.length && oldFit.width === panel.width) {
 		// panel fits perfectly 👌
 		// so no new free rectangles
-		// TODO: Check if cuts are needed
 	} else if (oldFit.length === panel.length) {
 		const newFreeSpace = { ...oldFit };
 		newFreeSpace.y = oldFit.y + panel.width + bladeThickness;
 		newFreeSpace.width = oldFit.width - panel.width;
-		newFreeSpaces.push(newFreeSpace);
+		freeSpaces.push(newFreeSpace);
 
-		// TODO: reimplement cuts
-		// const newCut: Cut = {
-		// 	x: fit.x,
-		// 	y: fit.y + panel.width,
-		// 	length: fit.length,
-		// 	direction: "horizontal",
-		// };
-		// fit.sheet.cuts.push(newCut);
+		const newCut: Cut = {
+			x: oldFit.x,
+			y: oldFit.y + panel.width,
+			length: oldFit.length,
+			direction: "horizontal",
+		};
+		cuts.push(newCut);
 	} else if (oldFit.width === panel.width) {
 		const newFreeSpace = { ...oldFit };
 		newFreeSpace.x = oldFit.x + panel.length + bladeThickness;
 		newFreeSpace.length = oldFit.length - panel.length;
-		newFreeSpaces.push(newFreeSpace);
+		freeSpaces.push(newFreeSpace);
 
-		// const newCut: Cut = {
-		// 	x: fit.x + panel.length,
-		// 	y: fit.y,
-		// 	length: fit.width,
-		// 	direction: "vertical",
-		// };
-		// fit.sheet.cuts.push(newCut);
+		const newCut: Cut = {
+			x: oldFit.x + panel.length,
+			y: oldFit.y,
+			length: oldFit.width,
+			direction: "vertical",
+		};
+		cuts.push(newCut);
 	} else {
 		// panel is smaller than fit, so we need to create two new free rectangles and two new cuts
 
@@ -264,30 +274,33 @@ function generateNewFreeSpaces(
 		newFreeSpaceToTheRight.length =
 			oldFit.length - panel.length - bladeThickness;
 		newFreeSpaceToTheRight.width = panel.width;
-		newFreeSpaces.push(newFreeSpaceToTheRight);
+		freeSpaces.push(newFreeSpaceToTheRight);
 
 		const newFreeSpaceBelow = { ...oldFit };
 		newFreeSpaceBelow.y = oldFit.y + panel.width + bladeThickness;
 		newFreeSpaceBelow.width = oldFit.width - panel.width - bladeThickness;
-		newFreeSpaces.push(newFreeSpaceBelow);
+		freeSpaces.push(newFreeSpaceBelow);
 
-		// const newHorizontalCut: Cut = {
-		// 	x: fit.x,
-		// 	y: fit.y + panel.width,
-		// 	length: fit.length,
-		// 	direction: "horizontal",
-		// };
-		// fit.sheet.cuts.push(newHorizontalCut);
+		const newHorizontalCut: Cut = {
+			x: oldFit.x,
+			y: oldFit.y + panel.width,
+			length: oldFit.length,
+			direction: "horizontal",
+		};
+		cuts.push(newHorizontalCut);
 
-		// const newVerticalCut: Cut = {
-		// 	x: fit.x + panel.length,
-		// 	y: fit.y,
-		// 	length: panel.width + bladeThickness / 2,
-		// 	direction: "vertical",
-		// };
-		// fit.sheet.cuts.push(newVerticalCut);
+		const newVerticalCut: Cut = {
+			x: oldFit.x + panel.length,
+			y: oldFit.y,
+			length: panel.width,
+			direction: "vertical",
+		};
+		cuts.push(newVerticalCut);
 	}
-	return newFreeSpaces;
+	return {
+		freeSpaces,
+		cuts,
+	};
 }
 
 type Variant = {

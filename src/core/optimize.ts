@@ -1,10 +1,10 @@
 import { toRaw } from "vue";
+import type { Cut } from "./cut";
 import type { FreeSpace } from "./freeSpace";
 import type { OptimizationResult } from "./optimizationResult";
 import type { PanelTemplate } from "./panelTemplate";
 import type { sheet } from "./sheet";
 import type { SheetTemplate } from "./sheetTemplate";
-import type { Cut } from "./cut";
 
 export function optimize(
 	sheetTemplate: SheetTemplate,
@@ -99,48 +99,7 @@ export function optimize(
 				break;
 			}
 		}
-		const finalGeneration = generations[generations.length - 1];
-		const bestVariant = finalGeneration.sort(
-			(
-				a,
-				b, // TODO: abstract sorting functions
-			) => {
-				if (a.sheets.length !== b.sheets.length) {
-					return a.sheets.length - b.sheets.length;
-				}
-				const aCutCount = a.sheets.reduce(
-					(acc, sheet) => acc + sheet.cuts.length,
-					0,
-				);
-				const bCutCount = b.sheets.reduce(
-					(acc, sheet) => acc + sheet.cuts.length,
-					0,
-				);
-				if (aCutCount !== bCutCount) {
-					return aCutCount - bCutCount;
-				}
-				const aCutLength = a.sheets.reduce(
-					(acc, sheet) =>
-						acc +
-						sheet.cuts.reduce(
-							(acc, cut) => acc + cut.length,
-							0,
-						),
-					0,
-				);
-				const bCutLength = b.sheets.reduce(
-					(acc, sheet) =>
-						acc +
-						sheet.cuts.reduce(
-							(acc, cut) => acc + cut.length,
-							0,
-						),
-					0,
-				);
-				return aCutLength - bCutLength;
-			}
-		)[0];
-		const bestFit = bestVariant.baseFit;
+		const bestFit = getBestVariant(generations[generations.length - 1]).baseFit;
 		if ("sheetIndex" in bestFit) {
 			sheets[bestFit.sheetIndex].panels.push({
 				template: panels[panelIndex],
@@ -251,8 +210,8 @@ function generateNewData(
 	panel: PanelTemplate,
 	bladeThickness: number,
 ): {
-	freeSpaces: FreeSpace[],
-	cuts: Cut[],
+	freeSpaces: FreeSpace[];
+	cuts: Cut[];
 } {
 	const freeSpaces: FreeSpace[] = [];
 	const cuts: Cut[] = [];
@@ -333,6 +292,36 @@ function generateNewData(
 		freeSpaces,
 		cuts,
 	};
+}
+
+function getBestVariant(variants: Variant[]): Variant {
+	return variants.sort((a, b) => {
+		if (a.sheets.length !== b.sheets.length) {
+			return a.sheets.length - b.sheets.length;
+		}
+		const aCutCount = a.sheets.reduce(
+			(acc, sheet) => acc + sheet.cuts.length,
+			0,
+		);
+		const bCutCount = b.sheets.reduce(
+			(acc, sheet) => acc + sheet.cuts.length,
+			0,
+		);
+		if (aCutCount !== bCutCount) {
+			return aCutCount - bCutCount;
+		}
+		const aCutLength = a.sheets.reduce(
+			(acc, sheet) =>
+				acc + sheet.cuts.reduce((acc, cut) => acc + cut.length, 0),
+			0,
+		);
+		const bCutLength = b.sheets.reduce(
+			(acc, sheet) =>
+				acc + sheet.cuts.reduce((acc, cut) => acc + cut.length, 0),
+			0,
+		);
+		return aCutLength - bCutLength;
+	})[0];
 }
 
 type Variant = {

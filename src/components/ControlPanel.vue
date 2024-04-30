@@ -16,57 +16,57 @@ const right = ref(false);
 const bottom = ref(false);
 const left = ref(false);
 const edgeReduction: ComputedRef<EdgeReduction> = computed(() => ({
-  top: top.value,
-  right: right.value,
-  bottom: bottom.value,
-  left: left.value,
-  thickness: useSettings().bladeThickness.value,
+	top: top.value,
+	right: right.value,
+	bottom: bottom.value,
+	left: left.value,
+	thickness: useSettings().bladeThickness.value,
 }));
 
 const emit = defineEmits<{
-  addPanel: [panel: PanelTemplate, quantity: number];
-  previewPanel: [panel: PanelTemplate];
-  export: [];
-  optimize: [];
+	addPanel: [panel: PanelTemplate, quantity: number];
+	previewPanel: [panel: PanelTemplate];
+	export: [];
+	optimize: [];
 }>();
 
 defineProps<{
-  disableExporting: boolean;
+	disableExporting: boolean;
 }>();
 
 function reset() {
-  length.value = Number.NaN;
-  width.value = Number.NaN;
-  quantity.value = 1;
-  firstInput.value.focus();
-  top.value = false;
-  right.value = false;
-  bottom.value = false;
-  left.value = false;
+	length.value = Number.NaN;
+	width.value = Number.NaN;
+	quantity.value = 1;
+	firstInput.value.focus();
+	top.value = false;
+	right.value = false;
+	bottom.value = false;
+	left.value = false;
 }
 
 function handlePanelAdd() {
-  if (!length.value || !width.value || !quantity.value) return;
-  emit(
-    "addPanel",
-    {
-      length: length.value,
-      width: width.value,
-      edgeReduction: edgeReduction.value,
-    },
-    quantity.value
-  );
-  reset();
+	if (!length.value || !width.value || !quantity.value) return;
+	emit(
+		"addPanel",
+		{
+			length: length.value,
+			width: width.value,
+			edgeReduction: edgeReduction.value,
+		},
+		quantity.value,
+	);
+	reset();
 }
 
 watchEffect(() => {
-  if (length.value && width.value) {
-    emit("previewPanel", {
-      length: length.value,
-      width: width.value,
-      edgeReduction: edgeReduction.value,
-    });
-  }
+	if (length.value && width.value) {
+		emit("previewPanel", {
+			length: length.value,
+			width: width.value,
+			edgeReduction: edgeReduction.value,
+		});
+	}
 });
 </script>
 <template>

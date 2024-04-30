@@ -4,5 +4,3 @@ export type FreeSpace = {
 	x: number;
 	y: number;
 };
-
-// TODO: consider not exposing this outside of optimize.ts

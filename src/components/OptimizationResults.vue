@@ -33,7 +33,11 @@ defineProps<{
       <span class="badge">
         Waste: {{ Math.round(optimization.wastePercentage) }}%
       </span>
+      <!-- TODO: time in seconds/minutes -->
       <span class="badge"> Time: {{ Math.round(optimization.time) }}ms </span>
+      <span class="badge">
+        Fittings: {{ optimization.fittingCount }}
+      </span>
     </div>
     <div class="flex flex-col gap-2 mt-2">
       <div

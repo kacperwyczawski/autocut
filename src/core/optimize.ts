@@ -21,6 +21,7 @@ export function optimize(
 	);
 	// TODO: apply edge reduction
 	const sheets: sheet[] = [];
+	let fittingCount = 0;
 	for (let panelIndex = 0; panelIndex < panels.length; panelIndex++) {
 		const generations: Generation[] = [];
 		for (let i = 0; i <= depth; i++) {
@@ -28,76 +29,25 @@ export function optimize(
 			if (!currentPanel) {
 				break;
 			}
-			// TODO: rotation possibility
-			// TODO: setting to disable rotation
-			const previousGeneration = generations[i - 1] ?? [
-				{
-					sheets: sheets,
-				},
-			];
-			generations[i] = [];
-			const nextGeneration = generations[i];
-			for (const previousVariant of previousGeneration) {
-				const fits = findFits(previousVariant.sheets, currentPanel);
-				for (const fit of fits) {
-					// place on existing sheet, in free space
-					const newSheets = structuredClone(previousVariant.sheets);
-					newSheets[fit.sheetIndex].panels.push({
-						template: currentPanel,
-						x: newSheets[fit.sheetIndex].freeSpaces[fit.freeSpaceIndex].x,
-						y: newSheets[fit.sheetIndex].freeSpaces[fit.freeSpaceIndex].y,
-					});
-					const newData = generateNewData(
-						newSheets[fit.sheetIndex].freeSpaces[fit.freeSpaceIndex],
-						currentPanel,
-						bladeThickness,
-					);
-					newSheets[fit.sheetIndex].freeSpaces.splice(
-						fit.freeSpaceIndex,
-						1,
-						...newData.freeSpaces,
-					);
-					newSheets[fit.sheetIndex].cuts.push(...newData.cuts);
-					nextGeneration.push({
-						sheets: newSheets,
-						baseFit: i === 0 ? fit : previousVariant.baseFit,
-					});
-				}
-				// place on new sheet
-				const fit = {
-					x: 0,
-					y: 0,
-					length: sheetTemplate.length,
-					width: sheetTemplate.width,
-				};
-				const newData = generateNewData(fit, currentPanel, bladeThickness);
-				const newSheet: sheet = {
-					template: { ...sheetTemplate },
-					panels: [],
-					cuts: newData.cuts,
-					freeSpaces: newData.freeSpaces,
-				};
-				newSheet.panels.push({
-					template: currentPanel,
-					x: 0, // TODO: sheet edge reduction
-					y: 0,
-				});
-				nextGeneration.push({
-					sheets: [...previousVariant.sheets, newSheet],
-					baseFit:
-						i === 0
-							? {
-									x: 0,
-									y: 0,
-									length: sheetTemplate.length,
-									width: sheetTemplate.width,
-							  }
-							: previousVariant.baseFit,
-				});
-			}
+			const {
+				nextGeneration,
+				fittingCount: additionalFittingCount,
+			} = generateNextGeneration(
+				generations[i - 1] ?? [
+					{
+						sheets: sheets,
+					},
+				],
+				currentPanel,
+				i === 0,
+				bladeThickness,
+				sheetTemplate,
+			);
+			generations[i] = nextGeneration;
 			if (nextGeneration.length === 1) {
 				break;
 			}
+			fittingCount += additionalFittingCount;
 		}
 		const bestFit = getBestVariant(generations[generations.length - 1]).baseFit;
 		if ("sheetIndex" in bestFit) {
@@ -144,6 +94,87 @@ export function optimize(
 		bladeThickness,
 		wastePercentage: getWastePercentage(sheets),
 		time: endTime - startTime,
+		fittingCount,
+	};
+}
+
+function generateNextGeneration(
+	previousGeneration: Generation,
+	currentPanel: PanelTemplate,
+	isFirstGeneration: boolean,
+	bladeThickness: number,
+	sheetTemplate: SheetTemplate,
+): {
+	nextGeneration: Generation;
+	fittingCount: number;
+} {
+	// TODO: rotation possibility
+	// TODO: setting to disable rotation
+	const nextGeneration = [];
+	let fittingCount = 0;
+	for (const previousVariant of previousGeneration) {
+		const fits = findFits(previousVariant.sheets, currentPanel);
+		for (const fit of fits) {
+			// place on existing sheet, in free space
+			fittingCount++;
+			const newSheets = structuredClone(previousVariant.sheets);
+			newSheets[fit.sheetIndex].panels.push({
+				template: currentPanel,
+				x: newSheets[fit.sheetIndex].freeSpaces[fit.freeSpaceIndex].x,
+				y: newSheets[fit.sheetIndex].freeSpaces[fit.freeSpaceIndex].y,
+			});
+			const newData = generateNewData(
+				newSheets[fit.sheetIndex].freeSpaces[fit.freeSpaceIndex],
+				currentPanel,
+				bladeThickness,
+			);
+			newSheets[fit.sheetIndex].freeSpaces.splice(
+				fit.freeSpaceIndex,
+				1,
+				...newData.freeSpaces,
+			);
+			newSheets[fit.sheetIndex].cuts.push(...newData.cuts);
+			nextGeneration.push({
+				sheets: newSheets,
+				baseFit: isFirstGeneration ? fit : previousVariant.baseFit,
+			});
+		}
+		// place on new sheet
+		fittingCount++;
+		const fit = {
+			x: 0,
+			y: 0,
+			length: sheetTemplate.length,
+			width: sheetTemplate.width,
+		};
+		const newData = generateNewData(fit, currentPanel, bladeThickness);
+		const newSheet: sheet = {
+			template: { ...sheetTemplate },
+			panels: [],
+			cuts: newData.cuts,
+			freeSpaces: newData.freeSpaces,
+		};
+		newSheet.panels.push({
+			template: currentPanel,
+			x: 0, // TODO: sheet edge reduction
+			y: 0,
+		});
+		nextGeneration.push({
+			sheets: [...previousVariant.sheets, newSheet],
+			baseFit:
+				isFirstGeneration
+					? {
+							x: 0,
+							y: 0,
+							length: sheetTemplate.length,
+							width: sheetTemplate.width,
+						}
+					: previousVariant.baseFit,
+		});
+	}
+	return {
+		nextGeneration,
+		fittingCount,
 	};
 }
 

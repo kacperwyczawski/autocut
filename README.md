@@ -10,7 +10,7 @@
   - [x] Preview
 - Optimization
   - [x] Panels
-  - [ ] Cuts
+  - [x] Cuts
   - [ ] Edge reduction
   - [x] Export
 

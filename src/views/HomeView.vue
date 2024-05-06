@@ -5,11 +5,12 @@ import Panels from "@/components/Panels.vue";
 import PreviewOfPanel from "@/components/PreviewOfPanel.vue";
 import useJsonExport from "@/composables/useJsonExport";
 import useSettings from "@/composables/useSettings";
+import type { OptimizationRequest } from "@/core/optimizationRequest";
 import type { OptimizationResult } from "@/core/optimizationResult";
 import { optimize } from "@/core/optimize";
 import type { PanelTemplate } from "@/core/panelTemplate";
 import type { SheetTemplate } from "@/core/sheetTemplate";
-import { type Ref, computed, ref } from "vue";
+import { type Ref, computed, ref, toRaw } from "vue";
 
 const currentTab = ref("Panels");
 const tabList = ["Panels", "Cuts"];
@@ -29,20 +30,37 @@ const sheet: SheetTemplate = {
 };
 
 const optimizationResult: Ref<OptimizationResult | null> = ref(null);
+const placedPanels = ref(0);
+const totalPanels = ref(0);
+const optimizing = ref(false);
+const worker = new Worker(new URL("@/core/worker.ts", import.meta.url), {
+  type: "module",
+});
+worker.addEventListener("message", (event) => {
+  console.log(event.data);
+  if (event.data.placedPanels) {
+    placedPanels.value = event.data.placedPanels;
+    totalPanels.value = event.data.totalPanels;
+  } else {
+    optimizationResult.value = event.data;
+    optimizing.value = false;
+  }
+});
+
+// TODO: cancel optimization button in place of the optimize button, when optimizing
 function handleOptimize() {
 	panelInPreview.value = null;
-	const flattenedPanels = panels.value.flatMap((p) =>
+	const flattenedPanels = toRaw(panels.value).flatMap((p) =>
 		Array<PanelTemplate>(p.quantity).fill(p.panel),
 	);
-	optimizationResult.value = optimize(
-		sheet,
-		flattenedPanels,
-		bladeThickness.value,
-		optimizationDepth.value,
-    (placed, total) => {
-      console.log(`Placed ${placed} out of ${total} panels`);
-    },
-	);
+  const request: OptimizationRequest = {
+    sheetTemplate: sheet,
+    panels: flattenedPanels,
+    bladeThickness: toRaw(bladeThickness.value),
+    depth: toRaw(optimizationDepth.value),
+  };
+  worker.postMessage(request);
+  optimizing.value = true;
 }
 
 const panels = ref<{ panel: PanelTemplate; quantity: number }[]>([]);
@@ -215,8 +233,9 @@ function handlePanelPreview(panel: PanelTemplate) {
           >To unleash the full potential of this app, use a larger screen</span
         >
       </div>
+      <progress v-if="optimizing" class="progress progress-accent w-full" :value="placedPanels" :max="totalPanels"></progress>
       <OptimizationResults
-        v-if="optimizationResult"
+        v-if="!optimizing && optimizationResult"
         :optimization="optimizationResult"
       />
       <PreviewOfPanel v-if="panelInPreview" :panelInPreview />

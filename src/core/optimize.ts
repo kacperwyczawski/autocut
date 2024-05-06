@@ -5,17 +5,15 @@ import type { OptimizationResult } from "./optimizationResult";
 import type { PanelTemplate } from "./panelTemplate";
 import type { sheet } from "./sheet";
 import type { SheetTemplate } from "./sheetTemplate";
+import type { OptimizationRequest } from "./optimizationRequest";
 
 export function optimize(
-	sheetTemplate: SheetTemplate,
-	panels: PanelTemplate[],
-	bladeThickness: number,
-	depth: number,
+	request: OptimizationRequest,
 	progressCallback?: (placedPanels: number, totalPanels: number) => void,
 ): OptimizationResult {
-	// biome-ignore lint/style/noParameterAssign: panels needs to be free of Proxies
-	panels = panels.map((panel) => toRaw(panel));
+	const { sheetTemplate, panels, bladeThickness, depth } = request;
 	validatePanels(panels, sheetTemplate);
+
 	const startTime = performance.now();
 	panels.sort((a, b) =>
 		a.length === b.length ? b.width - a.width : b.length - a.length,

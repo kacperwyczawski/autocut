@@ -11,6 +11,7 @@ export function optimize(
 	panels: PanelTemplate[],
 	bladeThickness: number,
 	depth: number,
+	progressCallback?: (placedPanels: number, totalPanels: number) => void,
 ): OptimizationResult {
 	// biome-ignore lint/style/noParameterAssign: panels needs to be free of Proxies
 	panels = panels.map((panel) => toRaw(panel));
@@ -86,6 +87,9 @@ export function optimize(
 				freeSpaces: newData.freeSpaces,
 			};
 			sheets.push(newSheet);
+		}
+		if (progressCallback) {
+			progressCallback(panelIndex + 1, panels.length);
 		}
 	}
 	const endTime = performance.now();

@@ -39,6 +39,9 @@ function handleOptimize() {
 		flattenedPanels,
 		bladeThickness.value,
 		optimizationDepth.value,
+    (placed, total) => {
+      console.log(`Placed ${placed} out of ${total} panels`);
+    },
 	);
 }
 

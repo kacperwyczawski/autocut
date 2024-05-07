@@ -29,25 +29,28 @@ const sheet: SheetTemplate = {
 	},
 };
 
+function createWorker() {
+  const worker = new Worker(new URL("@/core/worker.ts", import.meta.url), {
+    type: "module",
+  });
+  worker.addEventListener("message", (event) => {
+    if (event.data.placedPanels) {
+      placedPanels.value = event.data.placedPanels;
+      totalPanels.value = event.data.totalPanels;
+    } else {
+      optimizationResult.value = event.data;
+      optimizing.value = false;
+    }
+  });
+  return worker;
+}
+
 const optimizationResult: Ref<OptimizationResult | null> = ref(null);
 const placedPanels = ref(0);
 const totalPanels = ref(0);
 const optimizing = ref(false);
-const worker = new Worker(new URL("@/core/worker.ts", import.meta.url), {
-  type: "module",
-});
-worker.addEventListener("message", (event) => {
-  console.log(event.data);
-  if (event.data.placedPanels) {
-    placedPanels.value = event.data.placedPanels;
-    totalPanels.value = event.data.totalPanels;
-  } else {
-    optimizationResult.value = event.data;
-    optimizing.value = false;
-  }
-});
+let worker = createWorker();
 
-// TODO: cancel optimization button in place of the optimize button, when optimizing
 function handleOptimize() {
 	panelInPreview.value = null;
 	const flattenedPanels = toRaw(panels.value).flatMap((p) =>
@@ -61,6 +64,12 @@ function handleOptimize() {
   };
   worker.postMessage(request);
   optimizing.value = true;
+}
+
+function handleCancel() {
+  optimizing.value = false;
+  worker.terminate();
+  worker = createWorker();
 }
 
 const panels = ref<{ panel: PanelTemplate; quantity: number }[]>([]);
@@ -187,7 +196,9 @@ function handlePanelPreview(panel: PanelTemplate) {
         @preview-panel="handlePanelPreview"
         @export="exportOptimizationDialog.showModal()"
         @optimize="handleOptimize"
+        @cancel="handleCancel"
         :disable-exporting="panels.length === 0"
+        :optimizing
       />
       <div
         v-if="panels.length === 0"

@@ -28,10 +28,12 @@ const emit = defineEmits<{
 	previewPanel: [panel: PanelTemplate];
 	export: [];
 	optimize: [];
+  cancel: [];
 }>();
 
 defineProps<{
 	disableExporting: boolean;
+  optimizing: boolean;
 }>();
 
 function reset() {
@@ -165,7 +167,12 @@ watchEffect(() => {
         Add panel
       </button>
     </div>
-    <div class="tooltip" data-tip="Ctrl + Enter">
+    <div v-if="optimizing" class="tooltip">
+      <button @click="$emit('cancel')" class="btn btn-primary">
+        Cancel
+      </button>
+    </div>
+    <div v-else class="tooltip" data-tip="Ctrl + Enter">
       <button @click="$emit('optimize')" class="btn btn-primary">
         Optimize
       </button>

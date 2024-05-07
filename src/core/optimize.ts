@@ -7,6 +7,7 @@ import type { sheet } from "./sheet";
 import type { SheetTemplate } from "./sheetTemplate";
 import type { OptimizationRequest } from "./optimizationRequest";
 
+// TODO: fix fittings is === 0 when there is only one panel. Should be 1
 export function optimize(
 	request: OptimizationRequest,
 	progressCallback?: (placedPanels: number, totalPanels: number) => void,

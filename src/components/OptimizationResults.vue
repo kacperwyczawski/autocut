@@ -1,9 +1,25 @@
 <script setup lang="ts">
 import type { OptimizationResult } from "@/core/optimizationResult";
 
-defineProps<{
+const props = defineProps<{
 	optimization: OptimizationResult;
 }>();
+
+function getOptimizationTime(): string {
+  if (typeof props.optimization === "string") {
+    return "not gonna happen"
+  }
+
+  let time = props.optimization.time;
+  time /= 100;
+  time = Math.round(time);
+  time /= 10;
+
+  if (time === 0) {
+    return "Time: <0.1s";
+  }
+  return `Time: ${time}s`
+}
 </script>
 <template>
   <div
@@ -33,8 +49,7 @@ defineProps<{
       <span class="badge">
         Waste: {{ Math.round(optimization.wastePercentage) }}%
       </span>
-      <!-- TODO: time in seconds/minutes -->
-      <span class="badge"> Time: {{ Math.round(optimization.time) }}ms </span>
+      <span v-text="getOptimizationTime()" class="badge"></span>
       <span class="badge">
         Fittings: {{ optimization.fittingCount }}
       </span>

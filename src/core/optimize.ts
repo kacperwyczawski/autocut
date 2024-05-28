@@ -7,7 +7,6 @@ import type { sheet } from "./sheet";
 import type { SheetTemplate } from "./sheetTemplate";
 import type { OptimizationRequest } from "./optimizationRequest";
 
-// TODO: fix fittings is === 0 when there is only one panel. Should be 1
 export function optimize(
 	request: OptimizationRequest,
 	progressCallback?: (placedPanels: number, totalPanels: number) => void,
@@ -21,7 +20,7 @@ export function optimize(
 	);
 	// TODO: apply edge reduction
 	const sheets: sheet[] = [];
-	let fittingCount = 0;
+	let fittings = 0;
 	for (let panelIndex = 0; panelIndex < panels.length; panelIndex++) {
 		const generations: Generation[] = [];
 		for (let i = 0; i <= depth; i++) {
@@ -31,7 +30,7 @@ export function optimize(
 			}
 			const {
 				nextGeneration,
-				fittingCount: additionalFittingCount,
+				fittings: additionalFittings,
 			} = generateNextGeneration(
 				generations[i - 1] ?? [
 					{
@@ -43,11 +42,11 @@ export function optimize(
 				bladeThickness,
 				sheetTemplate,
 			);
+			fittings += additionalFittings;
 			generations[i] = nextGeneration;
 			if (nextGeneration.length === 1) {
 				break;
 			}
-			fittingCount += additionalFittingCount;
 		}
 		const bestFit = getBestVariant(generations[generations.length - 1]).baseFit;
 		if ("sheetIndex" in bestFit) {
@@ -97,7 +96,7 @@ export function optimize(
 		bladeThickness,
 		wastePercentage: getWastePercentage(sheets),
 		time: endTime - startTime,
-		fittingCount,
+		fittings: fittings,
 	};
 }
 
@@ -109,17 +108,17 @@ function generateNextGeneration(
 	sheetTemplate: SheetTemplate,
 ): {
 	nextGeneration: Generation;
-	fittingCount: number;
+	fittings: number;
 } {
 	// TODO: rotation possibility
 	// TODO: setting to disable rotation
 	const nextGeneration = [];
-	let fittingCount = 0;
+	let fittings = 0;
 	for (const previousVariant of previousGeneration) {
 		const fits = findFits(previousVariant.sheets, currentPanel);
 		for (const fit of fits) {
 			// place on existing sheet, in free space
-			fittingCount++;
+			fittings++;
 			const newSheets = structuredClone(previousVariant.sheets);
 			newSheets[fit.sheetIndex].panels.push({
 				template: currentPanel,
@@ -143,7 +142,7 @@ function generateNextGeneration(
 			});
 		}
 		// place on new sheet
-		fittingCount++;
+		fittings++;
 		const fit = {
 			x: 0,
 			y: 0,
@@ -177,7 +176,7 @@ function generateNextGeneration(
 	}
 	return {
 		nextGeneration,
-		fittingCount,
+		fittings: fittings,
 	};
 }
 

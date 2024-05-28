@@ -6,7 +6,7 @@ export type OptimizationResult =
 			bladeThickness: number;
 			wastePercentage: number;
 			time: number;
-			fittingCount: number;
+			fittings: number;
 	  }
 	| "at least one panel is bigger than the sheet"
 	| "no panels to optimize";

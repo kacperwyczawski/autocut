@@ -51,7 +51,7 @@ function getOptimizationTime(): string {
       </span>
       <span v-text="getOptimizationTime()" class="badge"></span>
       <span class="badge">
-        Fittings: {{ optimization.fittingCount }}
+        Fittings: {{ optimization.fittings }}
       </span>
     </div>
     <div class="flex flex-col gap-2 mt-2">

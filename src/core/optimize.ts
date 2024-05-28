@@ -1,11 +1,10 @@
-import { toRaw } from "vue";
 import type { Cut } from "./cut";
 import type { FreeSpace } from "./freeSpace";
+import type { OptimizationRequest } from "./optimizationRequest";
 import type { OptimizationResult } from "./optimizationResult";
 import type { PanelTemplate } from "./panelTemplate";
 import type { sheet } from "./sheet";
 import type { SheetTemplate } from "./sheetTemplate";
-import type { OptimizationRequest } from "./optimizationRequest";
 
 export function optimize(
 	request: OptimizationRequest,
@@ -28,20 +27,18 @@ export function optimize(
 			if (!currentPanel) {
 				break;
 			}
-			const {
-				nextGeneration,
-				fittings: additionalFittings,
-			} = generateNextGeneration(
-				generations[i - 1] ?? [
-					{
-						sheets: sheets,
-					},
-				],
-				currentPanel,
-				i === 0,
-				bladeThickness,
-				sheetTemplate,
-			);
+			const { nextGeneration, fittings: additionalFittings } =
+				generateNextGeneration(
+					generations[i - 1] ?? [
+						{
+							sheets: sheets,
+						},
+					],
+					currentPanel,
+					i === 0,
+					bladeThickness,
+					sheetTemplate,
+				);
 			fittings += additionalFittings;
 			generations[i] = nextGeneration;
 			if (nextGeneration.length === 1) {
@@ -163,15 +160,14 @@ function generateNextGeneration(
 		});
 		nextGeneration.push({
 			sheets: [...previousVariant.sheets, newSheet],
-			baseFit:
-				isFirstGeneration
-					? {
-							x: 0,
-							y: 0,
-							length: sheetTemplate.length,
-							width: sheetTemplate.width,
-						}
-					: previousVariant.baseFit,
+			baseFit: isFirstGeneration
+				? {
+						x: 0,
+						y: 0,
+						length: sheetTemplate.length,
+						width: sheetTemplate.width,
+				  }
+				: previousVariant.baseFit,
 		});
 	}
 	return {

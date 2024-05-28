@@ -36,11 +36,32 @@ export default function useSettings() {
 		localStorage.setItem("sheetWidth", x.toString());
 	});
 
-	const sheetEdgeReduction = ref(
-		Number.parseInt(localStorage.getItem("sheetEdgeReduction") || "0"),
+	const sheetTopEdgeReduction = ref(
+		Number.parseInt(localStorage.getItem("sheetTopEdgeReduction") || "0"),
 	);
-	watch(sheetEdgeReduction, (x) => {
-		localStorage.setItem("sheetEdgeReduction", x.toString());
+	watch(sheetTopEdgeReduction, (x) => {
+		localStorage.setItem("sheetTopEdgeReduction", x.toString());
+	});
+
+	const sheetRightEdgeReduction = ref(
+		Number.parseInt(localStorage.getItem("sheetRightEdgeReduction") || "0"),
+	);
+	watch(sheetRightEdgeReduction, (x) => {
+		localStorage.setItem("sheetRightEdgeReduction", x.toString());
+	});
+
+	const sheetBottomEdgeReduction = ref(
+		Number.parseInt(localStorage.getItem("sheetBottomEdgeReduction") || "0"),
+	);
+	watch(sheetBottomEdgeReduction, (x) => {
+		localStorage.setItem("sheetBottomEdgeReduction", x.toString());
+	});
+
+	const sheetLeftEdgeReduction = ref(
+		Number.parseInt(localStorage.getItem("sheetLeftEdgeReduction") || "0"),
+	);
+	watch(sheetLeftEdgeReduction, (x) => {
+		localStorage.setItem("sheetLeftEdgeReduction", x.toString());
 	});
 
 	// Blade
@@ -71,7 +92,10 @@ export default function useSettings() {
 	return {
 		sheetLength,
 		sheetWidth,
-		sheetEdgeReduction,
+		sheetTopEdgeReduction,
+		sheetRightEdgeReduction,
+		sheetBottomEdgeReduction,
+		sheetLeftEdgeReduction,
 		bladeThickness,
 		panelEdgeReduction,
 		edgeReductionButtons,

@@ -28,12 +28,12 @@ const emit = defineEmits<{
 	previewPanel: [panel: PanelTemplate];
 	export: [];
 	optimize: [];
-  cancel: [];
+	cancel: [];
 }>();
 
 defineProps<{
 	disableExporting: boolean;
-  optimizing: boolean;
+	optimizing: boolean;
 }>();
 
 function reset() {

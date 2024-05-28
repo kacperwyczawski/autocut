@@ -6,19 +6,19 @@ const props = defineProps<{
 }>();
 
 function getOptimizationTime(): string {
-  if (typeof props.optimization === "string") {
-    return "not gonna happen"
-  }
+	if (typeof props.optimization === "string") {
+		return "not gonna happen";
+	}
 
-  let time = props.optimization.time;
-  time /= 100;
-  time = Math.round(time);
-  time /= 10;
+	let time = props.optimization.time;
+	time /= 100;
+	time = Math.round(time);
+	time /= 10;
 
-  if (time === 0) {
-    return "Time: <0.1s";
-  }
-  return `Time: ${time}s`
+	if (time === 0) {
+		return "Time: <0.1s";
+	}
+	return `Time: ${time}s`;
 }
 </script>
 <template>

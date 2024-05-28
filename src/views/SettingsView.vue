@@ -6,7 +6,10 @@ const {
 	optimizationDepth,
 	sheetLength,
 	sheetWidth,
-	sheetEdgeReduction,
+	sheetTopEdgeReduction,
+	sheetRightEdgeReduction,
+	sheetBottomEdgeReduction,
+	sheetLeftEdgeReduction,
 	bladeThickness,
 	panelEdgeReduction,
 } = useSettings();
@@ -19,11 +22,18 @@ function clearAllData() {
 		location.reload();
 	}
 }
+
+function fillSheetEdgeReduction() {
+	const value = sheetTopEdgeReduction.value;
+	sheetRightEdgeReduction.value = value;
+	sheetBottomEdgeReduction.value = value;
+	sheetLeftEdgeReduction.value = value;
+}
 </script>
 <template>
   <div class="px-2 md:mx-auto">
     <h2 class="text-2xl font-bold mt-8">App</h2>
-    <label class="form-control mb-4 w-full max-w-xs pl-4">
+    <label class="form-control mb-4 w-full max-w-xs">
       <div class="label">
         <span class="label-text">Edge reduction buttons</span>
       </div>
@@ -36,7 +46,7 @@ function clearAllData() {
         <option>Separate</option>
       </select>
     </label>
-    <label class="form-control mb-4 w-full max-w-xs pl-4">
+    <label class="form-control mb-4 w-full max-w-xs">
       <div class="label">
         <span class="label-text">Optimization depth</span>
       </div>
@@ -54,7 +64,7 @@ function clearAllData() {
       </div>
     </label>
     <h2 class="text-2xl font-bold mt-8">Sheet</h2>
-    <label class="form-control mb-4 w-full max-w-xs pl-4">
+    <label class="form-control mb-4 w-full max-w-xs">
       <div class="label">
         <span class="label-text">Length</span>
         <span class="label-text-alt">mm</span>
@@ -66,7 +76,7 @@ function clearAllData() {
         class="input input-bordered w-full max-w-xs"
       />
     </label>
-    <label class="form-control mb-4 w-full max-w-xs pl-4">
+    <label class="form-control mb-4 w-full max-w-xs">
       <div class="label">
         <span class="label-text">Width</span>
         <span class="label-text-alt">mm</span>
@@ -78,21 +88,60 @@ function clearAllData() {
         class="input input-bordered w-full max-w-xs"
       />
     </label>
-    <label class="form-control mb-4 w-full max-w-xs pl-4">
-      <div class="label">
-        <span class="label-text">Edge reduction</span>
-        <span class="label-text-alt">mm</span>
-      </div>
-      <input
-        v-model="sheetEdgeReduction"
-        type="number"
-        min="0"
-        class="input input-bordered w-full max-w-xs"
-      />
-    </label>
+    <div class="label">
+      <span class="label-text">Edge reduction</span>
+      <span class="label-text-alt">mm</span>
+    </div>
+    <div class="space-y-2">
+      <label class="input input-bordered flex items-center gap-2">
+        <input
+          v-model="sheetTopEdgeReduction"
+          type="number"
+          min="0"
+          class="grow"
+        />
+        <span class="badge badge-primary badge-lg">
+          Top
+        </span>
+      </label>
+      <label class="input input-bordered flex items-center gap-2">
+        <input
+          v-model="sheetRightEdgeReduction"
+          type="number"
+          min="0"
+          class="grow"
+        />
+        <span class="badge badge-primary badge-lg">
+          Right
+        </span>
+      </label>
+      <label class="input input-bordered flex items-center gap-2">
+        <input
+          v-model="sheetBottomEdgeReduction"
+          type="number"
+          min="0"
+          class="grow"
+        />
+        <span class="badge badge-primary badge-lg">
+          Bottom
+        </span>
+      </label>
+      <label class="input input-bordered flex items-center gap-2">
+        <input
+          v-model="sheetLeftEdgeReduction"
+          type="number"
+          min="0"
+          class="grow"
+        />
+        <span class="badge badge-primary badge-lg">
+          Left
+        </span>
+      </label>
+      <button @click="fillSheetEdgeReduction" class="btn btn-block btn-xs tracking-wide">Fill all with first value</button>
+    </div>
 
     <h2 class="text-2xl font-bold mt-8">Blade</h2>
-    <label class="form-control mb-4 w-full max-w-xs pl-4">
+    <label class="form-control mb-4 w-full max-w-xs">
       <div class="label">
         <span class="label-text">Thickness</span>
         <span class="label-text-alt">mm</span>
@@ -106,7 +155,7 @@ function clearAllData() {
     </label>
 
     <h2 class="text-2xl font-bold mt-8">Panels</h2>
-    <label class="form-control mb-4 w-full max-w-xs pl-4">
+    <label class="form-control mb-4 w-full max-w-xs">
       <div class="label">
         <span class="label-text">Edge reduction</span>
         <span class="label-text-alt">mm</span>
@@ -120,7 +169,7 @@ function clearAllData() {
     </label>
 
     <h2 class="text-2xl font-bold mt-8">Danger zone</h2>
-    <div class="pl-4 mt-2 w-full max-w-xs">
+    <div class="mt-2 w-full max-w-xs">
       <button class="btn btn-error w-full" @click="clearAllData">
         Clear all data and settings
       </button>

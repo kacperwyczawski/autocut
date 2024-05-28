@@ -30,19 +30,19 @@ const sheet: SheetTemplate = {
 };
 
 function createWorker() {
-  const worker = new Worker(new URL("@/core/worker.ts", import.meta.url), {
-    type: "module",
-  });
-  worker.addEventListener("message", (event) => {
-    if (event.data.placedPanels) {
-      placedPanels.value = event.data.placedPanels;
-      totalPanels.value = event.data.totalPanels;
-    } else {
-      optimizationResult.value = event.data;
-      optimizing.value = false;
-    }
-  });
-  return worker;
+	const worker = new Worker(new URL("@/core/worker.ts", import.meta.url), {
+		type: "module",
+	});
+	worker.addEventListener("message", (event) => {
+		if (event.data.placedPanels) {
+			placedPanels.value = event.data.placedPanels;
+			totalPanels.value = event.data.totalPanels;
+		} else {
+			optimizationResult.value = event.data;
+			optimizing.value = false;
+		}
+	});
+	return worker;
 }
 
 const optimizationResult: Ref<OptimizationResult | null> = ref(null);
@@ -56,20 +56,20 @@ function handleOptimize() {
 	const flattenedPanels = toRaw(panels.value).flatMap((p) =>
 		Array<PanelTemplate>(p.quantity).fill(p.panel),
 	);
-  const request: OptimizationRequest = {
-    sheetTemplate: sheet,
-    panels: flattenedPanels,
-    bladeThickness: toRaw(bladeThickness.value),
-    depth: toRaw(optimizationDepth.value),
-  };
-  worker.postMessage(request);
-  optimizing.value = true;
+	const request: OptimizationRequest = {
+		sheetTemplate: sheet,
+		panels: flattenedPanels,
+		bladeThickness: toRaw(bladeThickness.value),
+		depth: toRaw(optimizationDepth.value),
+	};
+	worker.postMessage(request);
+	optimizing.value = true;
 }
 
 function handleCancel() {
-  optimizing.value = false;
-  worker.terminate();
-  worker = createWorker();
+	optimizing.value = false;
+	worker.terminate();
+	worker = createWorker();
 }
 
 const panels = ref<{ panel: PanelTemplate; quantity: number }[]>([]);

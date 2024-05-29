@@ -144,8 +144,14 @@ function generateNextGeneration(
 		const fit = {
 			x: sheetTemplate.edgeReduction.left,
 			y: sheetTemplate.edgeReduction.top,
-			length: sheetTemplate.length - sheetTemplate.edgeReduction.left - sheetTemplate.edgeReduction.right,
-			width: sheetTemplate.width - sheetTemplate.edgeReduction.top - sheetTemplate.edgeReduction.bottom,
+			length:
+				sheetTemplate.length -
+				sheetTemplate.edgeReduction.left -
+				sheetTemplate.edgeReduction.right,
+			width:
+				sheetTemplate.width -
+				sheetTemplate.edgeReduction.top -
+				sheetTemplate.edgeReduction.bottom,
 		};
 		const newData = generateNewSpacesAndCuts(fit, currentPanel, bladeThickness);
 		const newSheet: sheet = {
@@ -161,9 +167,7 @@ function generateNextGeneration(
 		});
 		nextGeneration.push({
 			sheets: [...previousVariant.sheets, newSheet],
-			baseFit: isFirstGeneration
-				? fit
-				: previousVariant.baseFit,
+			baseFit: isFirstGeneration ? fit : previousVariant.baseFit,
 		});
 	}
 	return {

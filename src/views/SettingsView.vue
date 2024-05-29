@@ -23,11 +23,18 @@ function clearAllData() {
 	}
 }
 
-function fillSheetEdgeReduction() {
+function fillWithFirst() {
 	const value = sheetTopEdgeReduction.value;
 	sheetRightEdgeReduction.value = value;
 	sheetBottomEdgeReduction.value = value;
 	sheetLeftEdgeReduction.value = value;
+}
+
+function fillWithZero() {
+	sheetTopEdgeReduction.value = 0;
+	sheetRightEdgeReduction.value = 0;
+	sheetBottomEdgeReduction.value = 0;
+	sheetLeftEdgeReduction.value = 0;
 }
 </script>
 <template>
@@ -137,7 +144,10 @@ function fillSheetEdgeReduction() {
           Left
         </span>
       </label>
-      <button @click="fillSheetEdgeReduction" class="btn btn-block btn-xs tracking-wide">Fill all with first value</button>
+      <div class="grid gap-2 grid-cols-2">
+        <button @click="fillWithFirst" class="btn btn-xs tracking-wide">Fill all with first value</button>
+        <button @click="fillWithZero" class="btn btn-xs tracking-wide">Set all to zero</button>
+      </div>
     </div>
 
     <h2 class="text-2xl font-bold mt-8">Blade</h2>

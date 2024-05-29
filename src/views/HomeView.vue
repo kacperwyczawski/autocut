@@ -21,9 +21,9 @@ const sheet: SheetTemplate = {
 	length: useSettings().sheetLength.value,
 	edgeReduction: {
 		top: useSettings().sheetTopEdgeReduction.value,
-    right: useSettings().sheetRightEdgeReduction.value,
-    bottom: useSettings().sheetBottomEdgeReduction.value,
-    left: useSettings().sheetLeftEdgeReduction.value,
+		right: useSettings().sheetRightEdgeReduction.value,
+		bottom: useSettings().sheetBottomEdgeReduction.value,
+		left: useSettings().sheetLeftEdgeReduction.value,
 	},
 };
 

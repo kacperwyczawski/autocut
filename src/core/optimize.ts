@@ -17,7 +17,7 @@ export function optimize(
 	panels.sort((a, b) =>
 		a.length === b.length ? b.width - a.width : b.length - a.length,
 	);
-	// TODO: apply edge reduction
+	// TODO: apply edge reduction for panels
 	const sheets: sheet[] = [];
 	let fittings = 0;
 	for (let panelIndex = 0; panelIndex < panels.length; panelIndex++) {
@@ -52,7 +52,7 @@ export function optimize(
 				x: sheets[bestFit.sheetIndex].freeSpaces[bestFit.freeSpaceIndex].x,
 				y: sheets[bestFit.sheetIndex].freeSpaces[bestFit.freeSpaceIndex].y,
 			});
-			const newData = generateNewData(
+			const newData = generateNewSpacesAndCuts(
 				sheets[bestFit.sheetIndex].freeSpaces[bestFit.freeSpaceIndex],
 				panels[panelIndex],
 				bladeThickness,
@@ -64,7 +64,7 @@ export function optimize(
 			);
 			sheets[bestFit.sheetIndex].cuts.push(...newData.cuts);
 		} else {
-			const newData = generateNewData(
+			const newData = generateNewSpacesAndCuts(
 				bestFit,
 				panels[panelIndex],
 				bladeThickness,
@@ -122,7 +122,7 @@ function generateNextGeneration(
 				x: newSheets[fit.sheetIndex].freeSpaces[fit.freeSpaceIndex].x,
 				y: newSheets[fit.sheetIndex].freeSpaces[fit.freeSpaceIndex].y,
 			});
-			const newData = generateNewData(
+			const newData = generateNewSpacesAndCuts(
 				newSheets[fit.sheetIndex].freeSpaces[fit.freeSpaceIndex],
 				currentPanel,
 				bladeThickness,
@@ -139,14 +139,15 @@ function generateNextGeneration(
 			});
 		}
 		// place on new sheet
+		// TODO: generate cuts for reduced edges of the new sheet (only if edges are actually reduced of course)
 		fittings++;
 		const fit = {
-			x: 0,
-			y: 0,
-			length: sheetTemplate.length,
-			width: sheetTemplate.width,
+			x: sheetTemplate.edgeReduction.left,
+			y: sheetTemplate.edgeReduction.top,
+			length: sheetTemplate.length - sheetTemplate.edgeReduction.left - sheetTemplate.edgeReduction.right,
+			width: sheetTemplate.width - sheetTemplate.edgeReduction.top - sheetTemplate.edgeReduction.bottom,
 		};
-		const newData = generateNewData(fit, currentPanel, bladeThickness);
+		const newData = generateNewSpacesAndCuts(fit, currentPanel, bladeThickness);
 		const newSheet: sheet = {
 			template: { ...sheetTemplate },
 			panels: [],
@@ -155,18 +156,13 @@ function generateNextGeneration(
 		};
 		newSheet.panels.push({
 			template: currentPanel,
-			x: 0, // TODO: sheet edge reduction
-			y: 0,
+			x: fit.x,
+			y: fit.y,
 		});
 		nextGeneration.push({
 			sheets: [...previousVariant.sheets, newSheet],
 			baseFit: isFirstGeneration
-				? {
-						x: 0,
-						y: 0,
-						length: sheetTemplate.length,
-						width: sheetTemplate.width,
-				  }
+				? fit
 				: previousVariant.baseFit,
 		});
 	}
@@ -234,7 +230,7 @@ function findFits(
 	// TODO: check if sorting by area is better
 }
 
-function generateNewData(
+function generateNewSpacesAndCuts(
 	oldFit: FreeSpace,
 	panel: PanelTemplate,
 	bladeThickness: number,

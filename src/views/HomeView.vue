@@ -7,7 +7,6 @@ import useJsonExport from "@/composables/useJsonExport";
 import useSettings from "@/composables/useSettings";
 import type { OptimizationRequest } from "@/core/optimizationRequest";
 import type { OptimizationResult } from "@/core/optimizationResult";
-import { optimize } from "@/core/optimize";
 import type { PanelTemplate } from "@/core/panelTemplate";
 import type { SheetTemplate } from "@/core/sheetTemplate";
 import { type Ref, computed, ref, toRaw } from "vue";
@@ -21,11 +20,10 @@ const sheet: SheetTemplate = {
 	width: useSettings().sheetWidth.value,
 	length: useSettings().sheetLength.value,
 	edgeReduction: {
-		top: true,
-		bottom: true,
-		left: true,
-		right: true,
-		thickness: bladeThickness.value,
+		top: useSettings().sheetTopEdgeReduction.value,
+    right: useSettings().sheetRightEdgeReduction.value,
+    bottom: useSettings().sheetBottomEdgeReduction.value,
+    left: useSettings().sheetLeftEdgeReduction.value,
 	},
 };
 

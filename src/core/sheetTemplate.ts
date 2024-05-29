@@ -1,7 +1,7 @@
-import type { EdgeReduction } from "./edgeReduction";
+import type { VariableEdgeReduction } from "./variableEdgeReduction";
 
 export type SheetTemplate = {
 	length: number;
 	width: number;
-	edgeReduction: EdgeReduction;
+	edgeReduction: VariableEdgeReduction;
 };

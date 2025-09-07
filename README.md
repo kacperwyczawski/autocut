@@ -1,3 +1,5 @@
+**AutoCut is in beta, as for now**
+
 # Features
 
 - Website

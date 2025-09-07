@@ -1,4 +1,4 @@
-**AutoCut is in beta, as for now**
+*AutoCut is in beta, as for now*
 
 # Features
 

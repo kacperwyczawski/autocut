@@ -1,8 +1,28 @@
 @import "@fontsource-variable/inter";
 @import "@fontsource/roboto-mono";
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes: light, dark, cupcake, bumblebee, synthwave, retro --default, cyberpunk, dracula, night, coffee, dim, nord, lime;
+}
+
+@plugin "daisyui/theme" {
+  name: "lime";
+  default: false;
+  prefersdark: true;
+  color-scheme: "dark";
+  --color-primary: #a3e635;
+  --color-secondary: #a3e635;
+  --color-accent: #a3e635;
+  --color-neutral: #1c1c1e;
+  --color-base-100: #0d0d0d;
+  --color-base-200: #1c1c1e;
+  --color-base-300: #2a2a2c;
+}
+
+@theme {
+  --font-sans: "Inter Variable", sans-serif;
+  --font-mono: "Roboto Mono", monospace;
+}
 
 @layer base {
   input[type="number"]::-webkit-outer-spin-button,

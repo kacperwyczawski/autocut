@@ -2,14 +2,14 @@
 import useSettings from "@/composables/useSettings";
 import type { EdgeReduction } from "@/core/edgeReduction";
 import type { PanelTemplate } from "@/core/panelTemplate";
-import { type ComputedRef, computed, ref, watchEffect } from "vue";
+import { type ComputedRef, computed, ref, useTemplateRef, watchEffect } from "vue";
 
 const { edgeReductionButtons } = useSettings();
 
 const length = ref(Number.NaN);
 const width = ref(Number.NaN);
 const quantity = ref(1);
-const firstInput = ref<HTMLInputElement>(null!);
+const firstInput = useTemplateRef<HTMLInputElement>("firstInput");
 
 const top = ref(false);
 const right = ref(false);
@@ -40,7 +40,7 @@ function reset() {
 	length.value = Number.NaN;
 	width.value = Number.NaN;
 	quantity.value = 1;
-	firstInput.value.focus();
+	firstInput.value?.focus();
 	top.value = false;
 	right.value = false;
 	bottom.value = false;

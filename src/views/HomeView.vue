@@ -9,7 +9,7 @@ import type { OptimizationRequest } from "@/core/optimizationRequest";
 import type { OptimizationResult } from "@/core/optimizationResult";
 import type { PanelTemplate } from "@/core/panelTemplate";
 import type { SheetTemplate } from "@/core/sheetTemplate";
-import { type Ref, computed, ref, toRaw } from "vue";
+import { type Ref, computed, ref, toRaw, useTemplateRef } from "vue";
 
 const currentTab = ref("Panels");
 const tabList = ["Panels", "Cuts"];
@@ -78,7 +78,7 @@ function handlePanelAdd(panel: PanelTemplate, quantity: number) {
 	panelInPreview.value = null;
 }
 
-const exportOptimizationDialog: Ref<HTMLDialogElement> = ref(null!);
+const exportOptimizationDialog = useTemplateRef<HTMLDialogElement>("exportOptimizationDialog");
 const optimizationExportData = computed(() => {
 	return JSON.stringify(optimizationResult.value, null, 2);
 });
@@ -86,7 +86,7 @@ function exportOptimization() {
 	useJsonExport(optimizationExportData, "optimization");
 }
 
-const exportPanelsDialog: Ref<HTMLDialogElement> = ref(null!);
+const exportPanelsDialog = useTemplateRef<HTMLDialogElement>("exportPanelsDialog");
 const panelsExportData = computed(() => {
 	return JSON.stringify(panels.value, null, 2);
 });
@@ -94,10 +94,10 @@ function exportPanels() {
 	useJsonExport(panelsExportData, "panels");
 }
 
-const importPanelsDialog: Ref<HTMLDialogElement> = ref(null!);
-const importPanelsInput: Ref<HTMLInputElement> = ref(null!);
+const importPanelsDialog = useTemplateRef<HTMLDialogElement>("importPanelsDialog");
+const importPanelsInput = useTemplateRef<HTMLInputElement>("importPanelsInput");
 function importPanels() {
-	const file = importPanelsInput.value.files?.[0];
+	const file = importPanelsInput.value?.files?.[0];
 	if (!file) {
 		alert("No file selected");
 		return;
@@ -157,13 +157,13 @@ function handlePanelPreview(panel: PanelTemplate) {
           </button>
           <button
             v-if="panels.length !== 0"
-            @click="exportPanelsDialog.showModal()"
+            @click="exportPanelsDialog?.showModal()"
             class="btn btn-outline join-item"
           >
             Export panels
           </button>
           <button
-            @click="importPanelsDialog.showModal()"
+            @click="importPanelsDialog?.showModal()"
             class="btn btn-outline join-item"
           >
             Import panels
@@ -193,7 +193,7 @@ function handlePanelPreview(panel: PanelTemplate) {
       <ControlPanel
         @add-panel="handlePanelAdd"
         @preview-panel="handlePanelPreview"
-        @export="exportOptimizationDialog.showModal()"
+        @export="exportOptimizationDialog?.showModal()"
         @optimize="handleOptimize"
         @cancel="handleCancel"
         :disable-exporting="panels.length === 0"

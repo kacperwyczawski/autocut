@@ -6,4 +6,5 @@ export type OptimizationRequest = {
 	panels: PanelTemplate[];
 	bladeThickness: number;
 	depth: number;
+	allowRotation?: boolean;
 };

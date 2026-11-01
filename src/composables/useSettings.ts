@@ -20,6 +20,13 @@ export default function useSettings() {
 		localStorage.setItem("optimizationDepth", x.toString());
 	});
 
+	const allowRotation = ref(
+		localStorage.getItem("allowRotation") !== "false",
+	);
+	watch(allowRotation, (x) => {
+		localStorage.setItem("allowRotation", x.toString());
+	});
+
 	// Sheet
 
 	const sheetLength = ref(
@@ -101,5 +108,6 @@ export default function useSettings() {
 		edgeReductionButtons,
 		currentTheme,
 		optimizationDepth,
+		allowRotation,
 	};
 }

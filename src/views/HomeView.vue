@@ -14,7 +14,7 @@ import { type Ref, computed, ref, toRaw } from "vue";
 const currentTab = ref("Panels");
 const tabList = ["Panels", "Cuts"];
 
-const { bladeThickness, optimizationDepth } = useSettings();
+const { bladeThickness, optimizationDepth, allowRotation } = useSettings();
 
 const sheet: SheetTemplate = {
 	width: useSettings().sheetWidth.value,
@@ -59,6 +59,7 @@ function handleOptimize() {
 		panels: flattenedPanels,
 		bladeThickness: toRaw(bladeThickness.value),
 		depth: toRaw(optimizationDepth.value),
+		allowRotation: toRaw(allowRotation.value),
 	};
 	worker.postMessage(request);
 	optimizing.value = true;

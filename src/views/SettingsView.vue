@@ -4,6 +4,7 @@ import useSettings from "@/composables/useSettings";
 const {
 	edgeReductionButtons,
 	optimizationDepth,
+	allowRotation,
 	sheetLength,
 	sheetWidth,
 	sheetTopEdgeReduction,
@@ -165,6 +166,21 @@ function fillWithZero() {
     </label>
 
     <h2 class="text-2xl font-bold mt-8">Panels</h2>
+    <div class="form-control mb-4 w-full max-w-xs">
+      <label class="label cursor-pointer">
+        <span class="label-text">Allow rotation</span>
+        <input
+          v-model="allowRotation"
+          type="checkbox"
+          class="toggle toggle-primary"
+        />
+      </label>
+      <div class="label pt-0">
+        <span class="label-text-alt">
+          Rotate panels 90° during optimization to fit better
+        </span>
+      </div>
+    </div>
     <label class="form-control mb-4 w-full max-w-xs">
       <div class="label">
         <span class="label-text">Edge reduction</span>

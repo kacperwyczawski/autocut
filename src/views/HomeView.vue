@@ -9,7 +9,7 @@ import type { OptimizationRequest } from "@/core/optimizationRequest";
 import type { OptimizationResult } from "@/core/optimizationResult";
 import type { PanelTemplate } from "@/core/panelTemplate";
 import type { SheetTemplate } from "@/core/sheetTemplate";
-import { type Ref, computed, ref, toRaw, useTemplateRef } from "vue";
+import { type Ref, computed, nextTick, ref, toRaw, useTemplateRef } from "vue";
 
 const currentTab = ref("Panels");
 const tabList = ["Panels", "Cuts"];
@@ -27,6 +27,8 @@ const sheet: SheetTemplate = {
 	},
 };
 
+const rightPaneRef = useTemplateRef<HTMLElement>("rightPane");
+
 function createWorker() {
 	const worker = new Worker(new URL("@/core/worker.ts", import.meta.url), {
 		type: "module",
@@ -38,6 +40,9 @@ function createWorker() {
 		} else {
 			optimizationResult.value = event.data;
 			optimizing.value = false;
+			nextTick(() => {
+				rightPaneRef.value?.scrollTo({ top: 0, behavior: "instant" });
+			});
 		}
 	});
 	return worker;
@@ -129,67 +134,110 @@ function handlePanelPreview(panel: PanelTemplate) {
 <template>
   <div class="flex h-full">
     <div
-      class="p-2 min-w-[22rem] bg-base-200 hidden md:block shrink-0 overflow-y-scroll"
+      class="w-80 md:w-96 bg-base-200 border-r border-base-300 hidden md:flex flex-col h-full shrink-0"
     >
-      <div role="tablist" class="tabs tabs-boxed p-0">
-        <a
-          v-for="tab in tabList"
-          :key="tab"
-          role="tab"
-          class="tab"
-          :class="{
-            'bg-secondary text-secondary-content': currentTab === tab,
-          }"
-          @click="currentTab = tab"
-        >
-          {{ tab }}
-        </a>
-      </div>
-      <div v-if="currentTab === 'Panels'">
-        <Panels v-model="panels" />
-        <div class="join">
+      <div class="p-3 pb-2 border-b border-base-300/60 shrink-0">
+        <div role="tablist" class="tabs tabs-box grid grid-cols-2 w-full">
           <button
-            v-if="panels.length !== 0"
-            class="btn btn-error btn-outline join-item"
-            @click="panels = []"
+            v-for="tab in tabList"
+            :key="tab"
+            role="tab"
+            type="button"
+            class="tab font-medium text-sm transition-all"
+            :class="{
+              'tab-active font-semibold shadow-xs': currentTab === tab,
+            }"
+            @click="currentTab = tab"
           >
-            Delete all panels
+            {{ tab }}
+            <span
+              v-if="tab === 'Panels' && panels.length > 0"
+              class="badge badge-xs badge-neutral ml-1.5 font-mono"
+            >
+              {{ panels.reduce((sum, p) => sum + p.quantity, 0) }}
+            </span>
+          </button>
+        </div>
+      </div>
+      <div class="flex-1 overflow-y-auto min-h-0 p-3">
+        <div v-if="currentTab === 'Panels'">
+          <Panels v-model="panels" />
+        </div>
+        <div v-else-if="currentTab === 'Cuts'">
+          <div role="alert" class="alert alert-warning">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="stroke-current shrink-0 h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
+            </svg>
+            <span> This feature is not implemented yet </span>
+          </div>
+        </div>
+      </div>
+      <div class="p-3 border-t border-base-300 bg-base-200 shrink-0 flex flex-col gap-2">
+        <div class="flex gap-2">
+          <button
+            @click="importPanelsDialog?.showModal()"
+            class="btn btn-sm btn-outline flex-1 gap-1.5"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="3" x2="12" y2="15" />
+            </svg>
+            Import
           </button>
           <button
             v-if="panels.length !== 0"
             @click="exportPanelsDialog?.showModal()"
-            class="btn btn-outline join-item"
+            class="btn btn-sm btn-outline flex-1 gap-1.5"
           >
-            Export panels
-          </button>
-          <button
-            @click="importPanelsDialog?.showModal()"
-            class="btn btn-outline join-item"
-          >
-            Import panels
-          </button>
-        </div>
-      </div>
-      <div v-else-if="currentTab === 'Cuts'">
-        <div role="alert" class="alert alert-warning mt-2">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="stroke-current shrink-0 h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <path
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
               stroke-linecap="round"
               stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-            />
-          </svg>
-          <span> This feature is not implemented yet </span>
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            Export
+          </button>
         </div>
+        <button
+          v-if="panels.length !== 0"
+          class="btn btn-xs btn-ghost text-error/80 hover:text-error hover:bg-error/10 w-full"
+          @click="panels = []"
+        >
+          Delete all panels
+        </button>
       </div>
     </div>
-    <div class="p-2 overflow-y-scroll grow">
+    <div ref="rightPane" class="p-2 overflow-y-auto grow">
       <ControlPanel
         @add-panel="handlePanelAdd"
         @preview-panel="handlePanelPreview"
@@ -325,7 +373,7 @@ function handlePanelPreview(panel: PanelTemplate) {
             type="file"
             id="importPanelsInput"
             ref="importPanelsInput"
-            class="file-input file-input-bordered w-full"
+            class="file-input w-full"
           />
           <button class="btn btn-primary" @click="importPanels">Import</button>
           <button class="btn">Cancel</button>

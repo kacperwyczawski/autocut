@@ -91,10 +91,20 @@ export default function useSettings() {
 
 	// Other
 
-	const currentTheme = ref(localStorage.getItem("currentTheme") || "retro");
-	watch(currentTheme, (x) => {
-		localStorage.setItem("currentTheme", x);
-	});
+	const savedTheme = localStorage.getItem("currentTheme");
+	const currentTheme = ref(
+		savedTheme && savedTheme !== "lime" ? savedTheme : "bumblebee",
+	);
+	watch(
+		currentTheme,
+		(x) => {
+			localStorage.setItem("currentTheme", x);
+			if (typeof document !== "undefined") {
+				document.documentElement.setAttribute("data-theme", x);
+			}
+		},
+		{ immediate: true },
+	);
 
 	return {
 		sheetLength,

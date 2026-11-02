@@ -2,21 +2,7 @@
 @import "@fontsource/roboto-mono";
 @import "tailwindcss";
 @plugin "daisyui" {
-  themes: light, dark, cupcake, bumblebee, synthwave, retro --default, cyberpunk, dracula, night, coffee, dim, nord, lime;
-}
-
-@plugin "daisyui/theme" {
-  name: "lime";
-  default: false;
-  prefersdark: true;
-  color-scheme: "dark";
-  --color-primary: #a3e635;
-  --color-secondary: #a3e635;
-  --color-accent: #a3e635;
-  --color-neutral: #1c1c1e;
-  --color-base-100: #0d0d0d;
-  --color-base-200: #1c1c1e;
-  --color-base-300: #2a2a2c;
+  themes: light, dark --prefersdark, cupcake, bumblebee --default, synthwave, retro, cyberpunk, dracula, night, coffee, dim, nord;
 }
 
 @theme {
@@ -30,6 +16,6 @@
   input[type="number"] {
     -webkit-appearance: none;
     margin: 0;
-    -moz-appearance: textfield !important;
+    -moz-appearance: textfield;
   }
 }

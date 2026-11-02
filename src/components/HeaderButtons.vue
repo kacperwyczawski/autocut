@@ -18,7 +18,6 @@ const themes = [
 	"coffee",
 	"dim",
 	"nord",
-	"lime", // additional custom theme
 ];
 
 const { currentTheme } = useSettings();
@@ -55,9 +54,9 @@ const { currentTheme } = useSettings();
       </li>
     </ul>
   </div>
-  <div v-else class="form-control">
-    <label class="label cursor-pointer">
-      <span class="label-text">Dark mode: </span>
+  <div v-else class="flex items-center">
+    <label class="flex items-center gap-2 cursor-pointer text-sm">
+      <span>Dark mode:</span>
       <input type="checkbox" value="coffee" class="checkbox theme-controller" />
     </label>
   </div>

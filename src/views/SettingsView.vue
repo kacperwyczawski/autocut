@@ -41,158 +41,152 @@ function fillWithZero() {
 <template>
   <div class="px-2 md:mx-auto">
     <h2 class="text-2xl font-bold mt-8">App</h2>
-    <label class="form-control mb-4 w-full max-w-xs">
-      <div class="label">
-        <span class="label-text">Edge reduction buttons</span>
-      </div>
+    <fieldset class="fieldset mb-4 w-full max-w-xs">
+      <legend class="fieldset-legend">Edge reduction buttons</legend>
       <select
         v-model="edgeReductionButtons"
-        class="select select-bordered w-full max-w-xs"
+        class="select w-full max-w-xs"
       >
         <option>Hidden</option>
         <option>Combined</option>
         <option>Separate</option>
       </select>
-    </label>
-    <label class="form-control mb-4 w-full max-w-xs">
-      <div class="label">
-        <span class="label-text">Optimization depth</span>
-      </div>
+    </fieldset>
+    <fieldset class="fieldset mb-4 w-full max-w-xs">
+      <legend class="fieldset-legend">Optimization depth</legend>
       <input
         v-model="optimizationDepth"
         type="number"
         min="1"
         max="8"
-        class="input input-bordered w-full max-w-xs"
+        class="input w-full max-w-xs"
       />
-      <div class="label">
-        <span class="label-text-alt">
-          Higher values -> more accurate optimization, but slower
-        </span>
-      </div>
-    </label>
+      <p class="fieldset-label">
+        Higher values -> more accurate optimization, but slower
+      </p>
+    </fieldset>
     <h2 class="text-2xl font-bold mt-8">Sheet</h2>
-    <label class="form-control mb-4 w-full max-w-xs">
-      <div class="label">
-        <span class="label-text">Length</span>
-        <span class="label-text-alt">mm</span>
-      </div>
+    <fieldset class="fieldset mb-4 w-full max-w-xs">
+      <legend class="fieldset-legend">
+        <span>Length</span>
+        <span class="fieldset-label">mm</span>
+      </legend>
       <input
         v-model="sheetLength"
         type="number"
         min="1"
-        class="input input-bordered w-full max-w-xs"
+        class="input w-full max-w-xs"
       />
-    </label>
-    <label class="form-control mb-4 w-full max-w-xs">
-      <div class="label">
-        <span class="label-text">Width</span>
-        <span class="label-text-alt">mm</span>
-      </div>
+    </fieldset>
+    <fieldset class="fieldset mb-4 w-full max-w-xs">
+      <legend class="fieldset-legend">
+        <span>Width</span>
+        <span class="fieldset-label">mm</span>
+      </legend>
       <input
         v-model="sheetWidth"
         type="number"
         min="1"
-        class="input input-bordered w-full max-w-xs"
+        class="input w-full max-w-xs"
       />
-    </label>
-    <div class="label">
-      <span class="label-text">Edge reduction</span>
-      <span class="label-text-alt">mm</span>
-    </div>
-    <div class="space-y-2">
-      <label class="input input-bordered flex items-center gap-2">
-        <input
-          v-model="sheetTopEdgeReduction"
-          type="number"
-          min="0"
-          class="grow"
-        />
-        <span class="badge badge-primary badge-lg">
-          Top
-        </span>
-      </label>
-      <label class="input input-bordered flex items-center gap-2">
-        <input
-          v-model="sheetRightEdgeReduction"
-          type="number"
-          min="0"
-          class="grow"
-        />
-        <span class="badge badge-primary badge-lg">
-          Right
-        </span>
-      </label>
-      <label class="input input-bordered flex items-center gap-2">
-        <input
-          v-model="sheetBottomEdgeReduction"
-          type="number"
-          min="0"
-          class="grow"
-        />
-        <span class="badge badge-primary badge-lg">
-          Bottom
-        </span>
-      </label>
-      <label class="input input-bordered flex items-center gap-2">
-        <input
-          v-model="sheetLeftEdgeReduction"
-          type="number"
-          min="0"
-          class="grow"
-        />
-        <span class="badge badge-primary badge-lg">
-          Left
-        </span>
-      </label>
-      <div class="grid gap-2 grid-cols-2">
-        <button @click="fillWithFirst" class="btn btn-xs tracking-wide">Fill all with first value</button>
-        <button @click="fillWithZero" class="btn btn-xs tracking-wide">Set all to zero</button>
+    </fieldset>
+    <div class="mb-4 w-full max-w-xs">
+      <div class="flex justify-between items-center py-2 font-semibold text-xs text-base-content">
+        <span>Edge reduction</span>
+        <span class="text-base-content/60">mm</span>
+      </div>
+      <div class="space-y-2">
+        <label class="input flex items-center gap-2">
+          <input
+            v-model="sheetTopEdgeReduction"
+            type="number"
+            min="0"
+            class="grow"
+          />
+          <span class="badge badge-primary badge-lg">
+            Top
+          </span>
+        </label>
+        <label class="input flex items-center gap-2">
+          <input
+            v-model="sheetRightEdgeReduction"
+            type="number"
+            min="0"
+            class="grow"
+          />
+          <span class="badge badge-primary badge-lg">
+            Right
+          </span>
+        </label>
+        <label class="input flex items-center gap-2">
+          <input
+            v-model="sheetBottomEdgeReduction"
+            type="number"
+            min="0"
+            class="grow"
+          />
+          <span class="badge badge-primary badge-lg">
+            Bottom
+          </span>
+        </label>
+        <label class="input flex items-center gap-2">
+          <input
+            v-model="sheetLeftEdgeReduction"
+            type="number"
+            min="0"
+            class="grow"
+          />
+          <span class="badge badge-primary badge-lg">
+            Left
+          </span>
+        </label>
+        <div class="grid gap-2 grid-cols-2">
+          <button @click="fillWithFirst" class="btn btn-xs tracking-wide">Fill all with first value</button>
+          <button @click="fillWithZero" class="btn btn-xs tracking-wide">Set all to zero</button>
+        </div>
       </div>
     </div>
 
     <h2 class="text-2xl font-bold mt-8">Blade</h2>
-    <label class="form-control mb-4 w-full max-w-xs">
-      <div class="label">
-        <span class="label-text">Thickness</span>
-        <span class="label-text-alt">mm</span>
-      </div>
+    <fieldset class="fieldset mb-4 w-full max-w-xs">
+      <legend class="fieldset-legend">
+        <span>Thickness</span>
+        <span class="fieldset-label">mm</span>
+      </legend>
       <input
         v-model="bladeThickness"
         type="number"
         min="1"
-        class="input input-bordered w-full max-w-xs"
+        class="input w-full max-w-xs"
       />
-    </label>
+    </fieldset>
 
     <h2 class="text-2xl font-bold mt-8">Panels</h2>
-    <div class="form-control mb-4 w-full max-w-xs">
-      <label class="label cursor-pointer">
-        <span class="label-text">Allow rotation</span>
+    <fieldset class="fieldset mb-4 w-full max-w-xs">
+      <label class="fieldset-label justify-between cursor-pointer">
+        <span class="text-base font-medium text-base-content">Allow rotation</span>
         <input
           v-model="allowRotation"
           type="checkbox"
           class="toggle toggle-primary"
         />
       </label>
-      <div class="label pt-0">
-        <span class="label-text-alt">
-          Rotate panels 90° during optimization to fit better
-        </span>
-      </div>
-    </div>
-    <label class="form-control mb-4 w-full max-w-xs">
-      <div class="label">
-        <span class="label-text">Edge reduction</span>
-        <span class="label-text-alt">mm</span>
-      </div>
+      <p class="fieldset-label">
+        Rotate panels 90° during optimization to fit better
+      </p>
+    </fieldset>
+    <fieldset class="fieldset mb-4 w-full max-w-xs">
+      <legend class="fieldset-legend">
+        <span>Edge reduction</span>
+        <span class="fieldset-label">mm</span>
+      </legend>
       <input
         v-model="panelEdgeReduction"
         type="number"
         min="0"
-        class="input input-bordered w-full max-w-xs"
+        class="input w-full max-w-xs"
       />
-    </label>
+    </fieldset>
 
     <h2 class="text-2xl font-bold mt-8">Danger zone</h2>
     <div class="mt-2 w-full max-w-xs">

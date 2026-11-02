@@ -78,42 +78,42 @@ watchEffect(() => {
     @keyup.alt.enter="$emit('export')"
     class="flex gap-2 flex-wrap items-end"
   >
-    <label class="form-control grow">
-      <div class="label">
-        <span class="label-text">Length</span>
-        <span class="label-text-alt">mm</span>
-      </div>
+    <fieldset class="fieldset grow">
+      <legend class="fieldset-legend">
+        <span>Length</span>
+        <span class="fieldset-label">mm</span>
+      </legend>
       <input
         v-model.number="length"
         type="number"
         min="1"
-        class="input input-bordered"
+        class="input w-full"
         ref="firstInput"
       />
-    </label>
-    <label class="form-control grow">
-      <div class="label">
-        <span class="label-text">Width</span>
-        <span class="label-text-alt">mm</span>
-      </div>
+    </fieldset>
+    <fieldset class="fieldset grow">
+      <legend class="fieldset-legend">
+        <span>Width</span>
+        <span class="fieldset-label">mm</span>
+      </legend>
       <input
         v-model.number="width"
         type="number"
         min="1"
-        class="input input-bordered"
+        class="input w-full"
       />
-    </label>
-    <label class="form-control grow">
-      <div class="label">
-        <span class="label-text">Quantity</span>
-      </div>
+    </fieldset>
+    <fieldset class="fieldset grow">
+      <legend class="fieldset-legend">
+        <span>Quantity</span>
+      </legend>
       <input
         v-model.number="quantity"
         type="number"
         min="1"
-        class="input input-bordered"
+        class="input w-full"
       />
-    </label>
+    </fieldset>
     <div
       :class="{
         'h-12 w-12 relative': edgeReductionButtons === 'Combined',
@@ -127,7 +127,7 @@ watchEffect(() => {
         :class="{
           'absolute top-0 left-2 right-2 h-2 min-h-2 appearance-none btn btn-outline p-0 checked:btn-primary':
             edgeReductionButtons === 'Combined',
-          'checkbox w-12 h-12 [--chkbg:theme(colors.base-100)] [--chkfg:theme(colors.base-content)] border-8 border-base-300 border-t-primary rounded-btn':
+          'checkbox w-12 h-12 border-8 border-base-300 border-t-primary rounded-field':
             edgeReductionButtons === 'Separate',
         }"
       />
@@ -137,7 +137,7 @@ watchEffect(() => {
         :class="{
           'absolute top-2 right-0 w-2 h-8 min-h-8 appearance-none btn btn-outline p-0 checked:btn-primary':
             edgeReductionButtons === 'Combined',
-          'checkbox w-12 h-12 [--chkbg:theme(colors.base-100)] [--chkfg:theme(colors.base-content)] border-8 border-base-300 border-r-primary rounded-btn':
+          'checkbox w-12 h-12 border-8 border-base-300 border-r-primary rounded-field':
             edgeReductionButtons === 'Separate',
         }"
       />
@@ -147,7 +147,7 @@ watchEffect(() => {
         :class="{
           'absolute bottom-0 left-2 right-2 h-2 min-h-2 appearance-none btn btn-outline p-0 checked:btn-primary':
             edgeReductionButtons === 'Combined',
-          'checkbox w-12 h-12 [--chkbg:theme(colors.base-100)] [--chkfg:theme(colors.base-content)] border-8 border-base-300 border-b-primary rounded-btn':
+          'checkbox w-12 h-12 border-8 border-base-300 border-b-primary rounded-field':
             edgeReductionButtons === 'Separate',
         }"
       />
@@ -157,27 +157,27 @@ watchEffect(() => {
         :class="{
           'absolute top-2 left-0 w-2 h-8 min-h-8 appearance-none btn btn-outline p-0 checked:btn-primary':
             edgeReductionButtons === 'Combined',
-          'checkbox w-12 h-12 [--chkbg:theme(colors.base-100)] [--chkfg:theme(colors.base-content)] border-8 border-base-300 border-l-primary rounded-btn':
+          'checkbox w-12 h-12 border-8 border-base-300 border-l-primary rounded-field':
             edgeReductionButtons === 'Separate',
         }"
       />
     </div>
-    <div class="tooltip" data-tip="Enter">
+    <div class="tooltip inline-flex mb-1" data-tip="Enter">
       <button @click="handlePanelAdd" class="btn btn-secondary">
         Add panel
       </button>
     </div>
-    <div v-if="optimizing" class="tooltip">
+    <div v-if="optimizing" class="tooltip inline-flex mb-1">
       <button @click="$emit('cancel')" class="btn btn-primary">
         Cancel
       </button>
     </div>
-    <div v-else class="tooltip" data-tip="Ctrl + Enter">
+    <div v-else class="tooltip inline-flex mb-1" data-tip="Ctrl + Enter">
       <button @click="$emit('optimize')" class="btn btn-primary">
         Optimize
       </button>
     </div>
-    <div class="tooltip" data-tip="Alt + Enter">
+    <div class="tooltip inline-flex mb-1" data-tip="Alt + Enter">
       <button @click="$emit('export')" :disabled="disableExporting" class="btn">
         Export results
       </button>

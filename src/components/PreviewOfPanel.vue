@@ -11,7 +11,9 @@ const props = defineProps<{
     v-if="panelInPreview"
     class="border-2 border-secondary max-h-96 relative font-mono text-center mt-2"
     :style="{
-      aspectRatio: `${panelInPreview.length / panelInPreview.width}`,
+      aspectRatio: `${panelInPreview.length / (panelInPreview.width || 1)}`,
+      maxWidth: '100%',
+      width: `min(100%, calc(24rem * (${panelInPreview.length} / ${panelInPreview.width || 1})))`,
     }"
     :class="{
       'border-t-primary border-t-4': panelInPreview.edgeReduction.top,

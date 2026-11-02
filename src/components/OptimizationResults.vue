@@ -54,12 +54,16 @@ function getOptimizationTime(): string {
         Fittings: {{ optimization.fittings }}
       </span>
     </div>
-    <div class="flex flex-col gap-2 mt-2">
+    <div class="flex flex-col gap-2 mt-2 items-start [--sheet-max-h:calc(100dvh-14rem)]">
       <div
-        v-for="sheet in optimization.sheets"
+        v-for="(sheet, index) in optimization.sheets"
+        :key="index"
         class="border-2 border-secondary border-dashed relative font-mono text-center"
         :style="{
           aspectRatio: `${sheet.template.length / sheet.template.width}`,
+          maxHeight: 'var(--sheet-max-h)',
+          maxWidth: '100%',
+          width: `min(100%, calc(var(--sheet-max-h) * (${sheet.template.length} / ${sheet.template.width})))`,
         }"
       >
         <div

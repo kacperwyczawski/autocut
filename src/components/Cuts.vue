@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { OptimizationResult } from "@/core/optimizationResult";
-import { computed, ref } from "vue";
+import { computed } from "vue";
 
 const props = defineProps<{
 	optimization: OptimizationResult | null;
@@ -11,19 +11,11 @@ const emit = defineEmits<{
 	(e: "hover-cut", cut: { sheetIndex: number; cutIndex: number } | null): void;
 }>();
 
-const selectedSheetIndex = ref(0);
-
 const sheets = computed(() => {
 	if (!props.optimization || typeof props.optimization === "string") {
 		return [];
 	}
 	return props.optimization.sheets;
-});
-
-const currentSheet = computed(() => {
-	if (sheets.value.length === 0) return null;
-	const index = Math.min(selectedSheetIndex.value, sheets.value.length - 1);
-	return sheets.value[index] ?? null;
 });
 
 function isCutHovered(sheetIndex: number, cutIndex: number): boolean {
@@ -61,66 +53,54 @@ function isCutHovered(sheetIndex: number, cutIndex: number): boolean {
     </p>
   </div>
 
-  <div v-else class="flex flex-col gap-2">
-    <!-- Sheet Switcher if multiple sheets -->
-    <div v-if="sheets.length > 1" class="flex gap-1 overflow-x-auto pb-1">
-      <button
-        v-for="(sheet, idx) in sheets"
-        :key="idx"
-        class="btn btn-xs shrink-0 font-mono"
-        :class="selectedSheetIndex === idx ? 'btn-primary' : 'btn-ghost border border-base-300/50'"
-        @click="selectedSheetIndex = idx"
-      >
-        Sheet {{ idx + 1 }}
-        <span class="badge badge-xs" :class="selectedSheetIndex === idx ? 'badge-neutral' : 'badge-ghost'">
-          {{ sheet.cuts.length }}
-        </span>
-      </button>
-    </div>
-
-    <!-- Cuts Table -->
-    <div v-if="currentSheet" class="overflow-x-auto rounded-box border border-base-300 bg-base-100">
-      <div class="bg-base-200/50 px-3 py-2 border-b border-base-300/60 flex items-center justify-between text-xs">
+  <div v-else class="flex flex-col gap-3">
+    <!-- Sheets stacked one under another -->
+    <div
+      v-for="(sheet, sIdx) in sheets"
+      :key="sIdx"
+      class="overflow-x-auto rounded-box border border-base-300 bg-base-100"
+    >
+      <div class="bg-base-200/50 px-3 py-2 border-b border-base-300/50 flex items-center justify-between text-xs">
         <span class="font-semibold text-base-content/80">
-          Sheet {{ selectedSheetIndex + 1 }}
+          Sheet {{ sIdx + 1 }}
           <span class="font-mono text-base-content/60 font-normal">
-            ({{ currentSheet.template.length }} × {{ currentSheet.template.width }} mm)
+            ({{ sheet.template.length }} × {{ sheet.template.width }} mm)
           </span>
         </span>
-        <span class="badge badge-sm badge-outline font-mono">
-          {{ currentSheet.cuts.length }} cuts
+        <span class="badge badge-sm badge-neutral font-mono font-semibold">
+          {{ sheet.cuts.length }} cuts
         </span>
       </div>
 
-      <div v-if="currentSheet.cuts.length === 0" class="text-center py-6 text-xs text-base-content/60">
+      <div v-if="sheet.cuts.length === 0" class="text-center py-6 text-xs text-base-content/60">
         No cuts required for this sheet.
       </div>
 
-      <table v-else class="table table-xs table-fixed w-full">
-        <thead class="bg-base-200/40 text-base-content/70">
+      <table v-else class="table table-sm w-full">
+        <thead class="bg-base-200/50 text-base-content/70 text-xs">
           <tr>
-            <th class="w-10 text-center py-2">#</th>
-            <th class="w-10 text-center py-2">Dir</th>
-            <th class="py-2 pl-2">Saw Fence</th>
+            <th class="font-semibold uppercase tracking-wider text-center py-2 w-10">#</th>
+            <th class="font-semibold uppercase tracking-wider text-center py-2 w-24">Direction</th>
+            <th class="font-semibold uppercase tracking-wider py-2 pl-2">Saw Fence</th>
           </tr>
         </thead>
-        <tbody class="font-mono">
+        <tbody>
           <tr
-            v-for="(cut, cIdx) in currentSheet.cuts"
+            v-for="(cut, cIdx) in sheet.cuts"
             :key="cIdx"
-            class="transition-colors border-b border-base-300/40 last:border-b-0 cursor-pointer"
+            class="transition-colors border-b border-base-300/50 last:border-b-0 cursor-pointer"
             :class="{
-              'bg-primary/20 text-primary': isCutHovered(selectedSheetIndex, cIdx),
-              'hover:bg-base-200/70': !isCutHovered(selectedSheetIndex, cIdx),
+              'bg-primary/20 text-primary': isCutHovered(sIdx, cIdx),
+              'hover:bg-base-200/60': !isCutHovered(sIdx, cIdx),
             }"
-            @mouseenter="emit('hover-cut', { sheetIndex: selectedSheetIndex, cutIndex: cIdx })"
+            @mouseenter="emit('hover-cut', { sheetIndex: sIdx, cutIndex: cIdx })"
             @mouseleave="emit('hover-cut', null)"
           >
             <!-- Step Number -->
-            <td class="text-center py-2 font-mono">
+            <td class="text-center py-2">
               <span
-                class="badge badge-xs font-mono font-bold"
-                :class="isCutHovered(selectedSheetIndex, cIdx) ? 'badge-primary' : 'badge-neutral'"
+                class="badge badge-sm font-mono font-bold"
+                :class="isCutHovered(sIdx, cIdx) ? 'badge-primary' : 'badge-neutral'"
               >
                 {{ cIdx + 1 }}
               </span>
@@ -135,8 +115,8 @@ function isCutHovered(sheetIndex: number, cutIndex: number): boolean {
                 <svg
                   v-if="cut.direction === 'horizontal'"
                   xmlns="http://www.w3.org/2000/svg"
-                  width="14"
-                  height="14"
+                  width="16"
+                  height="16"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -152,8 +132,8 @@ function isCutHovered(sheetIndex: number, cutIndex: number): boolean {
                 <svg
                   v-else
                   xmlns="http://www.w3.org/2000/svg"
-                  width="14"
-                  height="14"
+                  width="16"
+                  height="16"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -170,14 +150,13 @@ function isCutHovered(sheetIndex: number, cutIndex: number): boolean {
             </td>
 
             <!-- Fence Position -->
-            <td class="py-2 pl-2 text-xs truncate">
-              <span class="opacity-60 text-[11px]">
+            <td class="font-mono text-xs py-2 pl-2">
+              <span class="text-base-content/60">
                 {{ cut.direction === 'horizontal' ? 'Y =' : 'X =' }}
               </span>
-              <span class="font-bold ml-1 text-sm">
+              <span class="font-bold text-sm ml-1 text-base-content">
                 {{ cut.direction === 'horizontal' ? cut.y : cut.x }}
               </span>
-              <span class="opacity-60 text-[11px] ml-0.5">mm</span>
             </td>
           </tr>
         </tbody>

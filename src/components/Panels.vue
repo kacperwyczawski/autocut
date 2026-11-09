@@ -80,10 +80,10 @@ function getEdgeReductionTooltip(
             @mouseenter="emit('hover-panel', multipanel.panel)"
             @mouseleave="emit('hover-panel', null)"
           >
-            <td class="font-mono font-medium text-xs py-2">{{ multipanel.panel.length }}</td>
-            <td class="font-mono font-medium text-xs py-2">{{ multipanel.panel.width }}</td>
+            <td class="font-mono font-bold text-sm py-2">{{ multipanel.panel.length }}</td>
+            <td class="font-mono font-bold text-sm py-2">{{ multipanel.panel.width }}</td>
             <td class="text-center py-2">
-              <span class="badge badge-sm badge-neutral font-mono font-semibold">
+              <span class="badge badge-sm badge-neutral font-mono font-bold">
                 {{ multipanel.quantity }}
               </span>
             </td>

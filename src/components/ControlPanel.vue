@@ -61,6 +61,13 @@ function handlePanelAdd() {
 	reset();
 }
 
+function handleOptimize() {
+	if (length.value && width.value && quantity.value) {
+		handlePanelAdd();
+	}
+	emit("optimize");
+}
+
 watchEffect(() => {
 	if (length.value && width.value) {
 		emit("previewPanel", {
@@ -74,7 +81,7 @@ watchEffect(() => {
 <template>
   <div
     @keyup.enter="handlePanelAdd"
-    @keyup.ctrl.enter="$emit('optimize')"
+    @keyup.ctrl.enter="handleOptimize"
     @keyup.alt.enter="$emit('export')"
     class="flex gap-2 flex-wrap items-end"
   >
@@ -173,7 +180,7 @@ watchEffect(() => {
       </button>
     </div>
     <div v-else class="tooltip inline-flex mb-1" data-tip="Ctrl + Enter">
-      <button @click="$emit('optimize')" class="btn btn-primary">
+      <button @click="handleOptimize" class="btn btn-primary">
         Optimize
       </button>
     </div>

@@ -82,6 +82,7 @@ function handleOptimize() {
 	const flattenedPanels = toRaw(panels.value).flatMap((p) =>
 		Array<PanelTemplate>(p.quantity).fill(p.panel),
 	);
+	if (flattenedPanels.length === 0) return;
 	const request: OptimizationRequest = {
 		sheetTemplate: sheet,
 		panels: flattenedPanels,

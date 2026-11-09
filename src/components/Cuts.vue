@@ -4,6 +4,11 @@ import { computed, ref } from "vue";
 
 const props = defineProps<{
 	optimization: OptimizationResult | null;
+	hoveredCut?: { sheetIndex: number; cutIndex: number } | null;
+}>();
+
+const emit = defineEmits<{
+	(e: "hover-cut", cut: { sheetIndex: number; cutIndex: number } | null): void;
 }>();
 
 const selectedSheetIndex = ref(0);
@@ -20,6 +25,13 @@ const currentSheet = computed(() => {
 	const index = Math.min(selectedSheetIndex.value, sheets.value.length - 1);
 	return sheets.value[index] ?? null;
 });
+
+function isCutHovered(sheetIndex: number, cutIndex: number): boolean {
+	return (
+		props.hoveredCut?.sheetIndex === sheetIndex &&
+		props.hoveredCut?.cutIndex === cutIndex
+	);
+}
 </script>
 
 <template>
@@ -96,11 +108,20 @@ const currentSheet = computed(() => {
           <tr
             v-for="(cut, cIdx) in currentSheet.cuts"
             :key="cIdx"
-            class="transition-colors border-b border-base-300/40 last:border-b-0 hover:bg-base-200/70"
+            class="transition-colors border-b border-base-300/40 last:border-b-0 cursor-pointer"
+            :class="{
+              'bg-primary/20 text-primary': isCutHovered(selectedSheetIndex, cIdx),
+              'hover:bg-base-200/70': !isCutHovered(selectedSheetIndex, cIdx),
+            }"
+            @mouseenter="emit('hover-cut', { sheetIndex: selectedSheetIndex, cutIndex: cIdx })"
+            @mouseleave="emit('hover-cut', null)"
           >
             <!-- Step Number -->
             <td class="text-center py-2 font-mono">
-              <span class="badge badge-xs font-mono font-bold badge-neutral">
+              <span
+                class="badge badge-xs font-mono font-bold"
+                :class="isCutHovered(selectedSheetIndex, cIdx) ? 'badge-primary' : 'badge-neutral'"
+              >
                 {{ cIdx + 1 }}
               </span>
             </td>

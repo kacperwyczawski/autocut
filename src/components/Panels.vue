@@ -3,7 +3,26 @@ import type { PanelTemplate } from "@/core/panelTemplate";
 
 const panels = defineModel<{ panel: PanelTemplate; quantity: number }[]>();
 
-function getEdgeReductionTooltip(edgeReduction: PanelTemplate["edgeReduction"]): string {
+const props = defineProps<{
+	hoveredPanel?: { length: number; width: number } | null;
+}>();
+
+const emit = defineEmits<{
+	(e: "hover-panel", panel: { length: number; width: number } | null): void;
+}>();
+
+function isPanelHovered(panel: PanelTemplate): boolean {
+	if (!props.hoveredPanel) return false;
+	const h = props.hoveredPanel;
+	return (
+		(panel.length === h.length && panel.width === h.width) ||
+		(panel.length === h.width && panel.width === h.length)
+	);
+}
+
+function getEdgeReductionTooltip(
+	edgeReduction: PanelTemplate["edgeReduction"],
+): string {
 	const edges: string[] = [];
 	if (edgeReduction.top) edges.push("Top");
 	if (edgeReduction.right) edges.push("Right");
@@ -53,7 +72,13 @@ function getEdgeReductionTooltip(edgeReduction: PanelTemplate["edgeReduction"]):
           <tr
             v-for="(multipanel, index) in panels"
             :key="index"
-            class="hover:bg-base-200/60 transition-colors border-b border-base-300/50 last:border-b-0"
+            class="transition-colors border-b border-base-300/50 last:border-b-0 cursor-pointer"
+            :class="{
+              'bg-primary/20 text-primary': isPanelHovered(multipanel.panel),
+              'hover:bg-base-200/60': !isPanelHovered(multipanel.panel),
+            }"
+            @mouseenter="emit('hover-panel', multipanel.panel)"
+            @mouseleave="emit('hover-panel', null)"
           >
             <td class="font-mono font-medium text-xs py-2">{{ multipanel.panel.length }}</td>
             <td class="font-mono font-medium text-xs py-2">{{ multipanel.panel.width }}</td>

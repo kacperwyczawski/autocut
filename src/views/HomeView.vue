@@ -51,6 +51,8 @@ function createWorker() {
 }
 
 const optimizationResult: Ref<OptimizationResult | null> = ref(null);
+const hoveredPanel = ref<{ length: number; width: number } | null>(null);
+const hoveredCut = ref<{ sheetIndex: number; cutIndex: number } | null>(null);
 const placedPanels = ref(0);
 const totalPanels = ref(0);
 const optimizing = ref(false);
@@ -188,10 +190,18 @@ function handlePanelPreview(panel: PanelTemplate) {
       </div>
       <div class="flex-1 overflow-y-auto min-h-0 p-3">
         <div v-if="currentTab === 'Panels'">
-          <Panels v-model="panels" />
+          <Panels
+            v-model="panels"
+            :hovered-panel="hoveredPanel"
+            @hover-panel="hoveredPanel = $event"
+          />
         </div>
         <div v-else-if="currentTab === 'Cuts'">
-          <Cuts :optimization="optimizationResult" />
+          <Cuts
+            :optimization="optimizationResult"
+            :hovered-cut="hoveredCut"
+            @hover-cut="hoveredCut = $event"
+          />
         </div>
       </div>
       <div class="p-3 border-t border-base-300 bg-base-200 shrink-0 flex flex-col gap-2">
@@ -307,6 +317,10 @@ function handlePanelPreview(panel: PanelTemplate) {
       <OptimizationResults
         v-if="!optimizing && optimizationResult"
         :optimization="optimizationResult"
+        :hovered-panel="hoveredPanel"
+        :hovered-cut="hoveredCut"
+        @hover-panel="hoveredPanel = $event"
+        @hover-cut="hoveredCut = $event"
       />
       <PreviewOfPanel v-if="panelInPreview" :panelInPreview />
     </div>

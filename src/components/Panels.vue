@@ -54,7 +54,7 @@ function getEdgeReductionTooltip(
     </div>
     <p class="font-semibold text-sm text-base-content">No panels yet</p>
     <p class="text-xs text-base-content/60 mt-1 max-w-[14rem]">
-      Add panels using the form on the right or import from JSON.
+      Add panels using the form on the right or import from JSON / PRO100.
     </p>
   </div>
   <div v-else class="overflow-x-auto rounded-box border border-base-300 bg-base-100">

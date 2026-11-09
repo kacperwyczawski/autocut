@@ -4,6 +4,7 @@ import Cuts from "@/components/Cuts.vue";
 import OptimizationResults from "@/components/OptimizationResults.vue";
 import Panels from "@/components/Panels.vue";
 import PreviewOfPanel from "@/components/PreviewOfPanel.vue";
+import { parsePro100 } from "@/core/pro100";
 import useJsonExport from "@/composables/useJsonExport";
 import useSettings from "@/composables/useSettings";
 import type { OptimizationRequest } from "@/core/optimizationRequest";
@@ -15,8 +16,13 @@ import { type Ref, computed, nextTick, ref, toRaw, useTemplateRef } from "vue";
 const currentTab = ref("Panels");
 const tabList = ["Panels", "Cuts"];
 
-const { bladeThickness, searchDepth, searchWidth, allowRotation } =
-	useSettings();
+const {
+	bladeThickness,
+	searchDepth,
+	searchWidth,
+	allowRotation,
+	panelEdgeReduction,
+} = useSettings();
 
 const sheet: SheetTemplate = {
 	width: useSettings().sheetWidth.value,
@@ -124,27 +130,88 @@ function exportPanels() {
 const importPanelsDialog =
 	useTemplateRef<HTMLDialogElement>("importPanelsDialog");
 const importPanelsInput = useTemplateRef<HTMLInputElement>("importPanelsInput");
-function importPanels() {
-	const file = importPanelsInput.value?.files?.[0];
-	if (!file) {
-		alert("No file selected");
-		return;
-	}
+const importPro100FileInput =
+	useTemplateRef<HTMLInputElement>("importPro100FileInput");
+
+const importFormat = ref<"autocut" | "pro100">("autocut");
+const pro100Text = ref("");
+const importMode = ref<"replace" | "append">("replace");
+
+const parsedPro100Preview = computed(() => {
+	if (!pro100Text.value.trim()) return [];
+	return parsePro100(pro100Text.value, {
+		defaultEdgeThickness: panelEdgeReduction.value || bladeThickness.value || 0,
+	});
+});
+
+const parsedPro100TotalPieces = computed(() => {
+	return parsedPro100Preview.value.reduce(
+		(sum, item) => sum + item.quantity,
+		0,
+	);
+});
+
+function handlePro100FileChange(event: Event) {
+	const target = event.target as HTMLInputElement;
+	const file = target.files?.[0];
+	if (!file) return;
 	const reader = new FileReader();
 	reader.onload = () => {
-		try {
-			const data = JSON.parse(reader.result as string);
-			if (Array.isArray(data)) {
-				panels.value = data;
-			} else {
-				throw new Error("Invalid data");
-			}
-		} catch (error) {
-			console.error(error);
-			alert("Invalid file");
-		}
+		pro100Text.value = (reader.result as string) || "";
 	};
 	reader.readAsText(file);
+}
+
+function handleImport() {
+	if (importFormat.value === "autocut") {
+		const file = importPanelsInput.value?.files?.[0];
+		if (!file) {
+			alert("No file selected");
+			return;
+		}
+		const reader = new FileReader();
+		reader.onload = () => {
+			try {
+				const data = JSON.parse(reader.result as string);
+				if (Array.isArray(data)) {
+					if (importMode.value === "append") {
+						panels.value = [...panels.value, ...data];
+					} else {
+						panels.value = data;
+					}
+					optimizationResult.value = null;
+					panelInPreview.value = null;
+					importPanelsDialog.value?.close();
+				} else {
+					throw new Error("Invalid data");
+				}
+			} catch (error) {
+				console.error(error);
+				alert("Invalid AutoCut JSON file");
+			}
+		};
+		reader.readAsText(file);
+	} else {
+		const items = parsedPro100Preview.value;
+		if (items.length === 0) {
+			alert(
+				"No valid panels found. Make sure the list is tab-separated PRO100 data.",
+			);
+			return;
+		}
+		if (importMode.value === "append") {
+			panels.value = [...panels.value, ...items];
+		} else {
+			panels.value = items;
+		}
+		optimizationResult.value = null;
+		panelInPreview.value = null;
+		pro100Text.value = "";
+		if (importPro100FileInput.value) {
+			importPro100FileInput.value.value = "";
+		}
+		importPanelsDialog.value?.close();
+	}
 }
 
 const panelInPreview: Ref<PanelTemplate | null> = ref(null);
@@ -374,34 +441,117 @@ function handlePanelPreview(panel: PanelTemplate) {
     </form>
   </dialog>
   <dialog id="importPanelsDialog" ref="importPanelsDialog" class="modal">
-    <div class="modal-box">
-      <h3 class="font-bold text-lg">Import panels</h3>
-      <p class="py-4">Import panels from a JSON file exported from this app.</p>
-      <div role="alert" class="alert alert-warning">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="stroke-current shrink-0 h-6 w-6"
-          fill="none"
-          viewBox="0 0 24 24"
+    <div class="modal-box max-w-xl">
+      <h3 class="font-bold text-lg mb-3">Import panels</h3>
+
+      <!-- Format selector tabs -->
+      <div role="tablist" class="tabs tabs-box grid grid-cols-2 mb-4">
+        <button
+          type="button"
+          role="tab"
+          class="tab font-medium text-sm transition-all"
+          :class="{
+            'tab-active font-semibold shadow-xs': importFormat === 'autocut',
+          }"
+          @click="importFormat = 'autocut'"
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-          />
-        </svg>
-        <span>This action will overwrite the current list of panels</span>
+          AutoCut (JSON)
+        </button>
+        <button
+          type="button"
+          role="tab"
+          class="tab font-medium text-sm transition-all"
+          :class="{
+            'tab-active font-semibold shadow-xs': importFormat === 'pro100',
+          }"
+          @click="importFormat = 'pro100'"
+        >
+          PRO100
+        </button>
       </div>
-      <div class="modal-action">
-        <form method="dialog" class="flex gap-2">
+
+      <!-- AutoCut format pane -->
+      <div v-if="importFormat === 'autocut'" class="space-y-3">
+        <p class="text-sm text-base-content/80">
+          Import panels from a JSON file previously exported from AutoCut.
+        </p>
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend">Select JSON file</legend>
           <input
             type="file"
             id="importPanelsInput"
             ref="importPanelsInput"
+            accept=".json,application/json"
             class="file-input w-full"
           />
-          <button class="btn btn-primary" @click="importPanels">Import</button>
+        </fieldset>
+      </div>
+
+      <!-- PRO100 format pane -->
+      <div v-else class="space-y-3">
+        <p class="text-sm text-base-content/80">
+          Paste tab-separated cut list copied from PRO100 or load a text export. Material and board thickness are automatically ignored.
+        </p>
+        <fieldset class="fieldset">
+          <div class="flex justify-between items-center mb-1">
+            <legend class="fieldset-legend m-0 p-0">Paste PRO100 cut list</legend>
+            <span
+              v-if="parsedPro100Preview.length > 0"
+              class="badge badge-sm badge-success font-mono"
+            >
+              {{ parsedPro100Preview.length }} panels ({{ parsedPro100TotalPieces }} pcs)
+            </span>
+          </div>
+          <textarea
+            v-model="pro100Text"
+            class="textarea textarea-bordered w-full font-mono text-xs h-32"
+            placeholder="BOK&#9;800&#9;-&#9;800&#9;&#9;18&#9;1&#9;Kolory\biały mat&#10;BOK&#9;400&#9;=&#9;823&#9;-&#9;18&#9;2&#9;Kolory\biały mat"
+          ></textarea>
+        </fieldset>
+        <div class="divider text-xs text-base-content/50 my-1">OR</div>
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend">Upload text file (.txt / .tsv / .csv)</legend>
+          <input
+            type="file"
+            ref="importPro100FileInput"
+            accept=".txt,.tsv,.csv,.roz,text/plain"
+            @change="handlePro100FileChange"
+            class="file-input file-input-sm w-full"
+          />
+        </fieldset>
+      </div>
+
+      <!-- Mode selection: Replace vs Append -->
+      <div class="mt-4 pt-3 border-t border-base-300 flex items-center justify-between">
+        <div class="flex gap-4">
+          <label class="flex items-center gap-2 cursor-pointer text-sm">
+            <input
+              type="radio"
+              v-model="importMode"
+              value="replace"
+              name="importMode"
+              class="radio radio-sm radio-primary"
+            />
+            <span>Replace current panels</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer text-sm">
+            <input
+              type="radio"
+              v-model="importMode"
+              value="append"
+              name="importMode"
+              class="radio radio-sm radio-primary"
+            />
+            <span>Append to list</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="modal-action mt-4">
+        <button type="button" class="btn btn-primary" @click="handleImport">
+          Import
+        </button>
+        <form method="dialog">
           <button class="btn">Cancel</button>
         </form>
       </div>

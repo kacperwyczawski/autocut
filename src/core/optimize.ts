@@ -17,14 +17,14 @@ export function rotatePanel(panel: PanelTemplate): PanelTemplate {
 					bottom: panel.edgeReduction.right,
 					left: panel.edgeReduction.bottom,
 					thickness: panel.edgeReduction.thickness,
-			  }
+				}
 			: {
 					top: false,
 					right: false,
 					bottom: false,
 					left: false,
 					thickness: 0,
-			  },
+				},
 	};
 }
 
@@ -205,7 +205,7 @@ function generateNextGeneration(
 								panel: panelToPlace,
 								sheetIndex: fit.sheetIndex,
 								freeSpaceIndex: fit.freeSpaceIndex,
-						  }
+							}
 						: previousVariant.baseFit,
 				});
 			}
@@ -239,7 +239,7 @@ function generateNextGeneration(
 						? {
 								panel: panelToPlace,
 								...newSheetSpace,
-						  }
+							}
 						: previousVariant.baseFit,
 				});
 			}
@@ -343,10 +343,15 @@ function generateNewSpacesAndCuts(
 		// panel fits perfectly 👌
 		// so no new free rectangles
 	} else if (oldFit.length === panel.length) {
-		const newFreeSpace = { ...oldFit };
-		newFreeSpace.y = oldFit.y + panel.width + bladeThickness;
-		newFreeSpace.width = oldFit.width - panel.width;
-		freeSpaces.push(newFreeSpace);
+		const remainingWidth = oldFit.width - panel.width - bladeThickness;
+		if (remainingWidth > 0) {
+			freeSpaces.push({
+				x: oldFit.x,
+				y: oldFit.y + panel.width + bladeThickness,
+				length: oldFit.length,
+				width: remainingWidth,
+			});
+		}
 
 		const newCut: Cut = {
 			x: oldFit.x,
@@ -356,10 +361,15 @@ function generateNewSpacesAndCuts(
 		};
 		cuts.push(newCut);
 	} else if (oldFit.width === panel.width) {
-		const newFreeSpace = { ...oldFit };
-		newFreeSpace.x = oldFit.x + panel.length + bladeThickness;
-		newFreeSpace.length = oldFit.length - panel.length;
-		freeSpaces.push(newFreeSpace);
+		const remainingLength = oldFit.length - panel.length - bladeThickness;
+		if (remainingLength > 0) {
+			freeSpaces.push({
+				x: oldFit.x + panel.length + bladeThickness,
+				y: oldFit.y,
+				length: remainingLength,
+				width: oldFit.width,
+			});
+		}
 
 		const newCut: Cut = {
 			x: oldFit.x + panel.length,
@@ -383,17 +393,25 @@ function generateNewSpacesAndCuts(
 
 		// TODO: check both horizontal and vertical cuts
 
-		const newFreeSpaceToTheRight = { ...oldFit };
-		newFreeSpaceToTheRight.x = oldFit.x + panel.length + bladeThickness;
-		newFreeSpaceToTheRight.length =
-			oldFit.length - panel.length - bladeThickness;
-		newFreeSpaceToTheRight.width = panel.width;
-		freeSpaces.push(newFreeSpaceToTheRight);
+		const remainingLength = oldFit.length - panel.length - bladeThickness;
+		if (remainingLength > 0) {
+			freeSpaces.push({
+				x: oldFit.x + panel.length + bladeThickness,
+				y: oldFit.y,
+				length: remainingLength,
+				width: panel.width,
+			});
+		}
 
-		const newFreeSpaceBelow = { ...oldFit };
-		newFreeSpaceBelow.y = oldFit.y + panel.width + bladeThickness;
-		newFreeSpaceBelow.width = oldFit.width - panel.width - bladeThickness;
-		freeSpaces.push(newFreeSpaceBelow);
+		const remainingWidth = oldFit.width - panel.width - bladeThickness;
+		if (remainingWidth > 0) {
+			freeSpaces.push({
+				x: oldFit.x,
+				y: oldFit.y + panel.width + bladeThickness,
+				length: oldFit.length,
+				width: remainingWidth,
+			});
+		}
 
 		const newHorizontalCut: Cut = {
 			x: oldFit.x,

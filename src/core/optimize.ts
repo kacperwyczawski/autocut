@@ -47,8 +47,13 @@ export function optimize(
 		panels,
 		bladeThickness,
 		depth,
+		searchDepth: explicitSearchDepth,
+		searchWidth: explicitSearchWidth,
 		allowRotation = true,
 	} = request;
+
+	const searchDepth = explicitSearchDepth ?? depth ?? 2;
+	const searchWidth = explicitSearchWidth ?? (searchDepth === 0 ? 1 : 16);
 
 	const validationError = validatePanels(panels, sheetTemplate, allowRotation);
 	if (validationError) {
@@ -78,14 +83,6 @@ export function optimize(
 	const sheets: sheet[] = [];
 	let fittings = 0;
 
-	// Beam width dynamically scales with depth to prevent combinatorial explosion:
-	// depth 0: 1 (greedy, O(N))
-	// depth 1: 8
-	// depth 2: 16
-	// depth 3: 24
-	// depth 4+: 32
-	const beamWidth = depth === 0 ? 1 : Math.min(8 * depth, 32);
-
 	const newSheetSpace: FreeSpace = {
 		x: sheetTemplate.edgeReduction.left,
 		y: sheetTemplate.edgeReduction.top,
@@ -100,7 +97,10 @@ export function optimize(
 	};
 
 	for (let panelIndex = 0; panelIndex < panels.length; panelIndex++) {
-		const lookaheadSteps = Math.min(depth, panels.length - 1 - panelIndex);
+		const lookaheadSteps = Math.min(
+			searchDepth,
+			panels.length - 1 - panelIndex,
+		);
 		let currentBeam: Variant[] = [
 			{ sheets, baseFit: null as unknown as BaseFit },
 		];
@@ -167,7 +167,7 @@ export function optimize(
 					) {
 						// In greedy mode, only open a new sheet if it doesn't fit on existing sheets.
 						// In lookahead mode, also consider opening a new sheet.
-						if (!hasExistingFit || depth > 0) {
+						if (!hasExistingFit || searchDepth > 0) {
 							fittings++;
 							const newData = generateNewSpacesAndCuts(
 								newSheetSpace,
@@ -206,7 +206,7 @@ export function optimize(
 			}
 
 			nextCandidates.sort(compareVariants);
-			currentBeam = nextCandidates.slice(0, beamWidth);
+			currentBeam = nextCandidates.slice(0, searchWidth);
 		}
 
 		// Choose best variant from horizon and commit root action

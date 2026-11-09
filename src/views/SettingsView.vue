@@ -3,7 +3,8 @@ import useSettings from "@/composables/useSettings";
 
 const {
 	edgeReductionButtons,
-	optimizationDepth,
+	searchDepth,
+	searchWidth,
 	allowRotation,
 	sheetLength,
 	sheetWidth,
@@ -39,7 +40,7 @@ function fillWithZero() {
 }
 </script>
 <template>
-  <div class="px-2 md:mx-auto">
+  <div class="px-2 pb-24 md:mx-auto overflow-y-auto h-full">
     <h2 class="text-2xl font-bold mt-8">App</h2>
     <fieldset class="fieldset mb-4 w-full max-w-xs">
       <legend class="fieldset-legend">Edge reduction buttons</legend>
@@ -51,19 +52,6 @@ function fillWithZero() {
         <option>Combined</option>
         <option>Separate</option>
       </select>
-    </fieldset>
-    <fieldset class="fieldset mb-4 w-full max-w-xs">
-      <legend class="fieldset-legend">Optimization depth</legend>
-      <input
-        v-model="optimizationDepth"
-        type="number"
-        min="1"
-        max="8"
-        class="input w-full max-w-xs"
-      />
-      <p class="fieldset-label">
-        Higher values -> more accurate optimization, but slower
-      </p>
     </fieldset>
     <h2 class="text-2xl font-bold mt-8">Sheet</h2>
     <fieldset class="fieldset mb-4 w-full max-w-xs">
@@ -188,9 +176,35 @@ function fillWithZero() {
       />
     </fieldset>
 
-    <h2 class="text-2xl font-bold mt-8">Danger zone</h2>
-    <div class="mt-2 w-full max-w-xs">
-      <button class="btn btn-error w-full" @click="clearAllData">
+    <h2 class="text-2xl font-bold mt-8 text-error">Danger zone</h2>
+    <div class="mt-4 w-full max-w-xs space-y-4 pb-12">
+      <fieldset class="fieldset w-full max-w-xs">
+        <legend class="fieldset-legend">Search depth</legend>
+        <input
+          v-model="searchDepth"
+          type="number"
+          min="0"
+          max="6"
+          class="input w-full max-w-xs"
+        />
+        <p class="fieldset-label">
+          How many future panels to simulate (default: 2)
+        </p>
+      </fieldset>
+      <fieldset class="fieldset w-full max-w-xs">
+        <legend class="fieldset-legend">Search width</legend>
+        <input
+          v-model="searchWidth"
+          type="number"
+          min="1"
+          max="64"
+          class="input w-full max-w-xs"
+        />
+        <p class="fieldset-label">
+          How many candidate layouts to track at each step (default: 16)
+        </p>
+      </fieldset>
+      <button class="btn btn-error w-full mt-6" @click="clearAllData">
         Clear all data and settings
       </button>
     </div>

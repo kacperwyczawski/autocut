@@ -583,4 +583,45 @@ describe("optimize - Hand-Picked Optimizations & Cutting Logic", () => {
 			expect(resDepth2.fittings).toBeGreaterThan(resDepth0.fittings);
 		}
 	});
+
+	it("should support decoupled searchDepth and searchWidth options", () => {
+		const sheet = createSheet(2000, 1000);
+		const panels = [
+			createPanel(800, 400),
+			createPanel(700, 350),
+			createPanel(600, 300),
+			createPanel(500, 250),
+		];
+
+		// Narrow search width (W = 1)
+		const resNarrow = optimize({
+			sheetTemplate: sheet,
+			panels: structuredClone(panels),
+			bladeThickness: 3,
+			searchDepth: 2,
+			searchWidth: 1,
+			allowRotation: true,
+		});
+
+		// Wide search width (W = 16)
+		const resWide = optimize({
+			sheetTemplate: sheet,
+			panels: structuredClone(panels),
+			bladeThickness: 3,
+			searchDepth: 2,
+			searchWidth: 16,
+			allowRotation: true,
+		});
+
+		expect(typeof resNarrow).toBe("object");
+		expect(typeof resWide).toBe("object");
+
+		if (typeof resNarrow !== "string" && typeof resWide !== "string") {
+			assertValidLayout(resNarrow, panels, sheet, 3, true);
+			assertValidLayout(resWide, panels, sheet, 3, true);
+
+			// Wider search explores more candidate variants
+			expect(resWide.fittings).toBeGreaterThan(resNarrow.fittings);
+		}
+	});
 });

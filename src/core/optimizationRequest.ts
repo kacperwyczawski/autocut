@@ -5,6 +5,8 @@ export type OptimizationRequest = {
 	sheetTemplate: SheetTemplate;
 	panels: PanelTemplate[];
 	bladeThickness: number;
-	depth: number;
+	depth?: number;
+	searchDepth?: number;
+	searchWidth?: number;
 	allowRotation?: boolean;
 };

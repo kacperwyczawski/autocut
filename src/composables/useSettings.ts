@@ -13,16 +13,25 @@ export default function useSettings() {
 		localStorage.setItem("edgeReductionButtons", x);
 	});
 
-	const optimizationDepth = ref(
-		Number.parseInt(localStorage.getItem("optimizationDepth") || "4"),
+	const searchDepth = ref(
+		Number.parseInt(
+			localStorage.getItem("searchDepth") ||
+				localStorage.getItem("optimizationDepth") ||
+				"2",
+		),
 	);
-	watch(optimizationDepth, (x) => {
-		localStorage.setItem("optimizationDepth", x.toString());
+	watch(searchDepth, (x) => {
+		localStorage.setItem("searchDepth", x.toString());
 	});
 
-	const allowRotation = ref(
-		localStorage.getItem("allowRotation") !== "false",
+	const searchWidth = ref(
+		Number.parseInt(localStorage.getItem("searchWidth") || "16"),
 	);
+	watch(searchWidth, (x) => {
+		localStorage.setItem("searchWidth", x.toString());
+	});
+
+	const allowRotation = ref(localStorage.getItem("allowRotation") !== "false");
 	watch(allowRotation, (x) => {
 		localStorage.setItem("allowRotation", x.toString());
 	});
@@ -117,7 +126,9 @@ export default function useSettings() {
 		panelEdgeReduction,
 		edgeReductionButtons,
 		currentTheme,
-		optimizationDepth,
+		searchDepth,
+		searchWidth,
+		optimizationDepth: searchDepth,
 		allowRotation,
 	};
 }

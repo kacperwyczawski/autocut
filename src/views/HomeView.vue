@@ -14,7 +14,8 @@ import { type Ref, computed, nextTick, ref, toRaw, useTemplateRef } from "vue";
 const currentTab = ref("Panels");
 const tabList = ["Panels", "Cuts"];
 
-const { bladeThickness, optimizationDepth, allowRotation } = useSettings();
+const { bladeThickness, searchDepth, searchWidth, allowRotation } =
+	useSettings();
 
 const sheet: SheetTemplate = {
 	width: useSettings().sheetWidth.value,
@@ -63,7 +64,9 @@ function handleOptimize() {
 		sheetTemplate: sheet,
 		panels: flattenedPanels,
 		bladeThickness: toRaw(bladeThickness.value),
-		depth: toRaw(optimizationDepth.value),
+		searchDepth: toRaw(searchDepth.value),
+		searchWidth: toRaw(searchWidth.value),
+		depth: toRaw(searchDepth.value),
 		allowRotation: toRaw(allowRotation.value),
 	};
 	worker.postMessage(request);
@@ -83,7 +86,9 @@ function handlePanelAdd(panel: PanelTemplate, quantity: number) {
 	panelInPreview.value = null;
 }
 
-const exportOptimizationDialog = useTemplateRef<HTMLDialogElement>("exportOptimizationDialog");
+const exportOptimizationDialog = useTemplateRef<HTMLDialogElement>(
+	"exportOptimizationDialog",
+);
 const optimizationExportData = computed(() => {
 	return JSON.stringify(optimizationResult.value, null, 2);
 });
@@ -91,7 +96,8 @@ function exportOptimization() {
 	useJsonExport(optimizationExportData, "optimization");
 }
 
-const exportPanelsDialog = useTemplateRef<HTMLDialogElement>("exportPanelsDialog");
+const exportPanelsDialog =
+	useTemplateRef<HTMLDialogElement>("exportPanelsDialog");
 const panelsExportData = computed(() => {
 	return JSON.stringify(panels.value, null, 2);
 });
@@ -99,7 +105,8 @@ function exportPanels() {
 	useJsonExport(panelsExportData, "panels");
 }
 
-const importPanelsDialog = useTemplateRef<HTMLDialogElement>("importPanelsDialog");
+const importPanelsDialog =
+	useTemplateRef<HTMLDialogElement>("importPanelsDialog");
 const importPanelsInput = useTemplateRef<HTMLInputElement>("importPanelsInput");
 function importPanels() {
 	const file = importPanelsInput.value?.files?.[0];

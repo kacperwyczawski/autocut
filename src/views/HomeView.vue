@@ -134,33 +134,7 @@ const importPro100FileInput =
 	useTemplateRef<HTMLInputElement>("importPro100FileInput");
 
 const importFormat = ref<"autocut" | "pro100">("autocut");
-const pro100Text = ref("");
 const importMode = ref<"replace" | "append">("replace");
-
-const parsedPro100Preview = computed(() => {
-	if (!pro100Text.value.trim()) return [];
-	return parsePro100(pro100Text.value, {
-		defaultEdgeThickness: panelEdgeReduction.value || bladeThickness.value || 0,
-	});
-});
-
-const parsedPro100TotalPieces = computed(() => {
-	return parsedPro100Preview.value.reduce(
-		(sum, item) => sum + item.quantity,
-		0,
-	);
-});
-
-function handlePro100FileChange(event: Event) {
-	const target = event.target as HTMLInputElement;
-	const file = target.files?.[0];
-	if (!file) return;
-	const reader = new FileReader();
-	reader.onload = () => {
-		pro100Text.value = (reader.result as string) || "";
-	};
-	reader.readAsText(file);
-}
 
 function handleImport() {
 	if (importFormat.value === "autocut") {
@@ -192,25 +166,42 @@ function handleImport() {
 		};
 		reader.readAsText(file);
 	} else {
-		const items = parsedPro100Preview.value;
-		if (items.length === 0) {
-			alert(
-				"No valid panels found. Make sure the list is tab-separated PRO100 data.",
-			);
+		const file = importPro100FileInput.value?.files?.[0];
+		if (!file) {
+			alert("No file selected");
 			return;
 		}
-		if (importMode.value === "append") {
-			panels.value = [...panels.value, ...items];
-		} else {
-			panels.value = items;
-		}
-		optimizationResult.value = null;
-		panelInPreview.value = null;
-		pro100Text.value = "";
-		if (importPro100FileInput.value) {
-			importPro100FileInput.value.value = "";
-		}
-		importPanelsDialog.value?.close();
+		const reader = new FileReader();
+		reader.onload = () => {
+			try {
+				const text = (reader.result as string) || "";
+				const items = parsePro100(text, {
+					defaultEdgeThickness:
+						panelEdgeReduction.value || bladeThickness.value || 0,
+				});
+				if (items.length === 0) {
+					alert(
+						"No valid panels found. Make sure the file contains tab-separated PRO100 data.",
+					);
+					return;
+				}
+				if (importMode.value === "append") {
+					panels.value = [...panels.value, ...items];
+				} else {
+					panels.value = items;
+				}
+				optimizationResult.value = null;
+				panelInPreview.value = null;
+				if (importPro100FileInput.value) {
+					importPro100FileInput.value.value = "";
+				}
+				importPanelsDialog.value?.close();
+			} catch (error) {
+				console.error(error);
+				alert("Failed to parse PRO100 file");
+			}
+		};
+		reader.readAsText(file);
 	}
 }
 
@@ -490,33 +481,15 @@ function handlePanelPreview(panel: PanelTemplate) {
       <!-- PRO100 format pane -->
       <div v-else class="space-y-3">
         <p class="text-sm text-base-content/80">
-          Paste tab-separated cut list copied from PRO100 or load a text export. Material and board thickness are automatically ignored.
+          Import tab-separated cut list exported from PRO100 (.txt, .tsv, .csv). Material and board thickness are automatically ignored.
         </p>
         <fieldset class="fieldset">
-          <div class="flex justify-between items-center mb-1">
-            <legend class="fieldset-legend m-0 p-0">Paste PRO100 cut list</legend>
-            <span
-              v-if="parsedPro100Preview.length > 0"
-              class="badge badge-sm badge-success font-mono"
-            >
-              {{ parsedPro100Preview.length }} panels ({{ parsedPro100TotalPieces }} pcs)
-            </span>
-          </div>
-          <textarea
-            v-model="pro100Text"
-            class="textarea textarea-bordered w-full font-mono text-xs h-32"
-            placeholder="BOK&#9;800&#9;-&#9;800&#9;&#9;18&#9;1&#9;Kolory\biały mat&#10;BOK&#9;400&#9;=&#9;823&#9;-&#9;18&#9;2&#9;Kolory\biały mat"
-          ></textarea>
-        </fieldset>
-        <div class="divider text-xs text-base-content/50 my-1">OR</div>
-        <fieldset class="fieldset">
-          <legend class="fieldset-legend">Upload text file (.txt / .tsv / .csv)</legend>
+          <legend class="fieldset-legend">Select PRO100 file</legend>
           <input
             type="file"
             ref="importPro100FileInput"
             accept=".txt,.tsv,.csv,.roz,text/plain"
-            @change="handlePro100FileChange"
-            class="file-input file-input-sm w-full"
+            class="file-input w-full"
           />
         </fieldset>
       </div>

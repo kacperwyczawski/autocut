@@ -205,7 +205,7 @@ function handlePanelPreview(panel: PanelTemplate) {
         </div>
       </div>
       <div class="p-3 border-t border-base-300 bg-base-200 shrink-0 flex flex-col gap-2">
-        <div class="flex gap-2">
+        <div v-if="currentTab === 'Panels'" class="flex gap-2">
           <button
             @click="importPanelsDialog?.showModal()"
             class="btn btn-sm btn-outline flex-1 gap-1.5"

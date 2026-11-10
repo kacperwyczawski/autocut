@@ -1,47 +1,81 @@
 <script setup lang="ts">
 import ControlPanel from "@/components/ControlPanel.vue";
-import Cuts from "@/components/Cuts.vue";
+import CutsSidebar from "@/components/CutsSidebar.vue";
+import ExportDialog from "@/components/ExportDialog.vue";
+import ImportDialog from "@/components/ImportDialog.vue";
+import InputSidebar from "@/components/InputSidebar.vue";
 import OptimizationResults from "@/components/OptimizationResults.vue";
-import Panels from "@/components/Panels.vue";
 import PreviewOfPanel from "@/components/PreviewOfPanel.vue";
-import { parsePro100 } from "@/core/pro100";
-import useJsonExport from "@/composables/useJsonExport";
 import useSettings from "@/composables/useSettings";
 import type { OptimizationRequest } from "@/core/optimizationRequest";
 import type { OptimizationResult } from "@/core/optimizationResult";
 import type { PanelTemplate } from "@/core/panelTemplate";
 import type { SheetTemplate } from "@/core/sheetTemplate";
-import { type Ref, computed, nextTick, ref, toRaw, useTemplateRef } from "vue";
-
-const currentTab = ref("Panels");
-const tabList = ["Panels", "Cuts"];
+import { type Ref, computed, nextTick, ref, toRaw, useTemplateRef, watch } from "vue";
 
 const {
+	sheetWidth,
+	sheetLength,
+	sheetTopEdgeReduction,
+	sheetRightEdgeReduction,
+	sheetBottomEdgeReduction,
+	sheetLeftEdgeReduction,
 	bladeThickness,
 	searchDepth,
 	searchWidth,
 	allowRotation,
-	panelEdgeReduction,
 } = useSettings();
 
-const sheet: SheetTemplate = {
-	width: useSettings().sheetWidth.value,
-	length: useSettings().sheetLength.value,
+const sheet = computed<SheetTemplate>(() => ({
+	width: sheetWidth.value,
+	length: sheetLength.value,
 	edgeReduction: {
-		top: useSettings().sheetTopEdgeReduction.value,
-		right: useSettings().sheetRightEdgeReduction.value,
-		bottom: useSettings().sheetBottomEdgeReduction.value,
-		left: useSettings().sheetLeftEdgeReduction.value,
+		top: sheetTopEdgeReduction.value,
+		right: sheetRightEdgeReduction.value,
+		bottom: sheetBottomEdgeReduction.value,
+		left: sheetLeftEdgeReduction.value,
 	},
-};
+}));
 
-const rightPaneRef = useTemplateRef<HTMLElement>("rightPane");
+const centerPaneRef = useTemplateRef<HTMLElement>("centerPaneRef");
+const importDialogRef = useTemplateRef<InstanceType<typeof ImportDialog>>("importDialogRef");
+const exportPanelsDialogRef = useTemplateRef<InstanceType<typeof ExportDialog>>("exportPanelsDialogRef");
+const exportOptimizationDialogRef = useTemplateRef<InstanceType<typeof ExportDialog>>("exportOptimizationDialogRef");
+
+const panels = ref<{ panel: PanelTemplate; quantity: number }[]>([]);
+const optimizationResult: Ref<OptimizationResult | null> = ref(null);
+const hoveredPanel = ref<{ length: number; width: number } | null>(null);
+const hoveredCut = ref<{ sheetIndex: number; cutIndex: number } | null>(null);
+const panelInPreview: Ref<PanelTemplate | null> = ref(null);
+
+const placedPanels = ref(0);
+const totalPanels = ref(0);
+const optimizing = ref(false);
+let worker = createWorker();
+
+watch(
+	[
+		sheetWidth,
+		sheetLength,
+		sheetTopEdgeReduction,
+		sheetRightEdgeReduction,
+		sheetBottomEdgeReduction,
+		sheetLeftEdgeReduction,
+		bladeThickness,
+		searchDepth,
+		searchWidth,
+		allowRotation,
+	],
+	() => {
+		optimizationResult.value = null;
+	},
+);
 
 function createWorker() {
-	const worker = new Worker(new URL("@/core/worker.ts", import.meta.url), {
+	const w = new Worker(new URL("@/core/worker.ts", import.meta.url), {
 		type: "module",
 	});
-	worker.addEventListener("message", (event) => {
+	w.addEventListener("message", (event) => {
 		if (event.data.placedPanels) {
 			placedPanels.value = event.data.placedPanels;
 			totalPanels.value = event.data.totalPanels;
@@ -49,33 +83,12 @@ function createWorker() {
 			optimizationResult.value = event.data;
 			optimizing.value = false;
 			nextTick(() => {
-				rightPaneRef.value?.scrollTo({ top: 0, behavior: "instant" });
+				centerPaneRef.value?.scrollTo({ top: 0, behavior: "instant" });
 			});
 		}
 	});
-	return worker;
+	return w;
 }
-
-const optimizationResult: Ref<OptimizationResult | null> = ref(null);
-const hoveredPanel = ref<{ length: number; width: number } | null>(null);
-const hoveredCut = ref<{ sheetIndex: number; cutIndex: number } | null>(null);
-const placedPanels = ref(0);
-const totalPanels = ref(0);
-const optimizing = ref(false);
-let worker = createWorker();
-
-const totalCutsCount = computed(() => {
-	if (
-		!optimizationResult.value ||
-		typeof optimizationResult.value === "string"
-	) {
-		return 0;
-	}
-	return optimizationResult.value.sheets.reduce(
-		(sum, s) => sum + s.cuts.length,
-		0,
-	);
-});
 
 function handleOptimize() {
 	panelInPreview.value = null;
@@ -84,7 +97,7 @@ function handleOptimize() {
 	);
 	if (flattenedPanels.length === 0) return;
 	const request: OptimizationRequest = {
-		sheetTemplate: sheet,
+		sheetTemplate: sheet.value,
 		panels: flattenedPanels,
 		bladeThickness: toRaw(bladeThickness.value),
 		searchDepth: toRaw(searchDepth.value),
@@ -102,277 +115,84 @@ function handleCancel() {
 	worker = createWorker();
 }
 
-const panels = ref<{ panel: PanelTemplate; quantity: number }[]>([]);
 function handlePanelAdd(panel: PanelTemplate, quantity: number) {
 	panels.value.push({ panel, quantity });
 	optimizationResult.value = null;
 	panelInPreview.value = null;
 }
 
-const exportOptimizationDialog = useTemplateRef<HTMLDialogElement>(
-	"exportOptimizationDialog",
-);
-const optimizationExportData = computed(() => {
-	return JSON.stringify(optimizationResult.value, null, 2);
-});
-function exportOptimization() {
-	useJsonExport(optimizationExportData, "optimization");
-}
-
-const exportPanelsDialog =
-	useTemplateRef<HTMLDialogElement>("exportPanelsDialog");
-const panelsExportData = computed(() => {
-	return JSON.stringify(panels.value, null, 2);
-});
-function exportPanels() {
-	useJsonExport(panelsExportData, "panels");
-}
-
-const importPanelsDialog =
-	useTemplateRef<HTMLDialogElement>("importPanelsDialog");
-const importPanelsInput = useTemplateRef<HTMLInputElement>("importPanelsInput");
-const importPro100FileInput =
-	useTemplateRef<HTMLInputElement>("importPro100FileInput");
-
-const importFormat = ref<"autocut" | "pro100">("autocut");
-const importMode = ref<"replace" | "append">("replace");
-
-function handleImport() {
-	if (importFormat.value === "autocut") {
-		const file = importPanelsInput.value?.files?.[0];
-		if (!file) {
-			alert("No file selected");
-			return;
-		}
-		const reader = new FileReader();
-		reader.onload = () => {
-			try {
-				const data = JSON.parse(reader.result as string);
-				if (Array.isArray(data)) {
-					if (importMode.value === "append") {
-						panels.value = [...panels.value, ...data];
-					} else {
-						panels.value = data;
-					}
-					optimizationResult.value = null;
-					panelInPreview.value = null;
-					importPanelsDialog.value?.close();
-				} else {
-					throw new Error("Invalid data");
-				}
-			} catch (error) {
-				console.error(error);
-				alert("Invalid AutoCut JSON file");
-			}
-		};
-		reader.readAsText(file);
-	} else {
-		const file = importPro100FileInput.value?.files?.[0];
-		if (!file) {
-			alert("No file selected");
-			return;
-		}
-		const reader = new FileReader();
-		reader.onload = () => {
-			try {
-				const text = (reader.result as string) || "";
-				const items = parsePro100(text, {
-					defaultEdgeThickness:
-						panelEdgeReduction.value || bladeThickness.value || 0,
-				});
-				if (items.length === 0) {
-					alert(
-						"No valid panels found. Make sure the file contains tab-separated PRO100 data.",
-					);
-					return;
-				}
-				if (importMode.value === "append") {
-					panels.value = [...panels.value, ...items];
-				} else {
-					panels.value = items;
-				}
-				optimizationResult.value = null;
-				panelInPreview.value = null;
-				if (importPro100FileInput.value) {
-					importPro100FileInput.value.value = "";
-				}
-				importPanelsDialog.value?.close();
-			} catch (error) {
-				console.error(error);
-				alert("Failed to parse PRO100 file");
-			}
-		};
-		reader.readAsText(file);
-	}
-}
-
-const panelInPreview: Ref<PanelTemplate | null> = ref(null);
 function handlePanelPreview(panel: PanelTemplate) {
 	optimizationResult.value = null;
 	panelInPreview.value = panel;
 }
+
+function handleImportPanels(
+	imported: { panel: PanelTemplate; quantity: number }[],
+	mode: "replace" | "append",
+) {
+	if (mode === "append") {
+		panels.value = [...panels.value, ...imported];
+	} else {
+		panels.value = imported;
+	}
+	optimizationResult.value = null;
+	panelInPreview.value = null;
+}
 </script>
 
 <template>
-  <div class="flex h-full">
-    <div
-      class="w-80 md:w-96 bg-base-200 border-r border-base-300 hidden md:flex flex-col h-full shrink-0"
-    >
-      <div class="p-3 pb-2 border-b border-base-300/60 shrink-0">
-        <div role="tablist" class="tabs tabs-box grid grid-cols-2 w-full">
-          <button
-            v-for="tab in tabList"
-            :key="tab"
-            role="tab"
-            type="button"
-            class="tab font-medium text-sm transition-all"
-            :class="{
-              'tab-active font-semibold shadow-xs': currentTab === tab,
-            }"
-            @click="currentTab = tab"
-          >
-            {{ tab }}
-            <span
-              v-if="tab === 'Panels' && panels.length > 0"
-              class="badge badge-xs badge-neutral ml-1.5 font-mono"
-            >
-              {{ panels.reduce((sum, p) => sum + p.quantity, 0) }}
-            </span>
-            <span
-              v-else-if="tab === 'Cuts' && totalCutsCount > 0"
-              class="badge badge-xs badge-neutral ml-1.5 font-mono"
-            >
-              {{ totalCutsCount }}
-            </span>
-          </button>
-        </div>
-      </div>
-      <div class="flex-1 overflow-y-auto min-h-0 p-3">
-        <div v-if="currentTab === 'Panels'">
-          <Panels
-            v-model="panels"
-            :hovered-panel="hoveredPanel"
-            @hover-panel="hoveredPanel = $event"
-          />
-        </div>
-        <div v-else-if="currentTab === 'Cuts'">
-          <Cuts
-            :optimization="optimizationResult"
-            :hovered-cut="hoveredCut"
-            @hover-cut="hoveredCut = $event"
-          />
-        </div>
-      </div>
-      <div class="p-3 border-t border-base-300 bg-base-200 shrink-0 flex flex-col gap-2">
-        <div v-if="currentTab === 'Panels'" class="flex gap-2">
-          <button
-            @click="importPanelsDialog?.showModal()"
-            class="btn btn-sm btn-outline flex-1 gap-1.5"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="15"
-              height="15"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="17 8 12 3 7 8" />
-              <line x1="12" y1="3" x2="12" y2="15" />
-            </svg>
-            Import
-          </button>
-          <button
-            v-if="panels.length !== 0"
-            @click="exportPanelsDialog?.showModal()"
-            class="btn btn-sm btn-outline flex-1 gap-1.5"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="15"
-              height="15"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="7 10 12 15 17 10" />
-              <line x1="12" y1="15" x2="12" y2="3" />
-            </svg>
-            Export
-          </button>
-        </div>
-        <button
-          v-if="panels.length !== 0"
-          class="btn btn-xs btn-ghost text-error/80 hover:text-error hover:bg-error/10 w-full"
-          @click="panels = []"
-        >
-          Delete all panels
-        </button>
-      </div>
-    </div>
-    <div ref="rightPane" class="p-2 overflow-y-auto grow">
+  <div class="flex h-screen w-screen overflow-hidden">
+    <InputSidebar
+      v-model="panels"
+      :hovered-panel="hoveredPanel"
+      @hover-panel="hoveredPanel = $event"
+      @open-import="importDialogRef?.showModal()"
+      @open-export="exportPanelsDialogRef?.showModal()"
+    />
+
+    <main ref="centerPaneRef" class="flex-1 min-w-0 bg-base-100 flex flex-col h-full overflow-y-auto p-4">
       <ControlPanel
+        :disable-exporting="panels.length === 0"
+        :optimizing="optimizing"
         @add-panel="handlePanelAdd"
         @preview-panel="handlePanelPreview"
-        @export="exportOptimizationDialog?.showModal()"
+        @export="exportOptimizationDialogRef?.showModal()"
         @optimize="handleOptimize"
         @cancel="handleCancel"
-        :disable-exporting="panels.length === 0"
-        :optimizing
       />
+
+      <progress
+        v-if="optimizing"
+        class="progress progress-accent w-full mt-3"
+        :value="placedPanels"
+        :max="totalPanels"
+      ></progress>
+
       <div
         v-if="panels.length === 0"
         role="alert"
-        class="alert alert-info mt-2"
+        class="alert alert-info mt-3"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
+          width="20"
+          height="20"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
           stroke-width="2"
           stroke-linecap="round"
           stroke-linejoin="round"
-          class="lucide lucide-info"
         >
           <circle cx="12" cy="12" r="10" />
           <path d="M12 16v-4" />
           <path d="M12 8h.01" />
         </svg>
-        <span>Add some panels first</span>
+        <span>Add some panels to optimize cutting patterns.</span>
       </div>
-      <div role="alert" class="alert alert-info mt-2 md:hidden">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="lucide lucide-info"
-        >
-          <circle cx="12" cy="12" r="10" />
-          <path d="M12 16v-4" />
-          <path d="M12 8h.01" />
-        </svg>
-        <span
-          >To unleash the full potential of this app, use a larger screen</span
-        >
-      </div>
-      <progress v-if="optimizing" class="progress progress-accent w-full" :value="placedPanels" :max="totalPanels"></progress>
+
+      <PreviewOfPanel v-if="panelInPreview" :panelInPreview="panelInPreview" />
+
       <OptimizationResults
         v-if="!optimizing && optimizationResult"
         :optimization="optimizationResult"
@@ -381,157 +201,34 @@ function handlePanelPreview(panel: PanelTemplate) {
         @hover-panel="hoveredPanel = $event"
         @hover-cut="hoveredCut = $event"
       />
-      <PreviewOfPanel v-if="panelInPreview" :panelInPreview />
-    </div>
+    </main>
+
+    <CutsSidebar
+      :optimization="optimizationResult"
+      :hovered-cut="hoveredCut"
+      @hover-cut="hoveredCut = $event"
+      @open-export="exportOptimizationDialogRef?.showModal()"
+    />
   </div>
-  <!-- Dialogs -->
-  <dialog
-    id="exportOptimizationDialog"
-    ref="exportOptimizationDialog"
-    class="modal"
-  >
-    <div class="modal-box">
-      <h3 class="font-bold text-lg">Export</h3>
-      <p class="py-4">
-        Export results of the optimization to a JSON file. It does not include
-        the list of panels.
-      </p>
-      <div class="mockup-code before:hidden max-h-[50vh] overflow-y-scroll">
-        <pre><code>{{ optimizationExportData }}</code></pre>
-      </div>
-      <div class="modal-action">
-        <form method="dialog" class="flex gap-2">
-          <button @click="exportOptimization" class="btn btn-primary">
-            Export
-          </button>
-          <button class="btn">Cancel</button>
-        </form>
-      </div>
-    </div>
-    <form method="dialog" class="modal-backdrop">
-      <button>close</button>
-    </form>
-  </dialog>
-  <dialog id="exportPanelsDialog" ref="exportPanelsDialog" class="modal">
-    <div class="modal-box">
-      <h3 class="font-bold text-lg">Export panels</h3>
-      <p class="py-4">
-        Export the list of panels to a JSON file, so you can import it later.
-      </p>
-      <div class="mockup-code before:hidden max-h-[50vh] overflow-y-scroll">
-        <pre><code>{{ panelsExportData }}</code></pre>
-      </div>
-      <div class="modal-action">
-        <form method="dialog" class="flex gap-2">
-          <button @click="exportPanels" class="btn btn-primary">Export</button>
-          <button class="btn">Cancel</button>
-        </form>
-      </div>
-    </div>
-    <form method="dialog" class="modal-backdrop">
-      <button>close</button>
-    </form>
-  </dialog>
-  <dialog id="importPanelsDialog" ref="importPanelsDialog" class="modal">
-    <div class="modal-box max-w-xl">
-      <h3 class="font-bold text-lg mb-3">Import panels</h3>
 
-      <!-- Format selector tabs -->
-      <div role="tablist" class="tabs tabs-box grid grid-cols-2 mb-4">
-        <button
-          type="button"
-          role="tab"
-          class="tab font-medium text-sm transition-all"
-          :class="{
-            'tab-active font-semibold shadow-xs': importFormat === 'autocut',
-          }"
-          @click="importFormat = 'autocut'"
-        >
-          AutoCut (JSON)
-        </button>
-        <button
-          type="button"
-          role="tab"
-          class="tab font-medium text-sm transition-all"
-          :class="{
-            'tab-active font-semibold shadow-xs': importFormat === 'pro100',
-          }"
-          @click="importFormat = 'pro100'"
-        >
-          PRO100
-        </button>
-      </div>
+  <ImportDialog
+    ref="importDialogRef"
+    @import="handleImportPanels"
+  />
 
-      <!-- AutoCut format pane -->
-      <div v-if="importFormat === 'autocut'" class="space-y-3">
-        <p class="text-sm text-base-content/80">
-          Import panels from a JSON file previously exported from AutoCut.
-        </p>
-        <fieldset class="fieldset">
-          <legend class="fieldset-legend">Select JSON file</legend>
-          <input
-            type="file"
-            id="importPanelsInput"
-            ref="importPanelsInput"
-            accept=".json,application/json"
-            class="file-input w-full"
-          />
-        </fieldset>
-      </div>
+  <ExportDialog
+    ref="exportPanelsDialogRef"
+    title="Export panels"
+    description="Export the list of panels to a JSON file, so you can import it later."
+    filename="panels"
+    :data="panels"
+  />
 
-      <!-- PRO100 format pane -->
-      <div v-else class="space-y-3">
-        <p class="text-sm text-base-content/80">
-          Import tab-separated cut list exported from PRO100 (.txt, .tsv, .csv). Material and board thickness are automatically ignored.
-        </p>
-        <fieldset class="fieldset">
-          <legend class="fieldset-legend">Select PRO100 file</legend>
-          <input
-            type="file"
-            ref="importPro100FileInput"
-            accept=".txt,.tsv,.csv,.roz,text/plain"
-            class="file-input w-full"
-          />
-        </fieldset>
-      </div>
-
-      <!-- Mode selection: Replace vs Append -->
-      <div class="mt-4 pt-3 border-t border-base-300 flex items-center justify-between">
-        <div class="flex gap-4">
-          <label class="flex items-center gap-2 cursor-pointer text-sm">
-            <input
-              type="radio"
-              v-model="importMode"
-              value="replace"
-              name="importMode"
-              class="radio radio-sm radio-primary"
-            />
-            <span>Replace current panels</span>
-          </label>
-          <label class="flex items-center gap-2 cursor-pointer text-sm">
-            <input
-              type="radio"
-              v-model="importMode"
-              value="append"
-              name="importMode"
-              class="radio radio-sm radio-primary"
-            />
-            <span>Append to list</span>
-          </label>
-        </div>
-      </div>
-
-      <div class="modal-action mt-4">
-        <button type="button" class="btn btn-primary" @click="handleImport">
-          Import
-        </button>
-        <form method="dialog">
-          <button class="btn">Cancel</button>
-        </form>
-      </div>
-    </div>
-    <form method="dialog" class="modal-backdrop">
-      <button>close</button>
-    </form>
-  </dialog>
+  <ExportDialog
+    ref="exportOptimizationDialogRef"
+    title="Export optimization"
+    description="Export results of the optimization to a JSON file. It does not include the list of panels."
+    filename="optimization"
+    :data="optimizationResult"
+  />
 </template>

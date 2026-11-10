@@ -35,10 +35,11 @@ export function rotatePanel(panel: PanelTemplate): PanelTemplate {
  * Algorithm architecture:
  * 1. Multi-Pass Heuristics: Evaluates 3 distinct geometric sort orderings (Area, Semi-Perimeter, Max Span)
  *    to eliminate blind spots with high-aspect-ratio strips and bulky monolithic panels.
- * 2. Dynamic Cut Splitting: Evaluates both Horizontal-First and Vertical-First guillotine through-cuts,
+ * 2. Best Short Side Fit (BSSF): Selects the tightest fitting free rectangle to minimize sliver waste.
+ * 3. Guillotine partitioning: Cuts rectangles orthogonally, creating valid guillotine saw cuts.
+ * 4. Dynamic Cut Splitting: Evaluates both Horizontal-First and Vertical-First guillotine through-cuts,
  *    preserving the largest contiguous leftover offcuts for future panels.
- * 3. Best Short Side Fit (BSSF): Selects the tightest fitting free rectangle to minimize sliver waste.
- * 4. Bounded Beam Search: Uses searchDepth lookahead and bounded searchWidth to explore upcoming panels
+ * 5. Bounded Beam Search: Uses searchDepth lookahead and bounded searchWidth to explore upcoming panels
  *    without exponential explosion.
  */
 export function optimize(

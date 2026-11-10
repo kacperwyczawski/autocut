@@ -70,4 +70,26 @@ describe("PRO100 Parser (tab-separated)", () => {
 		expect(result).toHaveLength(1);
 		expect(result[0].quantity).toBe(5);
 	});
+
+	it("should recognize Unicode dash variants like en-dash, em-dash, and minus", () => {
+		const input = [
+			"BOK\t720\t–\t560\t=\t18\t1\tDąb", // en-dash (U+2013) & '='
+			"Wieniec\t600\t−\t400\t—\t18\t2\tBiały", // minus (U+2212) & em-dash (U+2014)
+		].join("\n");
+
+		const result = parsePro100(input);
+		expect(result).toHaveLength(2);
+
+		// First item: 1 edge on dim1 (en-dash), 2 edges on dim2 (=)
+		expect(result[0].panel.edgeReduction.top).toBe(true);
+		expect(result[0].panel.edgeReduction.bottom).toBe(false);
+		expect(result[0].panel.edgeReduction.left).toBe(true);
+		expect(result[0].panel.edgeReduction.right).toBe(true);
+
+		// Second item: 1 edge on dim1 (minus sign), 1 edge on dim2 (em-dash)
+		expect(result[1].panel.edgeReduction.top).toBe(true);
+		expect(result[1].panel.edgeReduction.bottom).toBe(false);
+		expect(result[1].panel.edgeReduction.left).toBe(true);
+		expect(result[1].panel.edgeReduction.right).toBe(false);
+	});
 });

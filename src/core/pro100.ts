@@ -14,30 +14,19 @@ function parseNumber(val: string): number {
 	return Number.parseFloat(val.trim().replace(",", "."));
 }
 
+const DASH_REGEX = /^[\u002d\u2010-\u2015\u2212\ufe63\uff0d]$/;
+
 function parseEdge(val: string): { first: boolean; second: boolean } {
 	const trimmed = val?.trim() ?? "";
 	if (trimmed === "=") {
 		return { first: true, second: true };
 	}
-	if (trimmed === "-") {
+	if (DASH_REGEX.test(trimmed)) {
 		return { first: true, second: false };
 	}
 	return { first: false, second: false };
 }
 
-/**
- * Parses tab-separated cut list exported or copied from PRO100.
- *
- * Expected tab-separated columns:
- * [0] Name
- * [1] Length (dim 1)
- * [2] Edge 1 ('-' for 1 edge, '=' for 2 edges, empty for none)
- * [3] Width (dim 2)
- * [4] Edge 2 ('-' for 1 edge, '=' for 2 edges, empty for none)
- * [5] Board thickness (ignored)
- * [6] Quantity
- * [7] Material (ignored)
- */
 export function parsePro100(
 	input: string,
 	options: ParsePro100Options = {},
@@ -56,7 +45,6 @@ export function parsePro100(
 		const length = parseNumber(cols[1]);
 		const width = parseNumber(cols[3]);
 
-		// Skip invalid rows or headers
 		if (
 			Number.isNaN(length) ||
 			Number.isNaN(width) ||
@@ -69,8 +57,6 @@ export function parsePro100(
 		const edge1 = parseEdge(cols[2]);
 		const edge2 = parseEdge(cols[4]);
 
-		// Quantity is usually in col 6 (after board thickness in col 5),
-		// or col 5 if board thickness is omitted.
 		let quantity = 1;
 		if (cols[6] && !Number.isNaN(parseNumber(cols[6]))) {
 			quantity = Math.max(1, Math.round(parseNumber(cols[6])));
@@ -86,7 +72,6 @@ export function parsePro100(
 			thickness,
 		};
 
-		// Consolidate identical panels
 		const existing = items.find(
 			(item) =>
 				item.panel.length === length &&

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import type { PanelTemplate } from "@/core/panelTemplate";
-import { watch, watchEffect } from "vue";
 
-const props = defineProps<{
+defineProps<{
 	panelInPreview: PanelTemplate | null;
 }>();
 </script>
+
 <template>
   <div
     v-if="panelInPreview"

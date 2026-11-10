@@ -54,7 +54,6 @@ function isCutHovered(sheetIndex: number, cutIndex: number): boolean {
   </div>
 
   <div v-else class="flex flex-col gap-3">
-    <!-- Sheets stacked one under another -->
     <div
       v-for="(sheet, sIdx) in sheets"
       :key="sIdx"
@@ -96,7 +95,6 @@ function isCutHovered(sheetIndex: number, cutIndex: number): boolean {
             @mouseenter="emit('hover-cut', { sheetIndex: sIdx, cutIndex: cIdx })"
             @mouseleave="emit('hover-cut', null)"
           >
-            <!-- Step Number -->
             <td class="text-center py-2">
               <span
                 class="badge badge-sm font-mono font-bold"
@@ -106,7 +104,6 @@ function isCutHovered(sheetIndex: number, cutIndex: number): boolean {
               </span>
             </td>
 
-            <!-- Direction Icon (Lucide move-horizontal / move-vertical) -->
             <td class="text-center py-2">
               <span
                 class="inline-flex items-center justify-center text-base-content/70"
@@ -149,7 +146,6 @@ function isCutHovered(sheetIndex: number, cutIndex: number): boolean {
               </span>
             </td>
 
-            <!-- Fence Position -->
             <td class="font-mono text-xs py-2 pl-2">
               <span class="text-base-content/60">
                 {{ cut.direction === 'horizontal' ? 'Y =' : 'X =' }}

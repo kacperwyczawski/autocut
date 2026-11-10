@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { OptimizationResult } from "@/core/optimizationResult";
 import type { PanelTemplate } from "@/core/panelTemplate";
+import { computed, ref } from "vue";
 
 const props = defineProps<{
 	optimization: OptimizationResult;
@@ -12,6 +13,8 @@ const emit = defineEmits<{
 	(e: "hover-cut", cut: { sheetIndex: number; cutIndex: number } | null): void;
 	(e: "hover-panel", panel: { length: number; width: number } | null): void;
 }>();
+
+const viewMode = ref<"overview" | "details">("overview");
 
 function isPanelHovered(panel: PanelTemplate): boolean {
 	if (!props.hoveredPanel) return false;
@@ -44,7 +47,41 @@ function getOptimizationTime(): string {
 	}
 	return `Time: ${time}s`;
 }
+
+function formatLength(mm: number): string {
+	if (mm >= 1000) {
+		return `${(mm / 1000).toFixed(2)} m`;
+	}
+	return `${Math.round(mm)} mm`;
+}
+
+const totalBladeTravel = computed(() => {
+	if (typeof props.optimization === "string") return 0;
+	let sum = 0;
+	for (const sheet of props.optimization.sheets) {
+		for (const cut of sheet.cuts) {
+			sum += cut.length;
+		}
+	}
+	return sum;
+});
+
+const totalEdgeBanding = computed(() => {
+	if (typeof props.optimization === "string") return 0;
+	let sum = 0;
+	for (const sheet of props.optimization.sheets) {
+		for (const panel of sheet.panels) {
+			const { length, width, edgeReduction } = panel.template;
+			if (edgeReduction.top) sum += length;
+			if (edgeReduction.bottom) sum += length;
+			if (edgeReduction.left) sum += width;
+			if (edgeReduction.right) sum += width;
+		}
+	}
+	return sum;
+});
 </script>
+
 <template>
   <div
     v-if="typeof optimization === 'string'"
@@ -68,17 +105,80 @@ function getOptimizationTime(): string {
       {{ optimization }}
     </span>
   </div>
+
   <template v-else>
-    <div class="mt-2 flex gap-1">
-      <span class="badge">
-        Waste: {{ Math.round(optimization.wastePercentage) }}%
-      </span>
-      <span v-text="getOptimizationTime()" class="badge"></span>
-      <span class="badge">
-        Fittings: {{ optimization.fittings }}
-      </span>
+    <div class="mt-3 mb-1 flex items-center justify-between gap-3 flex-wrap">
+      <div class="flex flex-wrap items-center gap-1.5 text-xs font-mono">
+        <span class="badge badge-sm badge-neutral">
+          Sheets: {{ optimization.sheets.length }}
+        </span>
+        <span
+          class="badge badge-sm"
+          :class="optimization.wastePercentage < 15 ? 'badge-success' : 'badge-warning'"
+        >
+          Waste: {{ Math.round(optimization.wastePercentage) }}%
+        </span>
+        <span class="badge badge-sm badge-ghost" title="Total saw cut length">
+          Blade travel: {{ formatLength(totalBladeTravel) }}
+        </span>
+        <span class="badge badge-sm badge-ghost" title="Total edge banding (długość okleiny)">
+          Edge banding: {{ formatLength(totalEdgeBanding) }}
+        </span>
+        <span class="badge badge-sm badge-ghost" v-text="getOptimizationTime()"></span>
+      </div>
+
+      <div role="tablist" class="tabs tabs-box tabs-xs">
+        <button
+          type="button"
+          role="tab"
+          class="tab text-xs transition-all"
+          :class="{ 'tab-active font-semibold shadow-xs': viewMode === 'overview' }"
+          @click="viewMode = 'overview'"
+        >
+          Overview
+        </button>
+        <button
+          type="button"
+          role="tab"
+          class="tab text-xs transition-all"
+          :class="{ 'tab-active font-semibold shadow-xs': viewMode === 'details' }"
+          @click="viewMode = 'details'"
+        >
+          Details
+        </button>
+      </div>
     </div>
-    <div class="flex flex-col gap-2 mt-2 items-start [--sheet-max-h:calc(100dvh-14rem)]">
+
+    <div
+      v-if="viewMode === 'overview'"
+      class="mt-3 grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-4"
+    >
+      <div
+        v-for="(sheet, index) in optimization.sheets"
+        :key="index"
+        class="w-full relative border-2 border-secondary border-dashed bg-base-200/60 overflow-hidden"
+        :style="{
+          aspectRatio: `${sheet.template.length / sheet.template.width}`,
+        }"
+      >
+        <div
+          v-for="(panel, pIdx) in sheet.panels"
+          :key="pIdx"
+          class="absolute bg-primary/75 border border-primary-content/25"
+          :style="{
+            left: `${(panel.x / sheet.template.length) * 100}%`,
+            top: `${(panel.y / sheet.template.width) * 100}%`,
+            width: `${(panel.template.length / sheet.template.length) * 100}%`,
+            height: `${(panel.template.width / sheet.template.width) * 100}%`,
+          }"
+        ></div>
+      </div>
+    </div>
+
+    <div
+      v-else
+      class="flex flex-col gap-4 mt-3 items-start [--sheet-max-h:calc(100dvh-15rem)]"
+    >
       <div
         v-for="(sheet, index) in optimization.sheets"
         :key="index"
@@ -92,6 +192,7 @@ function getOptimizationTime(): string {
       >
         <div
           v-for="panel in sheet.panels"
+          :key="`${panel.x}-${panel.y}-${panel.template.length}-${panel.template.width}`"
           class="border-2 border-secondary absolute cursor-pointer transition-all select-none"
           :style="{
             left: `${(panel.x / sheet.template.length) * 100}%`,

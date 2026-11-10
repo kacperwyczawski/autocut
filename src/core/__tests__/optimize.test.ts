@@ -624,4 +624,129 @@ describe("optimize - Hand-Picked Optimizations & Cutting Logic", () => {
 			expect(resWide.fittings).toBeGreaterThan(resNarrow.fittings);
 		}
 	});
+
+	it("should pack mixed bulky panels and full-span strips on a single sheet using multi-pass sorting", () => {
+		// Sheet: 1000 x 1000 (area 1,000,000)
+		// Panel B: 600 x 800 (area 480,000, max span 800)
+		// Panel A: 1000 x 200 (area 200,000, max span 1000)
+		// Panel C: 400 x 400 (area 160,000)
+		// Panel D: 400 x 400 (area 160,000)
+		// Total area: 1,000,000 (perfect tiling of the sheet).
+		//
+		// If sorted purely by Area (600x800 first), placing 600x800 first on 1000x1000
+		// leaves remnants of 400x1000 and 600x200. Without rotation, the 1000x200 panel
+		// cannot fit (1000 > 400 and 1000 > 600), forcing a 2nd sheet.
+		//
+		// Multi-pass (Max-Span pass) places 1000x200 first, leaving a clean 1000x800 space
+		// where 600x800 and the two 400x400 panels pack perfectly on 1 SINGLE SHEET!
+		const sheet = createSheet(1000, 1000);
+		const panels = [
+			createPanel(600, 800),
+			createPanel(1000, 200),
+			createPanel(400, 400),
+			createPanel(400, 400),
+		];
+
+		const resultNoRotation = optimize({
+			sheetTemplate: sheet,
+			panels: structuredClone(panels),
+			bladeThickness: 0,
+			depth: 1,
+			allowRotation: false,
+		});
+
+		expect(typeof resultNoRotation).toBe("object");
+		if (typeof resultNoRotation !== "string") {
+			expect(resultNoRotation.sheets.length).toBe(1);
+			expect(resultNoRotation.sheets[0].panels.length).toBe(4);
+			expect(resultNoRotation.wastePercentage).toBe(0);
+			assertValidLayout(resultNoRotation, panels, sheet, 0, false);
+		}
+
+		const resultRotation = optimize({
+			sheetTemplate: sheet,
+			panels: structuredClone(panels),
+			bladeThickness: 0,
+			depth: 1,
+			allowRotation: true,
+		});
+
+		expect(typeof resultRotation).toBe("object");
+		if (typeof resultRotation !== "string") {
+			expect(resultRotation.sheets.length).toBe(1);
+			expect(resultRotation.sheets[0].panels.length).toBe(4);
+			expect(resultRotation.wastePercentage).toBe(0);
+			assertValidLayout(resultRotation, panels, sheet, 0, true);
+		}
+	});
+
+	it("should achieve 0% waste on 1 sheet for edge-strip + two half-width panels under allowRotation", () => {
+		// Sheet: 1000 x 1000 (area 1,000,000)
+		// Panel 1: 1000 x 150 (strip, area 150,000, max span 1000)
+		// Panel 2: 500 x 850 (area 425,000, max span 850)
+		// Panel 3: 500 x 850 (area 425,000, max span 850)
+		// Total area = 1,000,000 (perfect tiling)
+		const sheet = createSheet(1000, 1000);
+		const panels = [
+			createPanel(500, 850),
+			createPanel(500, 850),
+			createPanel(1000, 150),
+		];
+
+		const result = optimize({
+			sheetTemplate: sheet,
+			panels,
+			bladeThickness: 0,
+			depth: 1,
+			allowRotation: true,
+		});
+
+		expect(typeof result).toBe("object");
+		if (typeof result !== "string") {
+			expect(result.sheets.length).toBe(1);
+			expect(result.sheets[0].panels.length).toBe(3);
+			expect(result.wastePercentage).toBe(0);
+			assertValidLayout(result, panels, sheet, 0, true);
+		}
+	});
+
+	it("should select vertical through-cut when panel is taller than wide to maximize contiguous remnant", () => {
+		// Sheet: 1000 x 1000. Panel: 400 x 600.
+		// Vertical through-cut produces:
+		// Cut 1: vertical cut at X=400, spanning length=1000 (direction: vertical)
+		// Remnant 2: (1000 - 400 - 3) x 1000 = 597 x 1000 (area: 597,000)
+		// Horizontal through-cut would produce:
+		// Remnant 2: 1000 x (1000 - 600 - 3) = 1000 x 397 (area: 397,000)
+		// Dynamic cut selection selects vertical through-cut because 597,000 > 397,000.
+		const sheet = createSheet(1000, 1000);
+		const panels = [createPanel(400, 600)];
+
+		const result = optimize({
+			sheetTemplate: sheet,
+			panels,
+			bladeThickness: 3,
+			depth: 0,
+			allowRotation: false,
+		});
+
+		expect(typeof result).toBe("object");
+		if (typeof result !== "string") {
+			expect(result.sheets[0].cuts.length).toBe(2);
+			// Expect vertical through-cut spanning full height
+			expect(result.sheets[0].cuts).toContainEqual({
+				x: 400,
+				y: 0,
+				length: 1000,
+				direction: "vertical",
+			});
+			// Expect horizontal sub-cut across panel width
+			expect(result.sheets[0].cuts).toContainEqual({
+				x: 0,
+				y: 600,
+				length: 400,
+				direction: "horizontal",
+			});
+			assertValidLayout(result, panels, sheet, 3, false);
+		}
+	});
 });

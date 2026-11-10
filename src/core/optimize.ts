@@ -29,14 +29,17 @@ export function rotatePanel(panel: PanelTemplate): PanelTemplate {
 }
 
 /**
- * 2D Guillotine Bin Packing with Best Short Side Fit (BSSF) and Lookahead Beam Search.
+ * 2D Guillotine Bin Packing with Multi-Pass Sorting (Area, Semi-Perimeter, Max-Span),
+ * Dynamic Guillotine Cut Splitting, Best Short Side Fit (BSSF), and Lookahead Beam Search.
  *
  * Algorithm architecture:
- * 1. Best-Fit Decreasing (BFD) ordering: Largest panels are processed first.
- * 2. Best Short Side Fit (BSSF): Selects the tightest fitting free rectangle to minimize sliver waste.
- * 3. Guillotine partitioning: Cuts rectangles orthogonally, creating valid guillotine saw cuts.
- * 4. Bounded Beam Search: Uses depth to look ahead over upcoming panels while pruning unpromising branches,
- *    preventing exponential combinatorial explosion.
+ * 1. Multi-Pass Heuristics: Evaluates 3 distinct geometric sort orderings (Area, Semi-Perimeter, Max Span)
+ *    to eliminate blind spots with high-aspect-ratio strips and bulky monolithic panels.
+ * 2. Dynamic Cut Splitting: Evaluates both Horizontal-First and Vertical-First guillotine through-cuts,
+ *    preserving the largest contiguous leftover offcuts for future panels.
+ * 3. Best Short Side Fit (BSSF): Selects the tightest fitting free rectangle to minimize sliver waste.
+ * 4. Bounded Beam Search: Uses searchDepth lookahead and bounded searchWidth to explore upcoming panels
+ *    without exponential explosion.
  */
 export function optimize(
 	request: OptimizationRequest,
@@ -60,26 +63,124 @@ export function optimize(
 		return validationError;
 	}
 
-	const startTime = performance.now();
-
-	// Sort panels in descending order: largest items first (Best-Fit Decreasing)
-	if (allowRotation) {
-		panels.sort((a, b) => {
-			const maxA = Math.max(a.length, a.width);
-			const maxB = Math.max(b.length, b.width);
-			if (maxA !== maxB) {
-				return maxB - maxA;
-			}
-			const minA = Math.min(a.length, a.width);
-			const minB = Math.min(b.length, b.width);
-			return minB - minA;
-		});
-	} else {
-		panels.sort((a, b) =>
-			a.length === b.length ? b.width - a.width : b.length - a.length,
-		);
+	if (panels.length === 0) {
+		return "no panels to optimize";
 	}
 
+	const startTime = performance.now();
+
+	// Generate candidate panel sequences across 3 complementary geometric sorting heuristics
+	const uniqueOrders = getUniquePanelOrders(panels);
+	const totalExpectedProgress = uniqueOrders.length * panels.length;
+	let globalProgress = 0;
+
+	let bestSheets: sheet[] | null = null;
+	let totalFittings = 0;
+
+	for (const order of uniqueOrders) {
+		const { sheets, fittings } = runPackingPass(
+			order,
+			sheetTemplate,
+			bladeThickness,
+			searchDepth,
+			searchWidth,
+			allowRotation,
+			() => {
+				globalProgress++;
+				if (progressCallback) {
+					progressCallback(globalProgress, totalExpectedProgress);
+				}
+			},
+		);
+
+		totalFittings += fittings;
+
+		if (!bestSheets || compareSheets(sheets, bestSheets) < 0) {
+			bestSheets = sheets;
+		}
+	}
+
+	const finalSheets = bestSheets ?? [];
+	const endTime = performance.now();
+
+	return {
+		sheets: finalSheets,
+		bladeThickness,
+		wastePercentage: getWastePercentage(finalSheets),
+		time: endTime - startTime,
+		fittings: totalFittings,
+	};
+}
+
+/**
+ * Generates unique panel sort sequences across:
+ * 1. Area Descending (DAF): Prioritizes large monolithic panels.
+ * 2. Semi-Perimeter Descending (DPF): Linear $L + W$ scaling that balances bulk and span.
+ * 3. Max Span Descending (DLSF): Prioritizes edge-to-edge spans (plinths, beams, trim).
+ */
+function getUniquePanelOrders(panels: PanelTemplate[]): PanelTemplate[][] {
+	const sortByArea = (list: PanelTemplate[]) =>
+		[...list].sort((a, b) => {
+			const areaA = a.length * a.width;
+			const areaB = b.length * b.width;
+			if (areaA !== areaB) return areaB - areaA;
+			const maxA = Math.max(a.length, a.width);
+			const maxB = Math.max(b.length, b.width);
+			if (maxA !== maxB) return maxB - maxA;
+			return b.length - a.length;
+		});
+
+	const sortByPerimeter = (list: PanelTemplate[]) =>
+		[...list].sort((a, b) => {
+			const perimA = a.length + a.width;
+			const perimB = b.length + b.width;
+			if (perimA !== perimB) return perimB - perimA;
+			const maxA = Math.max(a.length, a.width);
+			const maxB = Math.max(b.length, b.width);
+			if (maxA !== maxB) return maxB - maxA;
+			return b.length - a.length;
+		});
+
+	const sortByMaxSpan = (list: PanelTemplate[]) =>
+		[...list].sort((a, b) => {
+			const maxA = Math.max(a.length, a.width);
+			const maxB = Math.max(b.length, b.width);
+			if (maxA !== maxB) return maxB - maxA;
+			const minA = Math.min(a.length, a.width);
+			const minB = Math.min(b.length, b.width);
+			if (minA !== minB) return minB - minA;
+			return b.length - a.length;
+		});
+
+	const strategies = [
+		sortByArea(panels),
+		sortByPerimeter(panels),
+		sortByMaxSpan(panels),
+	];
+
+	// Deduplicate sequences that yield identical element orders
+	const uniqueOrders: PanelTemplate[][] = [];
+	for (const order of strategies) {
+		const isDuplicate = uniqueOrders.some((existing) =>
+			existing.every((p, i) => p === order[i]),
+		);
+		if (!isDuplicate) {
+			uniqueOrders.push(order);
+		}
+	}
+
+	return uniqueOrders;
+}
+
+function runPackingPass(
+	panels: PanelTemplate[],
+	sheetTemplate: SheetTemplate,
+	bladeThickness: number,
+	searchDepth: number,
+	searchWidth: number,
+	allowRotation: boolean,
+	onPanelPlaced?: () => void,
+): { sheets: sheet[]; fittings: number } {
 	const sheets: sheet[] = [];
 	let fittings = 0;
 
@@ -122,42 +223,53 @@ export function optimize(
 					const fits = findFits(variant.sheets, orientedPanel);
 
 					for (const fit of fits) {
-						fittings++;
 						hasExistingFit = true;
+						const space =
+							variant.sheets[fit.sheetIndex].freeSpaces[fit.freeSpaceIndex];
+						const splitDirections: ("horizontal" | "vertical")[] =
+							space.length > orientedPanel.length &&
+							space.width > orientedPanel.width
+								? ["horizontal", "vertical"]
+								: ["horizontal"];
 
-						const newSheets = cloneSheets(variant.sheets);
-						const chosenSpace =
-							newSheets[fit.sheetIndex].freeSpaces[fit.freeSpaceIndex];
+						for (const splitDirection of splitDirections) {
+							fittings++;
+							const newSheets = cloneSheets(variant.sheets);
+							const chosenSpace =
+								newSheets[fit.sheetIndex].freeSpaces[fit.freeSpaceIndex];
 
-						newSheets[fit.sheetIndex].panels.push({
-							template: orientedPanel,
-							x: chosenSpace.x,
-							y: chosenSpace.y,
-						});
+							newSheets[fit.sheetIndex].panels.push({
+								template: orientedPanel,
+								x: chosenSpace.x,
+								y: chosenSpace.y,
+							});
 
-						const newData = generateNewSpacesAndCuts(
-							chosenSpace,
-							orientedPanel,
-							bladeThickness,
-						);
+							const newData = generateNewSpacesAndCuts(
+								chosenSpace,
+								orientedPanel,
+								bladeThickness,
+								splitDirection,
+							);
 
-						newSheets[fit.sheetIndex].freeSpaces.splice(
-							fit.freeSpaceIndex,
-							1,
-							...newData.freeSpaces,
-						);
-						newSheets[fit.sheetIndex].cuts.push(...newData.cuts);
+							newSheets[fit.sheetIndex].freeSpaces.splice(
+								fit.freeSpaceIndex,
+								1,
+								...newData.freeSpaces,
+							);
+							newSheets[fit.sheetIndex].cuts.push(...newData.cuts);
 
-						nextCandidates.push({
-							sheets: newSheets,
-							baseFit: isFirstGeneration
-								? {
-										panel: orientedPanel,
-										sheetIndex: fit.sheetIndex,
-										freeSpaceIndex: fit.freeSpaceIndex,
-									}
-								: variant.baseFit,
-						});
+							nextCandidates.push({
+								sheets: newSheets,
+								baseFit: isFirstGeneration
+									? {
+											panel: orientedPanel,
+											sheetIndex: fit.sheetIndex,
+											freeSpaceIndex: fit.freeSpaceIndex,
+											splitDirection,
+										}
+									: variant.baseFit,
+							});
+						}
 					}
 
 					// Option to place on a new sheet
@@ -165,37 +277,45 @@ export function optimize(
 						orientedPanel.length <= newSheetSpace.length &&
 						orientedPanel.width <= newSheetSpace.width
 					) {
-						// In greedy mode, only open a new sheet if it doesn't fit on existing sheets.
-						// In lookahead mode, also consider opening a new sheet.
 						if (!hasExistingFit || searchDepth > 0) {
-							fittings++;
-							const newData = generateNewSpacesAndCuts(
-								newSheetSpace,
-								orientedPanel,
-								bladeThickness,
-							);
-							const newSheet: sheet = {
-								template: { ...sheetTemplate },
-								panels: [
-									{
-										template: orientedPanel,
-										x: newSheetSpace.x,
-										y: newSheetSpace.y,
-									},
-								],
-								cuts: newData.cuts,
-								freeSpaces: newData.freeSpaces,
-							};
+							const splitDirections: ("horizontal" | "vertical")[] =
+								newSheetSpace.length > orientedPanel.length &&
+								newSheetSpace.width > orientedPanel.width
+									? ["horizontal", "vertical"]
+									: ["horizontal"];
 
-							nextCandidates.push({
-								sheets: [...cloneSheets(variant.sheets), newSheet],
-								baseFit: isFirstGeneration
-									? {
-											panel: orientedPanel,
-											...newSheetSpace,
-										}
-									: variant.baseFit,
-							});
+							for (const splitDirection of splitDirections) {
+								fittings++;
+								const newData = generateNewSpacesAndCuts(
+									newSheetSpace,
+									orientedPanel,
+									bladeThickness,
+									splitDirection,
+								);
+								const newSheet: sheet = {
+									template: { ...sheetTemplate },
+									panels: [
+										{
+											template: orientedPanel,
+											x: newSheetSpace.x,
+											y: newSheetSpace.y,
+										},
+									],
+									cuts: newData.cuts,
+									freeSpaces: newData.freeSpaces,
+								};
+
+								nextCandidates.push({
+									sheets: [...cloneSheets(variant.sheets), newSheet],
+									baseFit: isFirstGeneration
+										? {
+												panel: orientedPanel,
+												...newSheetSpace,
+												splitDirection,
+											}
+										: variant.baseFit,
+								});
+							}
 						}
 					}
 				}
@@ -225,6 +345,7 @@ export function optimize(
 				targetSpace,
 				bestFit.panel,
 				bladeThickness,
+				bestFit.splitDirection,
 			);
 			sheets[bestFit.sheetIndex].freeSpaces.splice(
 				bestFit.freeSpaceIndex,
@@ -237,6 +358,7 @@ export function optimize(
 				bestFit,
 				bestFit.panel,
 				bladeThickness,
+				bestFit.splitDirection,
 			);
 			const newSheet: sheet = {
 				template: structuredClone(sheetTemplate),
@@ -253,19 +375,12 @@ export function optimize(
 			sheets.push(newSheet);
 		}
 
-		if (progressCallback) {
-			progressCallback(panelIndex + 1, panels.length);
+		if (onPanelPlaced) {
+			onPanelPlaced();
 		}
 	}
 
-	const endTime = performance.now();
-	return {
-		sheets,
-		bladeThickness,
-		wastePercentage: getWastePercentage(sheets),
-		time: endTime - startTime,
-		fittings,
-	};
+	return { sheets, fittings };
 }
 
 function cloneSheets(sheets: sheet[]): sheet[] {
@@ -333,6 +448,7 @@ function generateNewSpacesAndCuts(
 	oldFit: FreeSpace,
 	panel: PanelTemplate,
 	bladeThickness: number,
+	splitDirection: "horizontal" | "vertical" = "horizontal",
 ): {
 	freeSpaces: FreeSpace[];
 	cuts: Cut[];
@@ -341,8 +457,9 @@ function generateNewSpacesAndCuts(
 	const cuts: Cut[] = [];
 
 	if (oldFit.length === panel.length && oldFit.width === panel.width) {
-		// Exact fit
+		// Exact fit - no cuts needed
 	} else if (oldFit.length === panel.length) {
+		// Matches length: only 1 horizontal cut needed
 		const remainingWidth = oldFit.width - panel.width - bladeThickness;
 		if (remainingWidth > 0) {
 			freeSpaces.push({
@@ -360,6 +477,7 @@ function generateNewSpacesAndCuts(
 			direction: "horizontal",
 		});
 	} else if (oldFit.width === panel.width) {
+		// Matches width: only 1 vertical cut needed
 		const remainingLength = oldFit.length - panel.length - bladeThickness;
 		if (remainingLength > 0) {
 			freeSpaces.push({
@@ -376,29 +494,45 @@ function generateNewSpacesAndCuts(
 			length: oldFit.width,
 			direction: "vertical",
 		});
-	} else {
-		// Panel is smaller in both dimensions.
-		// Guillotine horizontal cut across full length, vertical cut for panel strip.
+	} else if (splitDirection === "vertical") {
+		// Panel is smaller in both dimensions: VERTICAL through-cut first
+		cuts.push({
+			x: oldFit.x + panel.length,
+			y: oldFit.y,
+			length: oldFit.width,
+			direction: "vertical",
+		});
+
+		cuts.push({
+			x: oldFit.x,
+			y: oldFit.y + panel.width,
+			length: panel.length,
+			direction: "horizontal",
+		});
+
+		// Remnant 1: Below the panel (within left strip)
+		const remainingWidth = oldFit.width - panel.width - bladeThickness;
+		if (remainingWidth > 0) {
+			freeSpaces.push({
+				x: oldFit.x,
+				y: oldFit.y + panel.width + bladeThickness,
+				length: panel.length,
+				width: remainingWidth,
+			});
+		}
+
+		// Remnant 2: Right of the left strip (full width)
 		const remainingLength = oldFit.length - panel.length - bladeThickness;
 		if (remainingLength > 0) {
 			freeSpaces.push({
 				x: oldFit.x + panel.length + bladeThickness,
 				y: oldFit.y,
 				length: remainingLength,
-				width: panel.width,
+				width: oldFit.width,
 			});
 		}
-
-		const remainingWidth = oldFit.width - panel.width - bladeThickness;
-		if (remainingWidth > 0) {
-			freeSpaces.push({
-				x: oldFit.x,
-				y: oldFit.y + panel.width + bladeThickness,
-				length: oldFit.length,
-				width: remainingWidth,
-			});
-		}
-
+	} else {
+		// Panel is smaller in both dimensions: HORIZONTAL through-cut first
 		cuts.push({
 			x: oldFit.x,
 			y: oldFit.y + panel.width,
@@ -412,6 +546,28 @@ function generateNewSpacesAndCuts(
 			length: panel.width,
 			direction: "vertical",
 		});
+
+		// Remnant 1: Right of the panel (within top strip)
+		const remainingLength = oldFit.length - panel.length - bladeThickness;
+		if (remainingLength > 0) {
+			freeSpaces.push({
+				x: oldFit.x + panel.length + bladeThickness,
+				y: oldFit.y,
+				length: remainingLength,
+				width: panel.width,
+			});
+		}
+
+		// Remnant 2: Below the top strip (full length)
+		const remainingWidth = oldFit.width - panel.width - bladeThickness;
+		if (remainingWidth > 0) {
+			freeSpaces.push({
+				x: oldFit.x,
+				y: oldFit.y + panel.width + bladeThickness,
+				length: oldFit.length,
+				width: remainingWidth,
+			});
+		}
 	}
 
 	return {
@@ -420,22 +576,22 @@ function generateNewSpacesAndCuts(
 	};
 }
 
-function compareVariants(a: Variant, b: Variant): number {
-	if (a.sheets.length !== b.sheets.length) {
-		return a.sheets.length - b.sheets.length;
+function compareSheets(a: sheet[], b: sheet[]): number {
+	if (a.length !== b.length) {
+		return a.length - b.length;
 	}
 
-	const aCutCount = a.sheets.reduce((acc, s) => acc + s.cuts.length, 0);
-	const bCutCount = b.sheets.reduce((acc, s) => acc + s.cuts.length, 0);
+	const aCutCount = a.reduce((acc, s) => acc + s.cuts.length, 0);
+	const bCutCount = b.reduce((acc, s) => acc + s.cuts.length, 0);
 	if (aCutCount !== bCutCount) {
 		return aCutCount - bCutCount;
 	}
 
-	const aCutLength = a.sheets.reduce(
+	const aCutLength = a.reduce(
 		(acc, s) => acc + s.cuts.reduce((sum, c) => sum + c.length, 0),
 		0,
 	);
-	const bCutLength = b.sheets.reduce(
+	const bCutLength = b.reduce(
 		(acc, s) => acc + s.cuts.reduce((sum, c) => sum + c.length, 0),
 		0,
 	);
@@ -443,17 +599,21 @@ function compareVariants(a: Variant, b: Variant): number {
 		return aCutLength - bCutLength;
 	}
 
-	const aFreeQuality = a.sheets.reduce(
+	const aFreeQuality = a.reduce(
 		(acc, s) =>
 			acc + s.freeSpaces.reduce((sum, f) => sum + (f.length * f.width) ** 2, 0),
 		0,
 	);
-	const bFreeQuality = b.sheets.reduce(
+	const bFreeQuality = b.reduce(
 		(acc, s) =>
 			acc + s.freeSpaces.reduce((sum, f) => sum + (f.length * f.width) ** 2, 0),
 		0,
 	);
 	return bFreeQuality - aFreeQuality;
+}
+
+function compareVariants(a: Variant, b: Variant): number {
+	return compareSheets(a.sheets, b.sheets);
 }
 
 function getWastePercentage(sheets: sheet[]) {
@@ -508,9 +668,11 @@ type BaseFit =
 			panel: PanelTemplate;
 			sheetIndex: number;
 			freeSpaceIndex: number;
+			splitDirection: "horizontal" | "vertical";
 	  }
 	| ({
 			panel: PanelTemplate;
+			splitDirection: "horizontal" | "vertical";
 	  } & FreeSpace);
 
 type Variant = {
